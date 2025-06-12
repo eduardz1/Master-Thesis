@@ -1,0 +1,82 @@
+XKBlas:
+  type: Proceedings
+  title: "XKBlas: a High Performance Implementation of BLAS-3 Kernels on Multi-GPU Server"
+  author: ["Thierry Gautier", "João V. F. Lima"]
+  date: 2020-05-14
+  abstract: "In the last ten years, GPUs have dominated the market considering the computing/power metric and numerous research works have provided Basic Linear Algebra Subprograms implementations accelerated on GPUs. Several software libraries have been developed for exploiting performance of systems with accelerators, but the real performance may be far from the platform peak performance. This paper presents XKBlas that aims to improve performance of BLAS-3 kernels on multi-GPU systems. At low level, we model computation as a set of tasks accessing data on different resources. At high level, the API design favors non-blocking calls as uniform concept to overlap latency, even by fine grain computation. Unit benchmark of BLAS-3 kernels showed that XKBlas outperformed most implementations including the overhead of dynamic task's creation and scheduling. XKBlas outperformed BLAS implementations such as cuBLAS-XT, PaRSEC, BLASX and Chameleon/StarPU."
+  serial-number:
+    doi: "10.1109/PDP50117.2020.00008"
+    issn: 2377-5750
+  parent:
+    - type: Conference
+      title: "28th Euromicro International Conference on Parallel, Distributed and Network-Based Processing (PDP)"
+      date: 2020-03
+
+DCvsDirectives:
+  type: Article
+  author: ["Miko M. Stulajter", "Ronald M. Caplan", "Jon A. Linker"]
+  title: "Can Fortran's 'do concurrent' replace directives for accelerated computing?"
+  date: 2021-10-18
+  url: "https://arxiv.org/abs/2110.10151"
+  serial-number:
+    doi: 10.48550/arXiv.2110.10151
+    arxiv: "2110.10151"
+
+FlangDC:
+  type: Article
+  author: ["Flang Team"]
+  url: "https://flang.llvm.org/docs/DoConcurrent.html"
+  parent:
+    - type: Blog
+      url: "https://flang.llvm.org"
+  title: "DO CONCURRENT isn't necessarily concurrent"
+
+CUDAAwareMPI:
+  type: Article
+  title: "An Introduction to CUDA-Aware MPI"
+  url: "https://developer.nvidia.com/blog/introduction-cuda-aware-mpi/"
+  parent:
+    - type: Blog
+      url: "https://developer.nvidia.com/blog"
+
+HAWEN:
+  type: Article
+  title: "hawen: time-harmonic wave modeling and inversion using hybridizable discontinuous Galerkin discretization"
+  date: 2021-01-24
+  author: ["Florian Faucher"]
+  serial-number:
+    doi: "10.21105/joss.02699"
+  parent:
+    - type: Periodical
+      title: "The Journal of Open Source Software"
+
+HDG:
+  type: Article
+  title: "Hybridizable Discontinuous Galerkin Methods"
+  author: ["N. C. Nguyen", "J. Peraire", "B. Cockburn"]
+  abstract: "We present an overview of recent developments of HDG methods for numerically solving partial differential equations in fluid mechanics."
+  date: 2011
+  page-range: "63-84"
+  serial-number:
+    doi: "10.1007/978-3-642-15337-2_4"
+  parent:
+    - type: Book
+      title: "Spectral and High Order Methods for Partial Differential Equations"
+      publisher:
+        name: "Springer Berlin Heidelberg"
+        location: "Berlin, Heidelberg"
+      editor: ["J. S. Hesthaven", "E. M. Rønquist"]
+      serial-number:
+        isbn: "978-3-642-15337-2"
+
+ModernFortran:
+  type: Book
+  title: "Modern Fortran Explained: Incorporating Fortran 2023"
+  author: ["Michael Metcalf", "John Reid", "Malcolm Cohen", "Reinhold Bader"]
+  publisher: "Oxford University Press"
+  date: 2023-12
+  url: "https://academic.oup.com/book/56095/book-pdf/58259566/oso-9780198876571.pdf"
+  abstract: "Fortran remains one of the principal programming languages used in high-performance scientific, numerical, and engineering computing. The language as defined by its most recent standards, with their introduction of object-oriented programming and of coarrays, is often referred to generically as ‘Modern Fortran’, and this term is increasingly used in the literature. Thus, we see that Fortran’s particular advantages as a high-end numerical language, especially where arrays are the main form of data object and/or where complex arithmetic is involved, are still to the fore. It is able to attain the highest achievable optimization, mainly because multi-dimensional arrays are ‘natural’ objects and because its pointers are highly constrained. There is every sign that Modern Fortran will continue to be used to tackle major scientific computing problems in the next decade and beyond. This third edition of Modern Fortran Explained offers, in 20 chapters, a comprehensive and uniform description of Fortran 2018. The additional features now brought by the 2023 standard, which are mostly relatively minor in nature, are described in two final chapters, the first on generic programming and the second on other new or enhanced features. This structure enables the reader to distinguish clearly between what is old and what is new. This new edition, written by experts in the field, three of whom have actively contributed to Fortran 2023, is thus a complete and authoritative description of Fortran in its latest form, with the intention that it remain the main reference work in the field."
+  serial-number:
+    doi: "10.1093/oso/9780198876571.001"
+    isbn: "9780198876571"

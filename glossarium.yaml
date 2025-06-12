@@ -1,0 +1,34 @@
+DG:
+  short: DG
+  long: Discontinuous Galerkin
+  plural: DGs
+  longplural: Discontinuous Galerkin methods
+
+HDG:
+  short: HDG
+  long: Hybridizable Discontinuous Galerkin
+  plural: HDGs
+  longplural: Hybridizable Discontinuous Galerkin methods
+
+HAWEN:
+  short: HAWEN
+  long: time-HArmonic Wave modEling and iNversion
+  description: A software package for time-harmonic wave modeling and inversion using hybridizable discontinuous Galerkin discretization
+
+FEM:
+  short: FEM
+  long: Finite Element Method
+  description: A popular numerical technique for solving differential equations
+  plural: FEMs
+  longplural: Finite Element Methods
+
+SEM:
+  short: SEM
+  long: Spectral Element Method
+  description: A formulation of the finite element method that uses high-order polynomial basis functions
+  plural: SEMs
+  longplural: Spectral Element Methods
+
+HPC:
+  short: HPC
+  long: High-Performance Computing
