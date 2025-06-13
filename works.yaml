@@ -80,3 +80,18 @@ ModernFortran:
   serial-number:
     doi: "10.1093/oso/9780198876571.001"
     isbn: "9780198876571"
+
+MPIvsCoarrays:
+  type: Article
+  title: "MPI vs Fortran coarrays beyond 100k cores: 3D cellular automata"
+  date: 2019
+  author: ["Anton Shterenlikht", "Luis Cebamanos"]
+  url: "https://www.sciencedirect.com/science/article/pii/S0167819118303181"
+  abstract: "Fortran coarrays are an attractive alternative to MPI due to a familiar Fortran syntax, single sided communications and implementation in the compiler. Scaling of coarrays is compared in this work to MPI, using cellular automata (CA) 3D Ising magnetisation miniapps, built with the CASUP CA library, https://cgpack.sourceforge.io, developed by the authors. Ising energy and magnetisation were calculated with MPI_ALLREDUCE and Fortran 2018 co_sum collectives. The work was done on ARCHER (Cray XC30) up to the full machine capacity: 109,056 cores. Ping-pong latency and bandwidth results are very similar with MPI and with coarrays for message sizes from 1B to several MB. MPI halo exchange (HX) scaled better than coarray HX, which is surprising because both algorithms use pair-wise communications: MPI IRECV/ISEND/WAITALL vs Fortran sync images. Adding OpenMP to MPI or to coarrays resulted in worse L2 cache hit ratio, and lower performance in all cases, even though the NUMA effects were ruled out. This is likely because the CA algorithm is network bound at scale. This is further evidenced by the fact that very aggressive cache and inter-procedural optimisations lead to no performance gain. The sampling and tracing analysis shows good load balancing in compute in all miniapps, but imbalance in communication, indicating that the difference in performance between MPI and coarrays is likely due to parallel libraries (MPICH2 vs libpgas) and the Cray hardware specific libraries (uGNI vs DMAPP). Overall, the results look promising for coarray use beyond 100k cores. However, further coarray optimisation is needed to narrow the performance gap between coarrays and MPI."
+  page-range: "37-49"
+  serial-number:
+    doi: "10.1016/j.parco.2019.03.002"
+  parent:
+    - type: Periodical
+      title: "Parallel Computing"
+      volume: 84

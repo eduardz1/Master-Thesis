@@ -15,6 +15,10 @@ HAWEN:
   long: time-HArmonic Wave modEling and iNversion
   description: A software package for time-harmonic wave modeling and inversion using hybridizable discontinuous Galerkin discretization
 
+MUMPS:
+  short: MUMPS
+  long: MUltifrontal Massively Parallel sparse direct Solver
+
 FEM:
   short: FEM
   long: Finite Element Method
@@ -32,3 +36,18 @@ SEM:
 HPC:
   short: HPC
   long: High-Performance Computing
+
+SPMD:
+  short: SPMD
+  long: Single Program Multiple Data
+  description: A parallel computing paradigm where multiple processors cooperate in the execution of a program in order to process different parts of the data simultaneously and obtain results faster
+
+MPI:
+  short: MPI
+  long: Message Passing Interface
+  description: A standardized and portable message-passing system designed to for parallel computing
+
+NCCL:
+  short: NCCL
+  long: NVIDIA Collective Communications Library
+  description: A library that provides high-performance multi-GPU and multi-node collective communication primitives

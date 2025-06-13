@@ -20,6 +20,9 @@
   glossary-entries: yaml("glossarium.yaml"),
 )
 
+// TODO: make links nicer and only enable them in the digital version
+#show link: underline
+
 #include "chapters/introduction.typ"
 
 #include "chapters/sota.typ"
