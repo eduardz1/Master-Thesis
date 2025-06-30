@@ -13,7 +13,7 @@ HDG:
 HAWEN:
   short: HAWEN
   long: time-HArmonic Wave modEling and iNversion
-  description: A software package for time-harmonic wave modeling and inversion using hybridizable discontinuous Galerkin discretization
+  description: A software package for time-harmonic wave modeling and inversion using hybridizable discontinuous Galerkin discretization.
 
 MUMPS:
   short: MUMPS
@@ -22,14 +22,14 @@ MUMPS:
 FEM:
   short: FEM
   long: Finite Element Method
-  description: A popular numerical technique for solving differential equations
+  description: A popular numerical technique for solving differential equations.
   plural: FEMs
   longplural: Finite Element Methods
 
 SEM:
   short: SEM
   long: Spectral Element Method
-  description: A formulation of the finite element method that uses high-order polynomial basis functions
+  description: A formulation of the finite element method that uses high-order polynomial basis functions.
   plural: SEMs
   longplural: Spectral Element Methods
 
@@ -40,14 +40,70 @@ HPC:
 SPMD:
   short: SPMD
   long: Single Program Multiple Data
-  description: A parallel computing paradigm where multiple processors cooperate in the execution of a program in order to process different parts of the data simultaneously and obtain results faster
+  description: A parallel computing paradigm where multiple processors cooperate in the execution of a program in order to process different parts of the data simultaneously and obtain results faster.
 
 MPI:
   short: MPI
   long: Message Passing Interface
-  description: A standardized and portable message-passing system designed to for parallel computing
+  description: A standardized and portable message-passing system designed for parallel and distributed computing.
 
 NCCL:
   short: NCCL
   long: NVIDIA Collective Communications Library
-  description: A library that provides high-performance multi-GPU and multi-node collective communication primitives
+  description: A library that provides high-performance multi-GPU and multi-node collective communication primitives.
+
+PDT:
+  short: PDT
+  long: Program Database Toolkit
+  description: A framework for analyzing source. Developed by the University of Oregon, it supports several programming languages.
+
+GPL:
+  short: GPL
+  long: GNU General Public License
+  description: A widely used free software license that guarantees end users the freedom to run, study, share, and modify the software. It was originally written by Richard Stallman, founder of the Free Software Foundation (FSF). Any derivative work must also be distributed under the same or equivalent license terms.
+
+APACHE:
+  short: APACHEv2
+  long: Apache License v2.0
+  description: A permissive free software license written by the Apache Software Foundation (ASF) that allows users to use the software for any purpose, to distribute it, to modify it, and to distribute modified versions of the software under the terms of the license, without concern for royalties.
+
+LLVM:
+  short: LLVM
+  description: A collection of modular and reusable compiler and toolchain technologies. The LLVM core provides target-indipendent optimizations and code generation, this is achieved by utilizing a common intermediate representation (IR).
+
+MLIR:
+  short: MLIR
+  long: Multi-Level Intermediate Representation
+  description: A novel appraoch to building reusable and extensible compiler infrastructure. It aims to provide a cheap way to define and introduce new abstraction levels for specific domains.
+
+IR:
+  short: IR
+  long: Intermediate Representation
+  description: A data structure or code used internally by a compiler or interpreter to represent source code. It is an abstraction that allows for optimizations and transformations before generating the final machine code.
+
+SSA:
+  short: SSA
+  long: Static Single Assignment
+  description: A property of an intermediate representation in which each variable is assigned exactly once, enabling more aggressive optimizations and simplifying the analysis of the code.
+
+FIR:
+  short: FIR
+  long: Fortran Intermediate Representation
+  description: A an intermediate representation for Fortran code based on MLIR.
+
+LAPACK:
+  short: LAPACK
+  long: Linear Algebra PACKage
+  description: A software package written in Fortran 90 that provides routines for solving systems of linear equations. One of the main goals is provide an efficient implementation for shared-memory vector and parallel processors.
+
+GPU:
+  short: GPU
+  shortplural: GPUs
+  long: Graphics Processing Unit
+  description: A specialized electronic circuit designed to accelerate the processing of images and videos. To do this, their architecture consists of a large number of smaller cores designed specifically for parallel processing, making them well-suited for tasks that can be parallelized. Nowadays GPUs are especially relevant in the field of high-performance computing (HPC) and machine learning.
+
+CPU:
+  short: CPU
+  shortplural: CPUs
+  long: Central Processing Unit
+  description: The primary processor in a given computer.

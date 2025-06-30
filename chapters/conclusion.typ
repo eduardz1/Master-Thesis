@@ -5,3 +5,8 @@ This is a generic title. Replace it with an actual title that describes the cont
 Give a summary of the problem, approach, implementation, and evaluation. Discuss the principal results in abstract terms. Discuss expected impact and further research directions.
 
 Explain how the project satisfies the evaluation criteria for a Masters Research project.
+
+
+== Future Works
+
+Talk about different precision kinds, cite some of the work of MUMPS and XKBlas

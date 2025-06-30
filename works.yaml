@@ -22,6 +22,27 @@ DCvsDirectives:
     doi: 10.48550/arXiv.2110.10151
     arxiv: "2110.10151"
 
+MLIR:
+  type: Proceedings
+  title: "MLIR: Scaling Compiler Infrastructure for Domain Specific Computation"
+  date: 2021
+  author:
+    [
+      "Lattner Chris",
+      "Amini Mehdi",
+      "Bondhugula Uday",
+      "Cohen Albert",
+      "Davis Andy",
+      "Pienaar Jacques",
+      "Riddle River",
+      "Shpeisman Tatiana",
+      "Vasilache Nicolas",
+      "Zinenko Oleksandr",
+    ]
+  page-range: "2-14"
+  serial-number:
+    doi: "10.1109/CGO51591.2021.9370308"
+
 FlangDC:
   type: Article
   author: ["Flang Team"]
@@ -30,6 +51,16 @@ FlangDC:
     - type: Blog
       url: "https://flang.llvm.org"
   title: "DO CONCURRENT isn't necessarily concurrent"
+
+FlangHistory:
+  type: Article
+  author: ["David Spickett"]
+  title: "LLVM Fortran Levels Up: Goodbye flang-new, Hello flang!"
+  url: "https://blog.llvm.org/posts/2025-03-11-flang-new/"
+  date: 2025-03-11
+  parent:
+    - type: Blog
+      url: "https://blog.llvm.org"
 
 CUDAAwareMPI:
   type: Article
@@ -95,3 +126,27 @@ MPIvsCoarrays:
     - type: Periodical
       title: "Parallel Computing"
       volume: 84
+
+cuDSSDocs:
+  type: Web
+  title: "NVIDIA cuDSS (Preview): A high-performance CUDA Library for Direct Sparse Solvers"
+  url: "https://docs.nvidia.com/cuda/cudss/"
+
+cuDSSBlogPost:
+  type: Article
+  title: "NVIDIA cuDSS Advances Solver Technologies for Engineering and Scientific Computing"
+  author: ["Anton Anders", "Kirill Voronin", "Azi Riahi"]
+  url: "https://developer.nvidia.com/blog/nvidia-cudss-advances-solver-technologies-for-engineering-and-scientific-computing/"
+  parent:
+    - type: Blog
+      url: "https://developer.nvidia.com/blog"
+
+DontInvertThatMatrix:
+  type: Article
+  title: "Don't Invert That Matrix"
+  author: ["John D. Cook"]
+  date: 2010-01-19
+  url: "https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/"
+  parent:
+    - type: Blog
+      url: "https://www.johndcook.com/blog/"

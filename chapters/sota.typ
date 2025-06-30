@@ -8,17 +8,32 @@ Give a clear statement of the research problem, and the current scientific state
 
 == Compilers
 
-Being Fortran a very old language with no reference implementation, during the years, many compilers have emerged, in this section I will list some of the more relevant ones that I explored during my work on Hawen.
+Being Fortran a very old language with no reference implementation, during the years, many compilers have emerged, in this section I will list some of the more relevant ones that I explored during my work on @HAWEN:short.
 
-=== Nvfortran
+=== NVIDIA Fortran Compiler <nvfortran>
 
-NVIDIA's Fortran compiler, formerly known as PGI Fortran, is part of the NVIDIA HPC SDK, which includes also C and C++ compilers, libraries, and tools for high-performance computing. It officially supports Fortran 2003 but also includes a lot of features from later standards, in particular, for our work, we have focused on its excellent support of Fortran's standard parallelism features, in particular the `do concurrent` construct. Nvfortran supports out of the box locality specifiers, `local` and `shared`, and `reduce` annotations for concurrent loops.
+NVIDIA's Fortran compiler, formerly known as PGI Fortran, is part of the NVIDIA HPC SDK, which includes also C and C++ compilers, libraries, and tools for high-performance computing. It officially supports Fortran 2003 but also includes a lot of features from later standards, in particular, for our work, we have focused on its excellent support of Fortran's standard parallelism features, in particular the `do concurrent` construct. `nvfortran` supports out of the box locality specifiers, `local` and `shared`, and `reduce` annotations for concurrent loops.
+
+While the support is good for some features, it is still lacking in some areas. During my work, I encountered and signaled two bugs in the compiler, specifically #link("https://forums.developer.nvidia.com/t/nvfortran-compiler-hangs-when-initializing-transposed-matrices/331820")[TPR \#37335] and #link("https://forums.developer.nvidia.com/t/memory-leak-when-compiling-with-stdpar/335016/9")[TPR \#37469].
+
+From what I gathered from the forums and comments from some of the developers at NVIDIA, the focus currently is on the #link(<flang>)[LLVM Flang] compiler. A new version of `nvfortran` based on Flang is in the works and will replace the current one once offloading to @GPU:short:pl is fully supported and the new compiler reaches feature parity with the current one.
 
 === GFortran <gfortran>
 
-The GNU Fortran compiler is part of the GNU Compiler Collection (GCC) and is widely used in the open-source community. Support for recent Fortran standards is not complete but the performance and the diagnostic information's are excellent. GFortran doesn't support yet offloading to GPUs and only recently has included support for locality specifiers. Native reduction support is not yet available.
+The GNU Fortran compiler is part of the GNU Compiler Collection (GCC) and is widely used in the open-source community. Support for recent Fortran standards is not complete but the performance and the diagnostic information's are excellent. `gfortran` doesn't support yet offloading to @GPU:short:pl and only recently has included support for locality specifiers. Native reduction support is not yet available.
 
-=== Flang
-In particular about LLVM Flang and how it is the basis of the new WIP NVIDIA and ROCm compilers
+=== Intel Fortran Compiler <ifx>
 
-Flang
+Intel also provides a series of HPC tools specifically designed for their CPUs. Other than the Fortran compiler, Intel provides an implementation of BLAS, MKL. A new version of the compiler, `ifx`, has been relased released recently, replacing the old `ifort` compiler. The new compiler is based on #link(<flang>)[LLVM Flang].
+
+=== AMD Fortran Compiler <hipfort>
+
+AMD also recently replaced their Fortran compiler with a new one based on #link(<flang>)[LLVM Flang], called `hipfort`. Being so new, the documentation is still very immature. It uses @LLVM Flang's OpenMP support to offload ROCm kernels to AMD @GPU:short:pl. This difference enables AMD to move their compiler to @LLVM before NVIDIA. The latter prefers and finds better performance in using OpenACC (see @openacc) to offload kernels to NVIDIA @GPU:short:pl.
+
+=== LLVM Flang <flang>
+
+The @LLVM Flang compiler was born as an open source alternative to the plethora of proprietary Fortran compilers. Although #link(<gfortran>)[GFortran] provides such an alternative, their usage of a @GPL license makes it impossible to use it in closed source software, such as the vendor specific ones from NVIDIA, Intel, and AMD @x-FlangHistory. The @LLVM Flang, on the other hand, is part of the @LLVM project and uses a more permissive @APACHE:long with @LLVM exceptions.
+
+Curiously enough, the current `flang` is the third Fortran compiler that bears that name. In August 2011, Bill Wendling starts an @LLVM based Fortran compiler called "Flang". In August 2017 another @LLVM based Fortran compiler is announced, the development effort is led by NVIDIA's PGI division and the U.S. Department of Energy. In December of the same year, the previous "Flang" compiler is renamed to "Fort" to avoid confusion with the new one. In April 2018, Steve Scalpone from NVIDIA announces that the frontend of the new "Flang" compiler will be rewritten to address feedbacks from the @LLVM community, this new compiler was formerly known as "F18". In April 2020, the "F18" compiler was upstreamed to the @LLVM project monorepo. IN October 2024, after changing name to temporary ones multiple times, the new compiler officially adopts the name "Flang", with the binary being included in an @LLVM release for the first time in March 2025 @x-FlangHistory.
+
+As we've already seen, this new compiler will probably end up becoming extremely relevant in the Fortran ecosystem. One of the main innovations in this new compiler is the usage of a new intermediate representation, based on @MLIR, a novel approach that aims to provide a declarative system for defining @IR dialects, a standardized way of defining @SSA and provide a wide range of common infrastructures such as documentation, multithreaded compilation support etc. @x-MLIR. This new intermediate representation is known as @FIR:short.
