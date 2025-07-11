@@ -11,6 +11,12 @@ Describe in abstract (theoretical) terms how the proposed approach can be implem
 
 The @HAWEN software is a Fortran-based tool designed to simulate the propagation of waves in a given medium (what we will call from now on the _forward problem_) and reconstruct the physical properties of a non-directly accessible medium (the _inverse problem_) @x-HAWEN. It is a general purpose tool which can be used in fields such as medical imaging, geophysics, helioseismology, and more.
 
+The software achieves so by solving the wave equation in the frequency domain.
+
+$
+  - gradient 1/rho gradient u - omega^2/kappa u = f
+$
+
 #figure(
   diagram(
     spacing: (1cm, 0.5cm),
@@ -144,8 +150,8 @@ The CUDA Toolkit provides compilers, libraries and tools for developing applicat
 == Profiling
 
 Before starting writing code, it was important to understand the performance bottlenecks of the @HAWEN codebase. Some logging was already present, so we had an idea on where the time was spent, but the granularity of the logging was not sufficient to pinpoint the exact functions that were taking the most time. For this reason I started to explore different profiling tools for Fortran, some of the ones that I tried or where considered are:
-
-- `gprof`: a profiling tool that is part of the GNU Compiler Collection (GCC). I decided against using it because I didn't find it particularly well suited for distributed parallel applications.
+// TODO: add link to a figure showing time spent in I/O
+- `gprof`: a profiling tool that is part of the GNU Compiler Collection (GCC). Born as an evolution to the `prof` utility, it provides a simple, if limited, way of profiling programs compiled with the GCC compilers (profiling is enabled with the `-pg` flag). Unlike other profilers, it is not capable of measuring time spent in kernel mode (syscalls, I/O, etc.) @x-Gprof, which is a limitation which would prevent us from identifying some of the bottlenecks in the @HAWEN codebase. It's simplicity makes it a good choice for quick benchmarks. Through the usage of the `GMON_OUT_PREFIX` environment variable, and the `-s` option, it is also possible to profile MPI programs effectively and sum the results across all processes.
 
 - #link("https://github.com/RRZE-HPC/likwid")[`likwid`]: a powerful and easy to use profiling toolsuite. Unfortunately for Fortran, manual instrumentation is required, which is not ideal for a large codebase like @HAWEN, particularly before locating the heaviest functions.
 
@@ -166,7 +172,7 @@ On Linux, TAU needs to be compiled specifically with the options needed to instr
 
 Once the data is collected, it can be visualized using the `paraprof` tool, which is part of the TAU suite. It provides a graphical interface to explore the profiling data, including function call graphs, time spent in each function, and more. It also supports 3D visualization of the profiling data, which can be useful for understanding the performance characteristics of the application.
 
-In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 CPUs. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it's usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. This is something that I will explore in more detail in @acc-mat-creation. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
+In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 CPUs. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it's usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
 
 #figure(
   image("../resources/imgs/paraprof_3D_visualization.png"),
@@ -187,6 +193,8 @@ While the 2D elastic case was the one we were mostly focused on in the paralleli
 == Sparse Solvers <sparse-solvers>
 
 === MUMPS <mumps-section>
+
+MUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPSMUMPS @x-MUMPS
 
 === cuDSS <cudss-section>
 

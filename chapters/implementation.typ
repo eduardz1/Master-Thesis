@@ -1,3 +1,5 @@
+#import "@preview/physica:0.9.5": *
+
 = Practical Implementation
 
 This is a generic title. Replace it with an actual title that describes the context of the work.
@@ -32,8 +34,209 @@ The Fortran standard defines some constant in the `intrinsic` `iso_fortran_env` 
 
 Ensuring that the precision kinds used are the ones I expect was very important when comparing the performance of different compilers and was key in ensuring that the values being fed to the @GPU were the expected ones, being the @GPU very sensitive to the precision of the data it receives.
 
+== Reducing Matrix Inversions <red-mat-inv>
+
+When looking at the profiles of the benchmarks (see @tau), I noticed that a significant amount of time was spent in LAPACK matrix inversion routines. When solving a linear system $A x = b$, calculating the inverse $A^(-1)$ to solve $x = A^(-1) b$ is always less efficient than using direct methods @x-DontInvertThatMatrix. Even when solving for multiple right-hand sides, it is more efficient to use the LU decomposition of the matrix $A$ and solve the system $L U x = b$ directly. While both LU decomposition and matrix inversion are $O(n^3)$ operations, when analyzing the number of @FLOP:pl required, the latter comes out as three times more expensive than the former @x-WhyNotInvertMatrix @x-WhyLUbetterThanInverse.
+
+Another disadvantage of the matrix inversion approach is that it is less numerically stable when the matrix $A$ is ill-conditioned. #cite(<x-AccuracyAndStability>, form: "prose", supplement: "Section 14.1") discusses the numerical stability in more detail, specifically, they argue that, comparing the best possible residual bound on the backward error, in the case $A^(-1)$ is computed with no rounding errors, of the two methods:
+
+$
+  |b - A x_"inv"| <= gamma_n |A| |A^(-1)| |b|
+$ <backward-error-inverse>
+$
+  |b - A x_"LU"| <= gamma_n |L| |U| |x_"LU"|
+$ <backward-error-lu>
+
+Where $x_"LU"$ is the solution obtained by solving the LU decomposition of $A$ and $x_"inv"$ is the solution obtained by inverting $A$. With the assumption that the decomposition is accurate enough, the terms that dominate @backward-error-inverse are $|A^(-1)| |b|$, which can results in significantly worse backward error when $A$ is ill-conditioned, when compared to the dominant term in @backward-error-lu being $x_"LU"$.
+
+This result can be proven empirically, although it has been argued that for well-conditioned matrices, the difference in precision is lower than one would expect @x-WhyNotInvertMatrix.
+
+=== HDG Matrices
+
+$
+  cases(
+    AA u + CC RR Lambda = 0,
+    BB u + LL RR Lambda = 0,
+  )
+$
+
+=== Stiffness Matrix
+
+Evaluating the complex-valued compliance tensor $S$ meant solving the system $S = V^(-1) C^(-1) V^(-1)$, where the $C$ and $V$ matrices have the following structure, for the 2D and 3D cases:
+
+#set math.mat(column-gap: 1em, delim: "[")
+
+$
+  V_"2D" = mat(
+    1, 0, 0;
+    0, 1, 0;
+    0, 0, 2
+  ) space space space space C_"2D" = mat(
+    lambda + 2 mu, lambda, 0;
+    lambda, lambda + 2 mu, 0;
+    0, 0, mu
+  )
+$
+$
+  V_"3D" = mat(
+    1, 0, 0, 0, 0, 0;
+    0, 1, 0, 0, 0, 0;
+    0, 0, 1, 0, 0, 0;
+    0, 0, 0, 2, 0, 0;
+    0, 0, 0, 0, 2, 0;
+    0, 0, 0, 0, 0, 2
+  )\ C_"3D" = mat(
+    lambda + 2 mu, lambda, lambda, 0, 0, 0;
+    lambda, lambda + 2 mu, lambda, 0, 0, 0;
+    lambda, lambda, lambda + 2 mu, 0, 0, 0;
+    0, 0, 0, mu, 0, 0;
+    0, 0, 0, 0, mu, 0;
+    0, 0, 0, 0, 0, mu
+  )
+$
+
+Given that we know the values already, we can replace the call to the LAPACK inverse routine with an analytical solution of the systems, doing so also means that we can completely avoid the allocation of the $C$ and $V$ matrices.
+
+We can identify both $C$ and $V$ as block diagonal matrices, calculating the inverse of $V$ becomes trivial, so I will focus on $C$.
+
+$
+  C_"2D" = mat(
+    lambda + 2 mu, lambda, 0;
+    lambda, lambda + 2 mu, 0;
+    0, 0, mu
+  )\ C_"3D" = mat(
+    delim: "[",
+    lambda + 2 mu, lambda, lambda, 0, 0, 0;
+    lambda, lambda + 2 mu, lambda, 0, 0, 0;
+    lambda, lambda, lambda + 2 mu, 0, 0, 0;
+    0, 0, 0, mu, 0, 0;
+    0, 0, 0, 0, mu, 0;
+    0, 0, 0, 0, 0, mu
+  )
+$
+
+For the 2D case, we can simply solve the upper left $2 times 2$ block by computing the determinant, while $mu$ just becomes $1 slash mu$.
+
+$
+  C_("2D"_"upper left block")^(-1) = 1 / det mat(lambda + 2 mu, -lambda; -lambda, lambda + 2 mu) = 1 / (4 mu (lambda + mu)) mat(lambda + 2 mu, -lambda; -lambda, lambda + 2 mu)
+$
+
+So our matrix $S$ becomes:
+
+$
+  S = mat((lambda + 2 mu)/(4 mu (lambda + mu)), -lambda/(4 mu (lambda + mu)), 0; -lambda/(4 mu (lambda + mu)), (lambda + 2 mu)/(4 mu (lambda + mu)), 0; 0, 0, 1 / (4 mu))
+$
+
+The 3D case is a bit more complex, but we can still solve it analytically. The upper left $3 times 3$ block can be solved using the _Sherman-Morrison formula_ by rewriting it as:
+
+$
+  C_("3D"_"upper left block") = mat(
+    lambda + 2 mu, lambda, lambda;
+    lambda, lambda + 2 mu, lambda;
+    lambda, lambda, lambda + 2 mu
+  ) = 2 mu I + lambda J
+$
+
+Where $I$ is the identity matrix and $J$ is the matrix with all entries equal to $1$. From the _Sherman-Morrison formula_ we know that:
+
+$
+  (A + u v^TT)^(-1) = A^(-1) - (A^(-1) u v^T A^(-1)) / (1 + v^T A^(-1) u)
+$
+
+Computing the inverse of $A$ is trivial, and if we rewrite $J$ as $e e^TT$, with $u = e$ and $v = lambda e$, we get:
+
+$
+  C_("3D"_"upper left block")^(-1) = mat(
+    (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda));
+    -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda));
+    -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda))
+  )
+$
+
+So our final matrix $S$ becomes:
+
+$
+  S = mat(
+    (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), 0, 0, 0;
+    -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), 0, 0, 0;
+    -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), 0, 0, 0;
+    0, 0, 0, 1 / (4 mu), 0, 0;
+    0, 0, 0, 0, 1 / (4 mu), 0;
+    0, 0, 0, 0, 0, 1 / (4 mu)
+  )
+$
+
 == Replacing the Sparse Solver
 
 A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by replacing the @MUMPS sparse solver (see @mumps-section) with the @GPU native cuDSS library (see @cudss-section). My implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in C++, I had to write a Fortran wrapper around it and interface the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations.
+
+A limitation of cuDSS, at the time of writing this, is being able to operate only on dense right-hand sides. Another limitation is the fact that the only format supported for the sparse matrix are @CSR or dense. In HAWEN, for our test cases, the sparse matrix is stored in @COO format, unordered and with duplicates (which are interpreted as a sum of the values in the duplicates).
+
+As a first preprocessing step, I had to convert the matrices in compatible formats for cuDSS, to sum the duplicate values and sort the indices, I took inspiration from the algorithms used in the SciPy library @x-SciPy and modified them for my needs. While the code is efficient, it is sequential, which will for sure be a bottleneck given the size of the matrices we are dealing with. #cite(<x-EfficientCOOtoCSR>, form: "prose") demonstrate a parallel and efficient algorithm to convert @COO matrices to @CSR. This could be interesting to explore in the future, but it's not necessary to compare just the factorization and solve steps.
+
+To convert the sparse @CSR right-hand sides to dense, I instead used the `cuSparse` library provided by NVIDIA, as we can see in @csr-to-dense (here, `CUDA_ERROR_CHECK` is a macro that handles checks for errors of multiple CUDA libraries by checking the return type of the function at compile time and printing the corresposing error message if the function returns an error code).
+
+#figure(
+  ```cpp
+  template <typename T, typename E, cusparseIndexBase_t index_base>
+  void sparse_to_dense(cusparseHandle_t handle, const int n,
+                       const std::span<T> csr_offset,
+                       const std::span<T> csr_columns,
+                       const std::span<E> csr_values, E **dense_out) {
+    T *csr_offset_d = nullptr;
+    T *csr_columns_d = nullptr;
+    E *csr_values_d = nullptr;
+
+    auto rows = csr_offset.size() - 1;
+    auto nnz = csr_values.size();
+    auto ld = static_cast<size_t>(n) > rows ? n : rows;
+
+    CUDA_ERROR_CHECK(cudaMalloc(&csr_offset_d, csr_offset.size_bytes()));
+    CUDA_ERROR_CHECK(cudaMalloc(&csr_columns_d, csr_columns.size_bytes()));
+    CUDA_ERROR_CHECK(cudaMalloc(&csr_values_d, csr_values.size_bytes()));
+    CUDA_ERROR_CHECK(cudaMemcpy(csr_offset_d, csr_offset.data(),
+                                csr_offset.size_bytes(), cudaMemcpyHostToDevice));
+    CUDA_ERROR_CHECK(cudaMemcpy(csr_columns_d, csr_columns.data(),
+                                csr_columns.size_bytes(),
+                                cudaMemcpyHostToDevice));
+    CUDA_ERROR_CHECK(cudaMemcpy(csr_values_d, csr_values.data(),
+                                csr_values.size_bytes(), cudaMemcpyHostToDevice));
+    CUDA_ERROR_CHECK(cudaMalloc(dense_out, ld * rows * sizeof(E)));
+
+    cusparseSpMatDescr_t A;
+    cusparseDnMatDescr_t B;
+    size_t buffer_size;
+    void *buffer = nullptr;
+
+    const auto index_type = CudaTypeTraits<T>::cusparse_type;
+
+    CUDA_ERROR_CHECK(cusparseCreateCsr(
+        &A, rows, n, nnz, csr_offset_d, csr_columns_d, csr_values_d, index_type,
+        index_type, index_base, solver->data_type));
+
+    CUDA_ERROR_CHECK(cusparseCreateDnMat(&B, rows, n, ld, *dense_out,
+                                         solver->data_type, CUSPARSE_ORDER_ROW));
+
+    CUDA_ERROR_CHECK(cusparseSparseToDense_bufferSize(
+        handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, &buffer_size));
+    CUDA_ERROR_CHECK(cudaMalloc(&buffer, buffer_size));
+
+    CUDA_ERROR_CHECK(cusparseSparseToDense(
+        handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, buffer));
+
+    CUDA_ERROR_CHECK(cusparseDestroySpMat(A));
+    CUDA_ERROR_CHECK(cusparseDestroyDnMat(B));
+    CUDA_ERROR_CHECK(cudaFree(buffer));
+    CUDA_ERROR_CHECK(cudaFree(csr_offset_d));
+    CUDA_ERROR_CHECK(cudaFree(csr_columns_d));
+    CUDA_ERROR_CHECK(cudaFree(csr_values_d));
+  }
+  ```,
+  caption: [C++ code to convert a sparse CSR matrix to a dense matrix using `cuSparse`],
+) <csr-to-dense>
+
+From our benchmarks, the perfomance of cuDSS was way worse than that of @MUMPS (even when excluding the time for the conversion of the matrices), this could be attributed to multiple factors, for starters, the factorization step, which is the most intensive in our application, is not something that can be completely ported to GPU. When analyzing the output logs of the cuDSS library, we see that a lot of work is being scheduled on @CPU:short threads. Unfortunately, being cuDSS a closed source library, we cannot easily look at the implementation details. Another hypothesis is that the @MUMPS solver leverages specific optimizations for @COO sparse matrices and @CSR right-hand sides, this could also explain the fact that cuDSS ends up using approximately 10 times more @GPU memory compared to system memory used by @MUMPS.
+
+As previously mentioned, being cuDSS a closed source library, it's difficult to quickly iterate and find the bottlenecks in the implementation. The implementation has been made independent of the usage of @GPU acceleration in @HAWEN and lives, for now, in a separate branch. In the future, once the library has matured a bit, it would be interesting to revisit it and assess whether it can be useful for our needs.
 
 == Accelerating the Matrix Creation <acc-mat-creation>

@@ -15,13 +15,10 @@
   ),
   abstract: (en: abstract-en, fr: abstract-fr),
   acknowledgements: acknowledgements,
-  bibliography: load-bibliography(read("works.yaml", encoding: none)),
+  bib-func: load-bibliography(read("works.yaml", encoding: none)),
   list-of-figures: true,
   glossary-entries: yaml("glossarium.yaml"),
 )
-
-// TODO: make links nicer and only enable them in the digital version
-#show link: underline
 
 #include "chapters/introduction.typ"
 
@@ -36,4 +33,3 @@
 #include "chapters/results.typ"
 
 #include "chapters/conclusion.typ"
-

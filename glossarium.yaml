@@ -107,3 +107,19 @@ CPU:
   shortplural: CPUs
   long: Central Processing Unit
   description: The primary processor in a given computer.
+
+FLOP:
+  short: FLOP
+  long: Floating Point Operation
+  shortplural: FLOPs
+  longplural: Floating Point Operations
+
+CSR:
+  short: CSR
+  long: Compressed Sparse Row
+  description: A sparse matrix storage format that stores the non-zero elements of a matrix in a one-dimensional array, along with two additional arrays that store the row indices and offsets for each row for the non-zero elements. This format is particularly efficient for matrix-vector multiplication and is widely used in scientific computing.
+
+COO:
+  short: COO
+  long: Coordinate List
+  description: "A sparse matrix storage format that stores the non-zero elements of a matrix in three separate arrays: one for the row indices, one for the column indices, and one for the values of the non-zero elements. This format is particularly useful for constructing sparse matrices incrementally."

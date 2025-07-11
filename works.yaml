@@ -150,3 +150,131 @@ DontInvertThatMatrix:
   parent:
     - type: Blog
       url: "https://www.johndcook.com/blog/"
+
+Gprof:
+  type: Web
+  title: "gprof Profiling Tools on BG/P Systems"
+  date: 2013-12-21
+  url: https://web.archive.org/web/20131221150031/https://www.alcf.anl.gov/user-guides/bgp-gprof-profiling-tools
+
+WhyNotInvertMatrix:
+  type: Article
+  title: "Why Shouldn't I Invert That Matrix?"
+  date: 2020-12-09
+  author: ["Gregory Gundersen"]
+  url: "https://gregorygundersen.com/blog/2020/12/09/matrix-inversion/"
+  parent:
+    - type: Blog
+      url: "https://gregorygundersen.com/blog/"
+
+WhyLUbetterThanInverse:
+  type: Web
+  title: "Why is LU preferred over A^-1 to solve matrix equations?"
+  author: ["eepperly16"]
+  date: 2023-01-11
+  url: "https://math.stackexchange.com/q/3529618"
+  parent:
+    - type: Web
+      title: "Mathematics Stack Exchange"
+
+AccuracyAndStability:
+  type: Book
+  title: "Accuracy and Stability of Numerical Algorithms"
+  date: 2002
+  url: "https://epubs.siam.org/doi/abs/10.1137/1.9780898718027"
+  author: ["Nicholas J. Higham"]
+  edition: "Second"
+  publisher:
+    name: "Society for Industrial and Applied Mathematics"
+  serial-number:
+    doi: "10.1137/1.9780898718027"
+
+SciPy:
+  type: Article
+  title: "SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python"
+  date: 2020
+  url: "https://rdcu.be/b08Wh"
+  serial-number:
+    doi: "10.1038/s41592-019-0686-2"
+  page-range: "261-272"
+  volume: 17
+  author:
+    [
+      "Pauli Virtanen",
+      "Ralf Gommers",
+      "Travis E. Oliphant",
+      "Matt Haberland",
+      "Tyler Reddy",
+      "David Cournapeau",
+      "Evgeni Burovski",
+      "Pearu Peterson",
+      "Warren Weckesser",
+      "Jonathan Bright",
+      "Stéfan J. van der Walt",
+      "Matthew Brett",
+      "Joshua Wilson",
+      "K. Jarrod Millman",
+      "Nikolay Mayorov",
+      "Andrew R. J. Nelson",
+      "Eric Jones",
+      "Robert Kern",
+      "Eric Larson",
+      "C J Carey",
+      ".I lhan Polat",
+      "Yu Feng",
+      "Eric W. Moore",
+      "Jake VanderPlas",
+      "Denis Laxalde",
+      "Josef Perktold",
+      "Robert Cimrman",
+      "Ian Henriksen",
+      "E. A. Quintero",
+      "Charles R. Harris",
+      "Anne M. Archibald",
+      "Antônio H. Ribeiro",
+      "Fabian Pedregosa",
+      "Paul van Mulbregt",
+    ]
+  parent:
+    - type: Periodical
+      title: "Nature Methods"
+
+EfficientCOOtoCSR:
+  type: Proceedings
+  title: "Efficient COO to CSR Conversion for Accelerating Sparse Matrix Processing on FPGA"
+  author:
+    [
+      "Yuta Nagahara",
+      "Jiale Yan",
+      "Kazushi Kawamura",
+      "Masato Motomura",
+      "Thiem Van Chu",
+    ]
+  date: 2024
+  parent:
+    - type: Conference
+      title: "2024 IEEE International Conference on Consumer Electronics (ICCE)"
+  serial-number:
+    doi: "10.1109/ICCE59016.2024.10444348"
+
+MUMPS:
+  type: Article
+  title: "A Fully Asynchronous Multifrontal Solver Using Distributed Dynamic Scheduling"
+  author:
+    [
+      "Patrick R. Amestoy",
+      "Iain S. Duff",
+      "Jean-Yves L'Excellent",
+      "Jacko Koster",
+    ]
+  date: 2001
+  url: "https://doi.org/10.1137/S0895479899358194"
+  serial-number:
+    doi: "10.1137/S0895479899358194"
+  page-range: "15-41"
+  abstract: "In this paper, we analyze the main features and discuss the tuning of the algorithms for the direct solution of sparse linear systems on distributed memory computers developed in the context of a long term European research project. The algorithms use a multifrontal approach and are especially designed to cover a large class of problems. The problems can be symmetric positive definite, general symmetric, or unsymmetric matrices, both possibly rank deficient, and they can be provided by the user in several formats. The algorithms achieve high performance by exploiting parallelism coming from the sparsity in the problem and that available for dense matrices. The algorithms use a dynamic distributed task scheduling technique to accommodate numerical pivoting and to allow the migration of computational tasks to lightly loaded processors. Large computational tasks are divided into subtasks to enhance parallelism. Asynchronous communication is used throughout the solution process to efficiently overlap communication with computation.We illustrate our design choices by experimental results obtained on an SGI Origin 2000 and an IBM SP2 for test matrices provided by industrial partners in the PARASOL project."
+  parent:
+    - type: Periodical
+      title: "SIAM Journal on Matrix Analysis and Applications"
+      volume: 23
+      number: 1
