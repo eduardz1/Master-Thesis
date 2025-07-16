@@ -102,7 +102,7 @@ Discussion lessons learned from the experiments, and new problems that are raise
   )),
 )
 
-#figure(
-  anotinv_diagrams(mesh: "mesh100k", additional_plots: none),
-  caption: "Sped-up of the matrix creation time for the mesh100k mesh when replacing calls to matrix inversion.",
-)
+// #figure(
+//   anotinv_diagrams(mesh: "mesh100k", additional_plots: none),
+//   caption: "Sped-up of the matrix creation time for the mesh100k mesh when replacing calls to matrix inversion.",
+// )

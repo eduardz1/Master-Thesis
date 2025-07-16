@@ -24,7 +24,7 @@ The build system was one of the first problems I tackled, @HAWEN provides two di
 
 Another issue I noticed in @HAWEN was the dependency management. The project depends on a lot of heavy libraries, I added the option to download some of the key ones on-demand. This results in declarative dependency management, which enables us to pin the project to a specific version of a given dependency, something that was not possible before. It also allows us to build the dependencies in-tree and take advantage of link time optimizations across libraries. This also streamlines testing across different compilers, given that modules compiled with different compilers are not cross-compatible in Fortran, each Fortran dependency has to be re-compiled with the same compiler used to compile the main project.
 
-Being my work perfomance focused, I also ensured a correct distinction between the debug and release builds, and encouraged the usage of one over the other through the definition of CMake presets and a development guide in the documentation.
+Being my work performance focused, I also ensured a correct distinction between the debug and release builds, and encouraged the usage of one over the other through the definition of CMake presets and a development guide in the documentation.
 
 === Unit Testing
 

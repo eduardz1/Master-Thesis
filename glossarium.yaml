@@ -37,6 +37,11 @@ HPC:
   short: HPC
   long: High-Performance Computing
 
+BLAS:
+  short: BLAS
+  long: Basic Lienar Algebra Subprograms
+  description: A specification for a set of low-level routines for common linear algebra operations such as matrix multiplication, dot products, linear combinations, etc.
+
 SPMD:
   short: SPMD
   long: Single Program Multiple Data

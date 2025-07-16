@@ -9,7 +9,7 @@ Describe in abstract (theoretical) terms how the proposed approach can be implem
 // Maybe here I can talk about tools and technologies?
 == HAWEN <hawen-chapter>
 
-The @HAWEN software is a Fortran-based tool designed to simulate the propagation of waves in a given medium (what we will call from now on the _forward problem_) and reconstruct the physical properties of a non-directly accessible medium (the _inverse problem_) @x-HAWEN. It is a general purpose tool which can be used in fields such as medical imaging, geophysics, helioseismology, and more.
+The @HAWEN software is a Fortran-based tool designed to simulate the propagation of waves in a given medium (what we will call from now on the _forward problem_) and reconstruct the physical properties of a non-directly accessible medium (the _inverse problem_) @x-HAWEN. It is a general purpose tool which can be used in fields such as medical imaging, geophysics, helio-seismology, and more.
 
 The software achieves so by solving the wave equation in the frequency domain.
 
@@ -73,7 +73,7 @@ $
 
 @HAWEN is designed specifically with large scale problems in mind, leveraging a combination of @MPI and OpenMP, it is currently deployed on supercomputers.
 
-A characteristic of @HAWEN is the usage of the @HDG method for the discretization of the wave equation. This helps reduce the computational cost by producing smaller linear systems compared to other methods, such as the @FEM or @SEM. Compared to traditial @DG methods, @HDG reduces significantly the number of degrees of freedom, which allows for a substantial reduction in the computational cost and memory usage @x-HDG.
+A characteristic of @HAWEN is the usage of the @HDG method for the discretization of the wave equation. This helps reduce the computational cost by producing smaller linear systems compared to other methods, such as the @FEM or @SEM. Compared to traditional @DG methods, @HDG reduces significantly the number of degrees of freedom, which allows for a substantial reduction in the computational cost and memory usage @x-HDG.
 
 We can identify three computationally intensive steps in the @HAWEN pipeline:
 
