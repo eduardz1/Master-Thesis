@@ -278,3 +278,12 @@ MUMPS:
       title: "SIAM Journal on Matrix Analysis and Applications"
       volume: 23
       number: 1
+
+LLVMFortran202X:
+  type: Article
+  author: ["Peter Klausler"]
+  title: "A first take on Fortran 202X features for LLVM Flang"
+  parent:
+    - type: Blog
+      url: "https://flang.llvm.org"
+  url: "https://flang.llvm.org/docs/F202X.html"

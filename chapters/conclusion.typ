@@ -6,6 +6,11 @@ Give a summary of the problem, approach, implementation, and evaluation. Discuss
 
 Explain how the project satisfies the evaluation criteria for a Masters Research project.
 
+#let flo(term, color: red) = {
+  text(color, box[FLO: #term])
+}
+
+#flo[test comment]
 
 == Future Works
 

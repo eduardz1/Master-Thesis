@@ -123,3 +123,12 @@ COO:
   short: COO
   long: Coordinate List
   description: "A sparse matrix storage format that stores the non-zero elements of a matrix in three separate arrays: one for the row indices, one for the column indices, and one for the values of the non-zero elements. This format is particularly useful for constructing sparse matrices incrementally."
+
+SIMD:
+  short: SIMD
+  long: Single Instruction, Multiple Data
+  description: A parallel computing architecture that allows a single instruction to be applied to multiple data points simultaneously. This is particularly useful for vectorized operations, where the same operation is applied to multiple elements of a vector or array.
+
+GCC:
+  short: GCC
+  long: GNU Compiler Collection

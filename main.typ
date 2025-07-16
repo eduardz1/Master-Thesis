@@ -1,4 +1,4 @@
-#import "@local/ensimag-nificent-thesis:0.1.0": template, load-bibliography
+#import "@local/ensimag-nificent-thesis:0.1.0": load-bibliography, template
 #import "abstract.typ": abstract-en, abstract-fr
 #import "acknowledgements.typ": acknowledgements
 

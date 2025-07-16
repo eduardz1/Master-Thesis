@@ -83,7 +83,7 @@ We can identify three computationally intensive steps in the @HAWEN pipeline:
 
 - The *save* step, where the results of the simulation are saved to disk.
 
-My work focuses mostly on the first two steps. For the first step, I will focus on offloading part of the matrix creation to the @GPU. For the second step, I will explore a new direct sparse solver by NVIDIA, cuDSS (see @cudss-section for more details), and explore the new experimental @GPU support in @MUMPS.
+My work focuses mostly on the first two steps. For the first step, the focus will be on offloading part of the matrix creation to the @GPU. For the second step, it will be about exploring a new direct sparse solver by NVIDIA, cuDSS (see @cudss-section for more details), and explore the new experimental @GPU support in @MUMPS.
 // talk about the structure of the code, the fact that he doesn't care about time but about the different frequencies, talk about fourier transforms. Draw a pipeline of the code with fletcher and highlight the section of the code we are focusing on.
 
 === Fortran
@@ -107,7 +107,7 @@ Inspired by the work of #cite(<x-DCvsDirectives>, form: "prose") and aware of th
   grid(
     columns: 1,
     row-gutter: 1em,
-    ```f
+    ```f90
     !$omp parallel do collapse(2) default(shared)
     !$acc parallel loop collapse(2) default(present)
     do i=1, n
@@ -151,7 +151,7 @@ The CUDA Toolkit provides compilers, libraries and tools for developing applicat
 
 Before starting writing code, it was important to understand the performance bottlenecks of the @HAWEN codebase. Some logging was already present, so we had an idea on where the time was spent, but the granularity of the logging was not sufficient to pinpoint the exact functions that were taking the most time. For this reason I started to explore different profiling tools for Fortran, some of the ones that I tried or where considered are:
 // TODO: add link to a figure showing time spent in I/O
-- `gprof`: a profiling tool that is part of the GNU Compiler Collection (GCC). Born as an evolution to the `prof` utility, it provides a simple, if limited, way of profiling programs compiled with the GCC compilers (profiling is enabled with the `-pg` flag). Unlike other profilers, it is not capable of measuring time spent in kernel mode (syscalls, I/O, etc.) @x-Gprof, which is a limitation which would prevent us from identifying some of the bottlenecks in the @HAWEN codebase. It's simplicity makes it a good choice for quick benchmarks. Through the usage of the `GMON_OUT_PREFIX` environment variable, and the `-s` option, it is also possible to profile MPI programs effectively and sum the results across all processes.
+- `gprof`: a profiling tool that is part of the @GCC:long. Born as an evolution to the `prof` utility, it provides a simple, if limited, way of profiling programs compiled with the @GCC compilers (profiling is enabled with the `-pg` flag). Unlike other profilers, it is not capable of measuring time spent in kernel mode (syscalls, I/O, etc.) @x-Gprof, which is a limitation which would prevent us from identifying some of the bottlenecks in the @HAWEN codebase. It's simplicity makes it a good choice for quick benchmarks. Through the usage of the `GMON_OUT_PREFIX` environment variable, and the `-s` option, it is also possible to profile MPI programs effectively and sum the results across all processes.
 
 - #link("https://github.com/RRZE-HPC/likwid")[`likwid`]: a powerful and easy to use profiling toolsuite. Unfortunately for Fortran, manual instrumentation is required, which is not ideal for a large codebase like @HAWEN, particularly before locating the heaviest functions.
 
