@@ -11,7 +11,7 @@ Discussion lessons learned from the experiments, and new problems that are raise
 #let anotinv_diagrams(
   mesh: "mesh100k",
   additional_plots: none,
-  data: json("../resources/benches/2d_elastic_marmousi_new.json"),
+  data: json("../resources/benches/2d_elastic_marmousi.json"),
 ) = for (
   mesh_name,
   mesh_data,
@@ -21,8 +21,9 @@ Discussion lessons learned from the experiments, and new problems that are raise
 
   if mesh_name == mesh {
     lq.diagram(
+      ylabel: [seconds],
       width: 14cm,
-      height: 7cm,
+      height: 10cm,
       legend: lq.legend(position: top + left, ..for (
         branch_idx,
         branch_name,
@@ -51,7 +52,7 @@ Discussion lessons learned from the experiments, and new problems that are raise
                 .at(p_order)
                 .successful_runs
                 .map(run => {
-                  run.matrix_creation_time_seconds
+                  run.elapsed_time_seconds
                 }),
             ),
           )
@@ -64,7 +65,7 @@ Discussion lessons learned from the experiments, and new problems that are raise
 
 #let subplots(
   mesh: "mesh100k",
-  data: json("../resources/benches/2d_elastic_marmousi_new.json"),
+  data: json("../resources/benches/2d_elastic_marmousi.json"),
 ) = (
   lq.rect(5.6, 50, width: 0.8, height: 60, stroke: 0.5pt),
   lq.place(45%, 40%, lq.diagram(
@@ -85,7 +86,7 @@ Discussion lessons learned from the experiments, and new problems that are raise
         .at("anotinv")
         .at("p9")
         .successful_runs
-        .map(run => run.matrix_creation_time_seconds),
+        .map(run => run.elapsed_time_seconds),
     ),
     lq.hboxplot(
       stroke: lq.color.map.petroff10.at(1),
@@ -97,12 +98,12 @@ Discussion lessons learned from the experiments, and new problems that are raise
         .at("master")
         .at("p9")
         .successful_runs
-        .map(run => run.matrix_creation_time_seconds),
+        .map(run => run.elapsed_time_seconds),
     ),
   )),
 )
 
-// #figure(
-//   anotinv_diagrams(mesh: "mesh100k", additional_plots: none),
-//   caption: "Sped-up of the matrix creation time for the mesh100k mesh when replacing calls to matrix inversion.",
-// )
+#figure(
+  anotinv_diagrams(mesh: "mesh100k", additional_plots: none),
+  caption: "Sped-up of the matrix creation time for the mesh100k mesh when replacing calls to matrix inversion.",
+)

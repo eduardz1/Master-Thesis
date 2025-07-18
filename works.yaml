@@ -22,6 +22,27 @@ DCvsDirectives:
     doi: 10.48550/arXiv.2110.10151
     arxiv: "2110.10151"
 
+OpenMP:
+  type: Web
+  url: https://www.openmp.org/about/openmp-faq/#OMPAPI.General
+
+OpenACCControversy:
+  type: Article
+  url: https://www.phoronix.com/news/MTUyMjA
+  author: ["Michael Larabel"]
+  date: 2013-11-21
+  parent:
+    - type: Web
+      url: https://www.phoronix.com/
+
+OpenACC:
+  type: Web
+  url: https://www.openacc.org/
+
+MPITutorial:
+  type: Web
+  url: https://hpc.nmsu.edu/discovery/mpi/introduction/
+
 MLIR:
   type: Proceedings
   title: "MLIR: Scaling Compiler Infrastructure for Domain Specific Computation"
@@ -197,7 +218,6 @@ SciPy:
   serial-number:
     doi: "10.1038/s41592-019-0686-2"
   page-range: "261-272"
-  volume: 17
   author:
     [
       "Pauli Virtanen",
@@ -238,6 +258,21 @@ SciPy:
   parent:
     - type: Periodical
       title: "Nature Methods"
+      volume: 17
+ 
+BaryWalk:
+  type: Article
+  title: "Efficient implementation of characteristic-based schemes on unstructured triangular grids"
+  date: 2021-12-18
+  author: ["S. Cacace", "R. Ferretti"]
+  url: "https://doi.org/10.1007/s40314-021-01716-y"
+  abstract: "Using characteristics to treat advection terms in time-dependent PDEs leads to a class of schemes, e.g., semi-Lagrangian and Lagrange–Galerkin schemes, which preserve stability under large Courant numbers, and may therefore be appealing in many practical situations. Unfortunately, the need of locating the feet of characteristics may cause a serious drop of efficiency in the case of unstructured space grids, and thus prevent the use of large time-step schemes on complex geometries. In this paper, we perform an in-depth analysis of the main recipes available for characteristic location, and propose a technique to improve the efficiency of this phase, using additional information related to the advecting vector field. This results in a clear improvement of execution times in the unstructured case, thus extending the range of applicability of large time-step schemes."
+  serial-number:
+    doi: "10.1007/s40314-021-01716-y"
+  parent:
+    - type: Periodical
+      title: "Computational and Applied Mathematics"
+      volume: 41
 
 EfficientCOOtoCSR:
   type: Proceedings

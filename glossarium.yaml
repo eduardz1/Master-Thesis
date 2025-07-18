@@ -26,6 +26,10 @@ FEM:
   plural: FEMs
   longplural: Finite Element Methods
 
+API:
+  short: API
+  long: Application Programming Interface
+
 SEM:
   short: SEM
   long: Spectral Element Method

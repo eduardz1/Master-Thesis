@@ -86,7 +86,74 @@ We can identify three computationally intensive steps in the @HAWEN pipeline:
 My work focuses mostly on the first two steps. For the first step, the focus will be on offloading part of the matrix creation to the @GPU. For the second step, it will be about exploring a new direct sparse solver by NVIDIA, cuDSS (see @cudss-section for more details), and explore the new experimental @GPU support in @MUMPS.
 // talk about the structure of the code, the fact that he doesn't care about time but about the different frequencies, talk about fourier transforms. Draw a pipeline of the code with fletcher and highlight the section of the code we are focusing on.
 
-=== Fortran
+== Clusters used in this Work
+
+=== Plafrim
+
+=== Cali
+
+== Parallelism Tools
+
+=== CUDA
+
+The CUDA Toolkit provides compilers, libraries and tools for developing applications that run on NVIDIA @GPU:short:pl. While writing cross-platform code is one of great interest to the team where I am working in, focusing on NVIDIA @GPU:short:pl was a good starting point.
+
+=== MPI
+
+The @MPI:long (@MPI:short) is a specification for parallel computation in distributed-memory systems @x-MPITutorial. Various implementation of the standard exists for Fortran, C and C++ and programmers can interact with it as a library. It is fundamental to enable @CPU:short:pl to communicate across nodes in a cluster but also to communicate between each other in situations where a single cluster contains multiple @CPU:short:pl. One of the most commonly used implementations due to its open nature is #link("https://www.open-mpi.org/")[OpenMPI].
+
+Compared to OpenMP, it supports distributed-memory parallelism. Where OpenMP uses threads for splitting the work, MPI spawns processes instead. Each thread has its own memory space and executes interdependently and the overhead of process creation, although greater than that of thread creation, occurs only once at initialization. In @example-mpi we can see how a simple MPI program is structured. After the initialization, the subsequent code will be executed independently on each MPI process, communication between processes is then carried with operations such as reduction (`MPI_Reduce`) or broadcasting of messages.
+
+#figure(
+  kind: raw,
+  grid(
+    row-gutter: 1em,
+    columns: 1,
+    ```f90
+    program hello
+        use mpi_f08
+        implicit none
+
+        type(MPI_Comm) :: comm_world
+        integer :: process_rank, size_of_cluster
+
+        call MPI_Init()
+
+        comm_world = MPI_COMM_WORLD
+        call MPI_Comm_size(comm_world, size_of_cluster)
+        call MPI_Comm_rank(comm_world, process_rank)
+
+        print *, 'Hello from process: ', process_rank, 'of ', size_of_cluster
+
+        call MPI_Finalize()
+    end program hello
+    ```,
+    ```shell
+    ➜  ~ mpifort hello.f90 && mpirun -np 4 a.out
+     Hello from process:            0 of            4
+     Hello from process:            2 of            4
+     Hello from process:            1 of            4
+     Hello from process:            3 of            4
+    ```,
+  ),
+  caption: [Example of MPI program and its output],
+) <example-mpi>
+
+=== OpenMP <openmp>
+
+OpenMP is a set of specification for compiler directives, library routines and environment variables that can be used to specify high-level parallelism in Fortran, C and C++ programs @x-OpenMP. It enables shared-memory parallelism in languages even with languages where the standard doesn't define any parallel construct (such as Fortran). It is used extensively in @HAWEN to take advantage of modern multi-core processors. In @directives-vs-dc we can see an example of how OpenMP can be used. We notice that in Fortran OpenMP directives are declared as comments (where in C++ you would use `#pragma` instead, in this example the two loops are collapsed to ensure maximum parallelism, the loop variables are implicitly private, meaning that each thread gets its own copy, while the others are implicitly shared, meaning that one copy is shared across all threads.
+
+Later revisions of the standard have also enabled offloading of parallel directives to @GPU:short:pl, although generally compiler support for this feature has to be enabled explicitly when building the compiler and, talking about @GCC:short, it's not a flag that is enabled by default in the packages provided by most Linux distributions.
+
+=== OpenACC <openacc>
+
+Similarly to OpenMP, OpenACC provides an @API for parallel computing through the use of compiler directives. In contrast to OpenMP, it has been designed with accelerators in mind from the start, being co-developed by Cray, CAPS, NVIDIA and PGI, and is therefore usually better suited for development in heterogeneous @GPU:short and @GPU:short systems @x-OpenACC.
+
+The influence of NVIDIA on its standardization and their stance on open sourcing their software and drivers limited the diffusion of the standard when compared to OpenMP @x-OpenACCControversy.
+
+Currently, @GCC:short supports OpenACC for device offloading but the performance is not up to par with nvfortran's implementation @x-DCvsDirectives.
+
+== Fortran
 
 Fortran remains to this a very popular language for scientific computing, especially in the field of numerical simulations. It has become a staple in @HPC due to its performance and the extensive support for numerical libraries and tools. @x-ModernFortran
 
@@ -94,13 +161,15 @@ The flavor of Fortran used in @HAWEN is free-form Fortran, a successor to the ol
 
 Compared to other languages such as C++, the standard are not fully supported in their entirety by all compilers so it doesn't make sense to talk about having as a target a specific revision. There will be therefore particular care given to the support of each feature by the different compilers.
 
-==== The `do concurrent` construct
+=== The `do concurrent` construct
 
 An extension of the `do` construct, known in other languages as a `for` loop, the `do concurrent` construct allows for the parallel execution of iterations of the loop.
 
 As #cite(<x-ModernFortran>, form: "prose", supplement: "p.~138") and #cite(<x-FlangDC>, form: "prose") mention, the `do concurrent` construct only guarantees that each iteration of the loop can be executed independently, in arbitrary order. While we may expect that this implies parallel execution, this is not guaranteed by the standard and there are even instances where a standard-conforming `do concurrent` loop cannot be safely parallelized by the compiler. The Fortran 2018 standard introduces locality specifiers for the loop which mitigate but don't eliminate this problem. Furthermore, one of the most popular open source Fortran compilers, GFortran (@gfortran), only added support for locality specifiers in its latest release, `15.1`.
 
 Inspired by the work of #cite(<x-DCvsDirectives>, form: "prose") and aware of these limitations, I have decided to focus on accelerating sections of the code on @GPU using mostly standard Fortran constructs. In their work, they found that the `do concurrent` construct performs on par, if not better, than equivalent OpenMP (see @openmp) or OpenACC (see @openacc) directives with the NVIDIA compiler and often performs on par with hand written CUDA kernels.
+
+In the NVIDIA compiler, `do concurrent`, when offloaded on @GPU:short, is translated implicitly to OpenACC.
 
 #figure(
   kind: raw,
@@ -126,26 +195,16 @@ Inspired by the work of #cite(<x-DCvsDirectives>, form: "prose") and aware of th
     ```,
   ),
   caption: [Comparison of the `do concurrent` construct with OpenMP and OpenACC directives.],
-)
+) <directives-vs-dc>
 
-==== Coarrays
+=== Coarrays
 
 // TODO: if possible, benchmark the differnce, pherhaps the perfomance has improved in the years
 
 In @HPC a common paradigm is @SPMD, where computation can be distributed across multiple processes, often residing in multiple nodes. Although other standards exist, such as @NCCL, the de facto standard for distributed memory parallelism is @MPI.
 
-Fortran Coarrays where introduced at first as extension to the Fortran standard in the Cray compiler and later standardized in Fortran 2008. They provide a native mean for @SPMD programming in Fortran. #cite(<x-MPIvsCoarrays>, form: "prose") compare the performance of Coarrays with @MPI and found consistent and significant lower performance compared to @MPI. For this reason, I have decided not to focus on Coarrays in my work.
+Fortran Coarrays where introduced at first as extension to the Fortran standard in the Cray compiler and later standardized in Fortran 2008. They provide a native mean for @SPMD programming in Fortran. #cite(<x-MPIvsCoarrays>, form: "prose") compare the performance of Coarrays with @MPI and found consistent and significant lower performance compared to @MPI. For this reason, I have decided not to focus on Coarrays in this work.
 
-== Parallelism Tools
-
-=== CUDA
-
-The CUDA Toolkit provides compilers, libraries and tools for developing applications that run on NVIDIA @GPU:short:pl. While writing cross-platform code is one of great interest to the team where I am working in, focusing on NVIDIA @GPU:short:pl was a good starting point.
-
-=== MPI
-==== Plafrim
-=== OpenMP <openmp>
-=== OpenACC <openacc>
 
 == Profiling
 
