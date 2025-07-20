@@ -22,6 +22,13 @@ DCvsDirectives:
     doi: 10.48550/arXiv.2110.10151
     arxiv: "2110.10151"
 
+METIS:
+  type: Report
+  author: ["George Karypis", "Vipin Kumar"]
+  date: 1997
+  title: "METIS: A Software Package for Partitioning Unstructured Graphs, Partitioning Meshes, and Computing Fill-Reducing Orderings of Sparse Matrices."
+  url: "https://hdl.handle.net/11299/215346."
+
 OpenMP:
   type: Web
   url: https://www.openmp.org/about/openmp-faq/#OMPAPI.General

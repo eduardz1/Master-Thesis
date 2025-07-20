@@ -1,4 +1,5 @@
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
+#import "@preview/cetz:0.4.0"
 
 = Theoretical Foundations for the Solution
 
@@ -9,13 +10,7 @@ Describe in abstract (theoretical) terms how the proposed approach can be implem
 // Maybe here I can talk about tools and technologies?
 == HAWEN <hawen-chapter>
 
-The @HAWEN software is a Fortran-based tool designed to simulate the propagation of waves in a given medium (what we will call from now on the _forward problem_) and reconstruct the physical properties of a non-directly accessible medium (the _inverse problem_) @x-HAWEN. It is a general purpose tool which can be used in fields such as medical imaging, geophysics, helio-seismology, and more.
-
-The software achieves so by solving the wave equation in the frequency domain.
-
-$
-  - gradient 1/rho gradient u - omega^2/kappa u = f
-$
+The @HAWEN software is a Fortran-based tool designed to simulate the propagation of waves in a given medium (what we will call from now on the _forward problem_) and reconstruct the physical properties of a non-directly accessible medium (the _inverse problem_) @x-HAWEN. It is a general purpose tool which can be used in fields such as medical imaging, geophysics, helio-seismology, and more. The software achieves so by solving the wave equation in the frequency domain.
 
 #figure(
   diagram(
@@ -73,11 +68,11 @@ $
 
 @HAWEN is designed specifically with large scale problems in mind, leveraging a combination of @MPI and OpenMP, it is currently deployed on supercomputers.
 
-A characteristic of @HAWEN is the usage of the @HDG method for the discretization of the wave equation. This helps reduce the computational cost by producing smaller linear systems compared to other methods, such as the @FEM or @SEM. Compared to traditional @DG methods, @HDG reduces significantly the number of degrees of freedom, which allows for a substantial reduction in the computational cost and memory usage @x-HDG.
+A characteristic of @HAWEN is the usage of the @HDG method for the discretization of the wave equation (see @hdg-section for more informations). This helps reduce the computational cost by producing smaller linear systems compared to other methods, such as the @FEM or @SEM. Compared to traditional @DG methods, @HDG reduces significantly the number of globally coupled degrees of freedom, which allows for a substantial reduction in the computational cost and memory usage @x-HDG.
 
 We can identify three computationally intensive steps in the @HAWEN pipeline:
 
-- The *discretization* step, where the global matrix is built through @HDG from each cell of the mesh.
+- The *discretization* step, where the global matrix is built with the @HDG method from each cell of the mesh.
 
 - The *solve* step, where the linear system is solved using a sparse solver, @MUMPS (see @mumps-section for more details).
 
@@ -86,7 +81,82 @@ We can identify three computationally intensive steps in the @HAWEN pipeline:
 My work focuses mostly on the first two steps. For the first step, the focus will be on offloading part of the matrix creation to the @GPU. For the second step, it will be about exploring a new direct sparse solver by NVIDIA, cuDSS (see @cudss-section for more details), and explore the new experimental @GPU support in @MUMPS.
 // talk about the structure of the code, the fact that he doesn't care about time but about the different frequencies, talk about fourier transforms. Draw a pipeline of the code with fletcher and highlight the section of the code we are focusing on.
 
-== Clusters used in this Work
+== Hybridizable Discontinuous Galerkin Methods Applied to the Acoustic Wave Problem <hdg-section>
+
+// To describe the medium trough which we want to solve the wave equation in @HAWEN and find the unknowns $u$, for the forward problem, or $rho$ and $kappa$, for the inverse problem, we use 1D, 2D or 3D meshes. Solving the system on the entirety of the mesh at once would be unfeasible so the mesh is partitioned using the METIS partitioner @x-METIS. Partitioning the mesh divides the domain into smaller equation and allows for the solution to each and every one of them to be computed in parallel.
+
+// Once partitioned, one common way to solve the differential equations would be the @FEM:long. A problem of @FEM, is that the solution of each system in the mesh is coupled to that of the adjacent system in the mesh, as can be seen in @fem-dg-hdg. A first step is using 
+
+To describe the medium trough which we want to solve the wave equation in @HAWEN and find the unknowns $u$, for the forward problem, or $rho$ and $kappa$, for the inverse problem, we use 1D, 2D or 3D meshes. Common ways to solve @PDE:pl include @FDM:pl, a class of numerical methods for solving differential equations, equations of the form $f'(x) approx (f(x + d x) - f(x - d x)) / (d x)$, by approximating derivatives trough finite differences and Galerkin Methods, which instead approximate the space of the solution. This last approach is particularly useful with large meshes because it allows for greater parallelization in the computation of the @PDE.
+
+To achieve this partitioning, @HAWEN currently employ a partitioner called METIS @x-METIS, which splits the mesh in triangles leading the solution to each triangle being defined by a smaller equation.
+
+#figure(
+  cetz.canvas(length: 2cm, {
+  import cetz.draw: *
+
+  line((0, 0), (1, 0), (0, 1), (0, 0))
+  line((0, 1), (1, 1), (1, 0))
+  circle((0, 0), radius: .05, fill: blue)
+  circle((1, 0), radius: .05, fill: blue)
+  circle((0, 1), radius: .05, fill: blue)
+  circle((1, 1), radius: .05, fill: blue)
+  // content((0, -.2), $alpha_1$)
+  // content((1, -.2), $alpha_2$)
+  // content((0, 1.2), $alpha_3$)
+  // content((1, 1.2), $alpha_4$)
+  content((0.5, -0.5), [FEM])
+
+  line((2, -.05), (3, -.05), (2, .95), (2, -.05))
+  line((3.1, 0.05), (3.1, 1.05), (2.1, 1.05), (3.1, 0.05))
+  circle((2, -.05), radius: .05, fill: blue)
+  circle((3, -.05), radius: .05, fill: blue)
+  circle((2, .95), radius: .05, fill: blue)
+  circle((3.1, 1.05), radius: .05, fill: blue)
+  circle((2.1, 1.05), radius: .05, fill: blue)
+  circle((3.1, 0.05), radius: .05, fill: blue)
+  // content((2, -.2), $alpha_1$)
+  // content((3, -.2), $alpha_2$)
+  // content((1.8, 0.95), $alpha_3$)
+  // content((3.3, 0.05), $alpha_4$)
+  // content((3.1, 1.25), $alpha_5$)
+  // content((2.15, 1.25), $alpha_6$)
+  content((2.5, -0.5), [DG])
+
+  line((4, -.1), (5, -.1), (4, .9), (4, -.1))
+  line((5.2, 0.1), (5.2, 1.1), (4.2, 1.1), (5.2, 0.1))
+  line((4, -.25), (5, -.25), stroke: red)
+  line((3.85, -.1), (3.85, .9), stroke: red)
+  line((4.1, 1), (5.1, 0), stroke: red)
+  line((4.2, 1.25), (5.2, 1.25), stroke: red)
+  line((5.35, 0.1), (5.35, 1.1), stroke: red)
+  circle((4, -.1), radius: .05, fill: blue)
+  circle((5, -.1), radius: .05, fill: blue)
+  circle((4, .9), radius: .05, fill: blue)
+  circle((5.2, 1.1), radius: .05, fill: blue)
+  circle((5.2, .1), radius: .05, fill: blue)
+  circle((4.2, 1.1), radius: .05, fill: blue)
+  circle((4, -.25), radius: .05, fill: red)
+  circle((5, -.25), radius: .05, fill: red)
+  circle((3.85, -.1), radius: .05, fill: red)
+  circle((3.85, .9), radius: .05, fill: red)
+  circle((4.1, 1), radius: .05, fill: red)
+  circle((5.1, 0), radius: .05, fill: red)
+  circle((4.2, 1.25), radius: .05, fill: red)
+  circle((5.2, 1.25), radius: .05, fill: red)
+  circle((5.35, 0.1), radius: .05, fill: red)
+  circle((5.35, 1.1), radius: .05, fill: red)
+  content((4.5, -0.5), [HDG])
+}), caption: [Comparison of degrees of freedom in a mesh with the FEM method, DG and HDG using the Lagrange basis function of order 1 for interpolation]) <fem-dg-hdg>
+
+To solve the differential equation and find the solution to the wave equation, various methods can be used. One of the more popular ones would be the @FEM:long. 
+$
+  - gradient 1/rho gradient u - omega^2/kappa u = f
+$
+
+where $u$ is the pressure
+
+== Clusters Used in this Work
 
 === Plafrim
 
@@ -201,7 +271,7 @@ In the NVIDIA compiler, `do concurrent`, when offloaded on @GPU:short, is transl
 
 // TODO: if possible, benchmark the differnce, pherhaps the perfomance has improved in the years
 
-In @HPC a common paradigm is @SPMD, where computation can be distributed across multiple processes, often residing in multiple nodes. Although other standards exist, such as @NCCL, the de facto standard for distributed memory parallelism is @MPI.
+In @HPC a common paradigm is @SPMD, where computation can be distributed across multiple processes, often residing in multiple nodes. Although other standards exist, such as @NCCL, the _de facto_ standard for distributed memory parallelism is @MPI.
 
 Fortran Coarrays where introduced at first as extension to the Fortran standard in the Cray compiler and later standardized in Fortran 2008. They provide a native mean for @SPMD programming in Fortran. #cite(<x-MPIvsCoarrays>, form: "prose") compare the performance of Coarrays with @MPI and found consistent and significant lower performance compared to @MPI. For this reason, I have decided not to focus on Coarrays in this work.
 
@@ -214,7 +284,7 @@ Before starting writing code, it was important to understand the performance bot
 
 - #link("https://github.com/RRZE-HPC/likwid")[`likwid`]: a powerful and easy to use profiling toolsuite. Unfortunately for Fortran, manual instrumentation is required, which is not ideal for a large codebase like @HAWEN, particularly before locating the heaviest functions.
 
-- #link("https://www.cs.uoregon.edu/research/tau/home.php")[TAU Perfomance System] (see @tau): a portable profiling and tracing toolkit for performance analysis of parallel applications. It is a very powerful tool, which can be used to automatically instrument the code and provide detailed performance analysis.
+- #link("https://www.cs.uoregon.edu/research/tau/home.php")[TAU Performance System] (see @tau): a portable profiling and tracing toolkit for performance analysis of parallel applications. It is a very powerful tool, which can be used to automatically instrument the code and provide detailed performance analysis.
 
 - #link("https://developer.nvidia.com/nsight-systems")[NVIDIA Nsight Systems]: a performance analysis tool for applications running on NVIDIA @GPU:short:pl. It was particularly useful after I started to offload some of the code to the @GPU.
 
@@ -231,7 +301,7 @@ On Linux, TAU needs to be compiled specifically with the options needed to instr
 
 Once the data is collected, it can be visualized using the `paraprof` tool, which is part of the TAU suite. It provides a graphical interface to explore the profiling data, including function call graphs, time spent in each function, and more. It also supports 3D visualization of the profiling data, which can be useful for understanding the performance characteristics of the application.
 
-In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 CPUs. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it's usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
+In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 @CPU:short:pl. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it's usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
 
 #figure(
   image("../resources/imgs/paraprof_3D_visualization.png"),
