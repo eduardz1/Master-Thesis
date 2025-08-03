@@ -19,6 +19,20 @@ MUMPS:
   short: MUMPS
   long: MUltifrontal Massively Parallel sparse direct Solver
 
+LLM:
+  short: LLM
+  long: Large Language Model
+  shortplural: LLMs
+  longplural: Large Language Models
+
+DOF:
+  short: DOF
+  long: Degrees of Freedom
+
+GUI:
+  short: GUI
+  long: Graphical User Interface
+
 PDE:
   short: PDE
   shortplural: PDEs
@@ -29,7 +43,7 @@ FDM:
   short: FDM
   long: Finite Difference Method
   shortplural: FDMs
-  longplural: Finite DIfference Methods
+  longplural: Finite Difference Methods
   description: A class of numerical methods for solving differential equations by approximating derivatives trough finite differences. 
 
 FEM:
@@ -38,6 +52,11 @@ FEM:
   description: A popular numerical technique for solving differential equations.
   plural: FEMs
   longplural: Finite Element Methods
+
+PREM:
+  short: PREM
+  long: Preliminary Reference Earth Model
+  description: The Preliminary Reference Earth Model, Dziewonski and Anderson (1981), is an average Earth model that incorporates anelastic dispersion and anisotropy and therefore it is frequency-dependent and transversely isotropic for the upper mantle.
 
 API:
   short: API

@@ -17,6 +17,8 @@
   acknowledgements: acknowledgements,
   bib-func: load-bibliography(read("works.yaml", encoding: none)),
   list-of-figures: true,
+  list-of-listings: true,
+  // list-of-tables: true,
   glossary-entries: yaml("glossarium.yaml"),
 )
 

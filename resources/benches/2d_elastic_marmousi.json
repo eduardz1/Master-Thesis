@@ -1,109 +1,109 @@
 {
   "mesh100k": {
-    "anotinv": {
+    "Remove inversions": {
       "p3": {
         "mesh_size": "100k",
         "polynomial_order": "3",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 13.01,
-            "memory_usage_gb": 4.2962799072265625,
-            "memory_usage_kb": 4504976,
+            "elapsed_time_seconds": 19.78,
+            "memory_usage_gb": 4.284099578857422,
+            "memory_usage_kb": 4492204,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 2.348,
-            "field_distribution_time_seconds": 2.087
+            "matrix_creation_time_seconds": 2.544,
+            "field_distribution_time_seconds": 1.85
           },
           {
-            "elapsed_time_seconds": 11.52,
-            "memory_usage_gb": 4.251312255859375,
-            "memory_usage_kb": 4457824,
+            "elapsed_time_seconds": 10.91,
+            "memory_usage_gb": 4.184383392333984,
+            "memory_usage_kb": 4387644,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 2.279,
-            "field_distribution_time_seconds": 1.926
+            "matrix_creation_time_seconds": 2.326,
+            "field_distribution_time_seconds": 1.818
           },
           {
-            "elapsed_time_seconds": 11.09,
-            "memory_usage_gb": 4.247455596923828,
-            "memory_usage_kb": 4453780,
+            "elapsed_time_seconds": 11.44,
+            "memory_usage_gb": 4.246295928955078,
+            "memory_usage_kb": 4452564,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 2.149,
-            "field_distribution_time_seconds": 1.953
+            "matrix_creation_time_seconds": 2.272,
+            "field_distribution_time_seconds": 1.978
           },
           {
-            "elapsed_time_seconds": 11.82,
-            "memory_usage_gb": 4.206462860107422,
-            "memory_usage_kb": 4410796,
+            "elapsed_time_seconds": 12.92,
+            "memory_usage_gb": 4.376476287841797,
+            "memory_usage_kb": 4589068,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 2.45,
-            "field_distribution_time_seconds": 1.941
+            "matrix_creation_time_seconds": 2.358,
+            "field_distribution_time_seconds": 2.221
           },
           {
-            "elapsed_time_seconds": 11.46,
-            "memory_usage_gb": 4.219474792480469,
-            "memory_usage_kb": 4424440,
+            "elapsed_time_seconds": 12.4,
+            "memory_usage_gb": 4.327850341796875,
+            "memory_usage_kb": 4538080,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 2.3,
-            "field_distribution_time_seconds": 1.985
+            "matrix_creation_time_seconds": 2.295,
+            "field_distribution_time_seconds": 1.846
           },
           {
-            "elapsed_time_seconds": 11.52,
-            "memory_usage_gb": 4.258045196533203,
-            "memory_usage_kb": 4464884,
+            "elapsed_time_seconds": 12.62,
+            "memory_usage_gb": 4.366493225097656,
+            "memory_usage_kb": 4578600,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 2.446,
-            "field_distribution_time_seconds": 1.847
+            "matrix_creation_time_seconds": 2.371,
+            "field_distribution_time_seconds": 1.961
           },
           {
-            "elapsed_time_seconds": 11.54,
-            "memory_usage_gb": 4.245563507080078,
-            "memory_usage_kb": 4451796,
+            "elapsed_time_seconds": 11.67,
+            "memory_usage_gb": 4.2464447021484375,
+            "memory_usage_kb": 4452720,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 2.285,
-            "field_distribution_time_seconds": 1.865
+            "matrix_creation_time_seconds": 2.311,
+            "field_distribution_time_seconds": 2.237
           },
           {
-            "elapsed_time_seconds": 11.63,
-            "memory_usage_gb": 4.252872467041016,
-            "memory_usage_kb": 4459460,
+            "elapsed_time_seconds": 11.17,
+            "memory_usage_gb": 4.247463226318359,
+            "memory_usage_kb": 4453788,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 2.364,
-            "field_distribution_time_seconds": 1.806
-          },
-          {
-            "elapsed_time_seconds": 11.29,
-            "memory_usage_gb": 4.202922821044922,
-            "memory_usage_kb": 4407084,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 9,
-            "matrix_creation_time_seconds": 2.238,
-            "field_distribution_time_seconds": 1.92
+            "matrix_creation_time_seconds": 2.415,
+            "field_distribution_time_seconds": 1.975
           },
           {
             "elapsed_time_seconds": 11.41,
-            "memory_usage_gb": 4.227500915527344,
-            "memory_usage_kb": 4432856,
+            "memory_usage_gb": 4.223796844482422,
+            "memory_usage_kb": 4428972,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 9,
+            "matrix_creation_time_seconds": 2.413,
+            "field_distribution_time_seconds": 1.89
+          },
+          {
+            "elapsed_time_seconds": 11.58,
+            "memory_usage_gb": 4.203460693359375,
+            "memory_usage_kb": 4407648,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 2.204,
-            "field_distribution_time_seconds": 2.01
+            "matrix_creation_time_seconds": 2.406,
+            "field_distribution_time_seconds": 1.805
           }
         ],
         "failed_runs": 0,
@@ -115,104 +115,104 @@
         "polynomial_order": "4",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 16.5,
-            "memory_usage_gb": 5.858131408691406,
-            "memory_usage_kb": 6142696,
+            "elapsed_time_seconds": 23.69,
+            "memory_usage_gb": 5.924690246582031,
+            "memory_usage_kb": 6212488,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 3.886,
-            "field_distribution_time_seconds": 2.988
+            "matrix_creation_time_seconds": 3.931,
+            "field_distribution_time_seconds": 2.934
           },
           {
-            "elapsed_time_seconds": 14.98,
-            "memory_usage_gb": 5.907405853271484,
-            "memory_usage_kb": 6194364,
+            "elapsed_time_seconds": 16.34,
+            "memory_usage_gb": 6.098079681396484,
+            "memory_usage_kb": 6394300,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 3.789,
-            "field_distribution_time_seconds": 2.826
+            "matrix_creation_time_seconds": 3.847,
+            "field_distribution_time_seconds": 2.818
           },
           {
-            "elapsed_time_seconds": 15.95,
-            "memory_usage_gb": 5.951274871826172,
-            "memory_usage_kb": 6240364,
+            "elapsed_time_seconds": 16.22,
+            "memory_usage_gb": 5.926860809326172,
+            "memory_usage_kb": 6214764,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 3.861,
-            "field_distribution_time_seconds": 2.848
+            "matrix_creation_time_seconds": 3.871,
+            "field_distribution_time_seconds": 3.037
           },
           {
-            "elapsed_time_seconds": 15.53,
-            "memory_usage_gb": 5.918582916259766,
-            "memory_usage_kb": 6206084,
+            "elapsed_time_seconds": 15.14,
+            "memory_usage_gb": 5.947662353515625,
+            "memory_usage_kb": 6236576,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 3.943,
-            "field_distribution_time_seconds": 2.783
+            "matrix_creation_time_seconds": 3.514,
+            "field_distribution_time_seconds": 2.815
           },
           {
-            "elapsed_time_seconds": 14.94,
-            "memory_usage_gb": 5.942249298095703,
-            "memory_usage_kb": 6230900,
+            "elapsed_time_seconds": 16.45,
+            "memory_usage_gb": 5.905757904052734,
+            "memory_usage_kb": 6192636,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 3.87,
-            "field_distribution_time_seconds": 2.822
+            "matrix_creation_time_seconds": 3.86,
+            "field_distribution_time_seconds": 3.757
           },
           {
-            "elapsed_time_seconds": 16.13,
-            "memory_usage_gb": 5.887825012207031,
-            "memory_usage_kb": 6173832,
+            "elapsed_time_seconds": 16.45,
+            "memory_usage_gb": 5.820121765136719,
+            "memory_usage_kb": 6102840,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 3.847,
-            "field_distribution_time_seconds": 3.414
+            "matrix_creation_time_seconds": 3.668,
+            "field_distribution_time_seconds": 3.17
           },
           {
-            "elapsed_time_seconds": 15.6,
-            "memory_usage_gb": 5.965248107910156,
-            "memory_usage_kb": 6255016,
+            "elapsed_time_seconds": 15.13,
+            "memory_usage_gb": 5.946968078613281,
+            "memory_usage_kb": 6235848,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 3.846,
-            "field_distribution_time_seconds": 2.87
+            "matrix_creation_time_seconds": 3.823,
+            "field_distribution_time_seconds": 2.769
           },
           {
-            "elapsed_time_seconds": 15.33,
-            "memory_usage_gb": 5.944023132324219,
-            "memory_usage_kb": 6232760,
+            "elapsed_time_seconds": 15.36,
+            "memory_usage_gb": 5.886951446533203,
+            "memory_usage_kb": 6172916,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 3.916,
-            "field_distribution_time_seconds": 2.74
+            "matrix_creation_time_seconds": 3.838,
+            "field_distribution_time_seconds": 3.059
           },
           {
-            "elapsed_time_seconds": 16.07,
-            "memory_usage_gb": 5.874610900878906,
-            "memory_usage_kb": 6159976,
+            "elapsed_time_seconds": 14.69,
+            "memory_usage_gb": 5.918830871582031,
+            "memory_usage_kb": 6206344,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 3.822,
-            "field_distribution_time_seconds": 2.863
+            "matrix_creation_time_seconds": 3.807,
+            "field_distribution_time_seconds": 2.795
           },
           {
-            "elapsed_time_seconds": 16.96,
-            "memory_usage_gb": 5.854682922363281,
-            "memory_usage_kb": 6139080,
+            "elapsed_time_seconds": 15.39,
+            "memory_usage_gb": 5.896175384521484,
+            "memory_usage_kb": 6182588,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 3.881,
-            "field_distribution_time_seconds": 2.954
+            "matrix_creation_time_seconds": 3.944,
+            "field_distribution_time_seconds": 2.774
           }
         ],
         "failed_runs": 0,
@@ -224,104 +224,104 @@
         "polynomial_order": "5",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 26.08,
-            "memory_usage_gb": 8.121955871582031,
-            "memory_usage_kb": 8516488,
+            "elapsed_time_seconds": 29.09,
+            "memory_usage_gb": 8.150279998779297,
+            "memory_usage_kb": 8546188,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 7.869,
-            "field_distribution_time_seconds": 3.776
+            "matrix_creation_time_seconds": 7.403,
+            "field_distribution_time_seconds": 3.816
           },
           {
-            "elapsed_time_seconds": 21.41,
-            "memory_usage_gb": 8.132488250732422,
-            "memory_usage_kb": 8527532,
+            "elapsed_time_seconds": 21.71,
+            "memory_usage_gb": 8.122432708740234,
+            "memory_usage_kb": 8516988,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 7.787,
-            "field_distribution_time_seconds": 3.897
+            "matrix_creation_time_seconds": 7.604,
+            "field_distribution_time_seconds": 3.849
           },
           {
-            "elapsed_time_seconds": 21.1,
-            "memory_usage_gb": 8.13875961303711,
-            "memory_usage_kb": 8534108,
+            "elapsed_time_seconds": 21.95,
+            "memory_usage_gb": 8.125545501708984,
+            "memory_usage_kb": 8520252,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 7.561,
-            "field_distribution_time_seconds": 3.67
+            "matrix_creation_time_seconds": 8.059,
+            "field_distribution_time_seconds": 3.903
           },
           {
-            "elapsed_time_seconds": 21.02,
-            "memory_usage_gb": 8.137950897216797,
-            "memory_usage_kb": 8533260,
+            "elapsed_time_seconds": 22.42,
+            "memory_usage_gb": 8.219928741455078,
+            "memory_usage_kb": 8619220,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 7.166,
-            "field_distribution_time_seconds": 3.682
+            "matrix_creation_time_seconds": 7.592,
+            "field_distribution_time_seconds": 3.829
           },
           {
-            "elapsed_time_seconds": 23.72,
-            "memory_usage_gb": 8.129505157470703,
-            "memory_usage_kb": 8524404,
+            "elapsed_time_seconds": 21.26,
+            "memory_usage_gb": 8.174686431884766,
+            "memory_usage_kb": 8571780,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 7.816,
-            "field_distribution_time_seconds": 5.6
+            "matrix_creation_time_seconds": 7.523,
+            "field_distribution_time_seconds": 3.921
           },
           {
-            "elapsed_time_seconds": 21.16,
-            "memory_usage_gb": 8.145179748535156,
-            "memory_usage_kb": 8540840,
+            "elapsed_time_seconds": 22.35,
+            "memory_usage_gb": 8.174091339111328,
+            "memory_usage_kb": 8571156,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 7.545,
-            "field_distribution_time_seconds": 3.908
+            "matrix_creation_time_seconds": 7.629,
+            "field_distribution_time_seconds": 4.419
           },
           {
-            "elapsed_time_seconds": 21.81,
-            "memory_usage_gb": 8.114177703857422,
-            "memory_usage_kb": 8508332,
+            "elapsed_time_seconds": 22.13,
+            "memory_usage_gb": 8.113517761230469,
+            "memory_usage_kb": 8507640,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 7.789,
-            "field_distribution_time_seconds": 4.063
+            "matrix_creation_time_seconds": 7.979,
+            "field_distribution_time_seconds": 3.982
           },
           {
-            "elapsed_time_seconds": 20.68,
-            "memory_usage_gb": 8.136043548583984,
-            "memory_usage_kb": 8531260,
+            "elapsed_time_seconds": 22.23,
+            "memory_usage_gb": 8.155399322509766,
+            "memory_usage_kb": 8551556,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 7.46,
-            "field_distribution_time_seconds": 3.726
+            "matrix_creation_time_seconds": 7.874,
+            "field_distribution_time_seconds": 4.368
           },
           {
-            "elapsed_time_seconds": 22.09,
-            "memory_usage_gb": 8.178325653076172,
-            "memory_usage_kb": 8575596,
+            "elapsed_time_seconds": 21.61,
+            "memory_usage_gb": 8.127490997314453,
+            "memory_usage_kb": 8522292,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 7.693,
-            "field_distribution_time_seconds": 3.843
+            "matrix_creation_time_seconds": 7.51,
+            "field_distribution_time_seconds": 4.019
           },
           {
-            "elapsed_time_seconds": 21.36,
-            "memory_usage_gb": 8.148082733154297,
-            "memory_usage_kb": 8543884,
+            "elapsed_time_seconds": 21.4,
+            "memory_usage_gb": 8.177501678466797,
+            "memory_usage_kb": 8574732,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 7.228,
-            "field_distribution_time_seconds": 3.863
+            "matrix_creation_time_seconds": 7.604,
+            "field_distribution_time_seconds": 3.731
           }
         ],
         "failed_runs": 0,
@@ -333,104 +333,104 @@
         "polynomial_order": "6",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 30.89,
-            "memory_usage_gb": 11.162982940673828,
-            "memory_usage_kb": 11705236,
+            "elapsed_time_seconds": 39.32,
+            "memory_usage_gb": 11.178276062011719,
+            "memory_usage_kb": 11721272,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 12.37,
-            "field_distribution_time_seconds": 5.519
+            "matrix_creation_time_seconds": 12.841,
+            "field_distribution_time_seconds": 5.477
           },
           {
-            "elapsed_time_seconds": 30.61,
-            "memory_usage_gb": 11.173683166503906,
-            "memory_usage_kb": 11716456,
+            "elapsed_time_seconds": 30.67,
+            "memory_usage_gb": 11.154464721679688,
+            "memory_usage_kb": 11696304,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 13.057,
-            "field_distribution_time_seconds": 5.734
+            "matrix_creation_time_seconds": 12.46,
+            "field_distribution_time_seconds": 5.863
           },
           {
-            "elapsed_time_seconds": 30.27,
-            "memory_usage_gb": 11.166709899902344,
-            "memory_usage_kb": 11709144,
+            "elapsed_time_seconds": 31.37,
+            "memory_usage_gb": 11.172054290771484,
+            "memory_usage_kb": 11714748,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 12.595,
-            "field_distribution_time_seconds": 5.424
+            "matrix_creation_time_seconds": 12.374,
+            "field_distribution_time_seconds": 6.615
           },
           {
-            "elapsed_time_seconds": 33.59,
-            "memory_usage_gb": 11.164283752441406,
-            "memory_usage_kb": 11706600,
+            "elapsed_time_seconds": 30.53,
+            "memory_usage_gb": 11.192707061767578,
+            "memory_usage_kb": 11736404,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 13.195,
-            "field_distribution_time_seconds": 8.149
+            "matrix_creation_time_seconds": 12.865,
+            "field_distribution_time_seconds": 5.563
           },
           {
-            "elapsed_time_seconds": 30.41,
-            "memory_usage_gb": 11.16799545288086,
-            "memory_usage_kb": 11710492,
+            "elapsed_time_seconds": 30.29,
+            "memory_usage_gb": 11.271968841552734,
+            "memory_usage_kb": 11819516,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 13.409,
-            "field_distribution_time_seconds": 5.364
+            "matrix_creation_time_seconds": 12.886,
+            "field_distribution_time_seconds": 5.591
           },
           {
-            "elapsed_time_seconds": 30.75,
-            "memory_usage_gb": 11.234092712402344,
-            "memory_usage_kb": 11779800,
+            "elapsed_time_seconds": 30.06,
+            "memory_usage_gb": 11.15262222290039,
+            "memory_usage_kb": 11694372,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 13.006,
-            "field_distribution_time_seconds": 5.607
+            "matrix_creation_time_seconds": 12.412,
+            "field_distribution_time_seconds": 5.562
           },
           {
-            "elapsed_time_seconds": 29.8,
-            "memory_usage_gb": 11.183944702148438,
-            "memory_usage_kb": 11727216,
+            "elapsed_time_seconds": 30.0,
+            "memory_usage_gb": 11.215690612792969,
+            "memory_usage_kb": 11760504,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 12.79,
-            "field_distribution_time_seconds": 5.424
+            "matrix_creation_time_seconds": 12.712,
+            "field_distribution_time_seconds": 5.311
           },
           {
-            "elapsed_time_seconds": 31.33,
-            "memory_usage_gb": 11.206108093261719,
-            "memory_usage_kb": 11750456,
+            "elapsed_time_seconds": 30.37,
+            "memory_usage_gb": 11.122623443603516,
+            "memory_usage_kb": 11662916,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 13.339,
-            "field_distribution_time_seconds": 5.85
+            "matrix_creation_time_seconds": 12.857,
+            "field_distribution_time_seconds": 5.392
           },
           {
-            "elapsed_time_seconds": 31.21,
-            "memory_usage_gb": 11.200130462646484,
-            "memory_usage_kb": 11744188,
+            "elapsed_time_seconds": 29.63,
+            "memory_usage_gb": 11.160106658935547,
+            "memory_usage_kb": 11702220,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 12.846,
-            "field_distribution_time_seconds": 5.46
+            "matrix_creation_time_seconds": 12.038,
+            "field_distribution_time_seconds": 5.552
           },
           {
-            "elapsed_time_seconds": 36.57,
-            "memory_usage_gb": 11.144954681396484,
-            "memory_usage_kb": 11686332,
+            "elapsed_time_seconds": 30.31,
+            "memory_usage_gb": 11.190059661865234,
+            "memory_usage_kb": 11733628,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 12.245,
-            "field_distribution_time_seconds": 5.591
+            "matrix_creation_time_seconds": 12.857,
+            "field_distribution_time_seconds": 5.62
           }
         ],
         "failed_runs": 0,
@@ -442,104 +442,104 @@
         "polynomial_order": "7",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 41.12,
-            "memory_usage_gb": 15.42013931274414,
-            "memory_usage_kb": 16169188,
+            "elapsed_time_seconds": 47.2,
+            "memory_usage_gb": 15.412357330322266,
+            "memory_usage_kb": 16161028,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 18.792,
-            "field_distribution_time_seconds": 7.49
+            "matrix_creation_time_seconds": 19.595,
+            "field_distribution_time_seconds": 11.401
           },
           {
-            "elapsed_time_seconds": 39.94,
-            "memory_usage_gb": 15.384628295898438,
-            "memory_usage_kb": 16131952,
+            "elapsed_time_seconds": 41.16,
+            "memory_usage_gb": 15.461353302001953,
+            "memory_usage_kb": 16212404,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 18.323,
-            "field_distribution_time_seconds": 7.695
+            "matrix_creation_time_seconds": 19.261,
+            "field_distribution_time_seconds": 7.367
           },
           {
-            "elapsed_time_seconds": 41.35,
-            "memory_usage_gb": 15.444210052490234,
-            "memory_usage_kb": 16194428,
+            "elapsed_time_seconds": 40.78,
+            "memory_usage_gb": 15.438026428222656,
+            "memory_usage_kb": 16187944,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 19.68,
-            "field_distribution_time_seconds": 7.162
+            "matrix_creation_time_seconds": 18.866,
+            "field_distribution_time_seconds": 7.525
           },
           {
-            "elapsed_time_seconds": 41.52,
-            "memory_usage_gb": 15.315715789794922,
-            "memory_usage_kb": 16059692,
+            "elapsed_time_seconds": 42.05,
+            "memory_usage_gb": 15.503551483154297,
+            "memory_usage_kb": 16256652,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 19.519,
-            "field_distribution_time_seconds": 7.506
-          },
-          {
-            "elapsed_time_seconds": 42.03,
-            "memory_usage_gb": 15.42471694946289,
-            "memory_usage_kb": 16173988,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 5,
-            "matrix_creation_time_seconds": 19.983,
-            "field_distribution_time_seconds": 7.306
-          },
-          {
-            "elapsed_time_seconds": 41.3,
-            "memory_usage_gb": 15.39664077758789,
-            "memory_usage_kb": 16144548,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 6,
-            "matrix_creation_time_seconds": 18.686,
-            "field_distribution_time_seconds": 8.174
-          },
-          {
-            "elapsed_time_seconds": 41.79,
-            "memory_usage_gb": 15.477104187011719,
-            "memory_usage_kb": 16228920,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 7,
-            "matrix_creation_time_seconds": 19.413,
-            "field_distribution_time_seconds": 7.744
-          },
-          {
-            "elapsed_time_seconds": 39.62,
-            "memory_usage_gb": 15.564132690429688,
-            "memory_usage_kb": 16320176,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 8,
-            "matrix_creation_time_seconds": 18.127,
-            "field_distribution_time_seconds": 7.22
-          },
-          {
-            "elapsed_time_seconds": 40.35,
-            "memory_usage_gb": 15.44863510131836,
-            "memory_usage_kb": 16199068,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 9,
-            "matrix_creation_time_seconds": 18.655,
-            "field_distribution_time_seconds": 7.375
+            "matrix_creation_time_seconds": 19.218,
+            "field_distribution_time_seconds": 7.918
           },
           {
             "elapsed_time_seconds": 40.21,
-            "memory_usage_gb": 15.45364761352539,
-            "memory_usage_kb": 16204324,
+            "memory_usage_gb": 15.467144012451172,
+            "memory_usage_kb": 16218476,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 5,
+            "matrix_creation_time_seconds": 18.816,
+            "field_distribution_time_seconds": 7.373
+          },
+          {
+            "elapsed_time_seconds": 41.54,
+            "memory_usage_gb": 15.463386535644531,
+            "memory_usage_kb": 16214536,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 6,
+            "matrix_creation_time_seconds": 19.837,
+            "field_distribution_time_seconds": 7.295
+          },
+          {
+            "elapsed_time_seconds": 40.13,
+            "memory_usage_gb": 15.42861557006836,
+            "memory_usage_kb": 16178076,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 7,
+            "matrix_creation_time_seconds": 18.932,
+            "field_distribution_time_seconds": 7.397
+          },
+          {
+            "elapsed_time_seconds": 41.6,
+            "memory_usage_gb": 15.456253051757812,
+            "memory_usage_kb": 16207056,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 8,
+            "matrix_creation_time_seconds": 19.731,
+            "field_distribution_time_seconds": 7.175
+          },
+          {
+            "elapsed_time_seconds": 41.45,
+            "memory_usage_gb": 15.515239715576172,
+            "memory_usage_kb": 16268908,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 9,
+            "matrix_creation_time_seconds": 19.208,
+            "field_distribution_time_seconds": 7.857
+          },
+          {
+            "elapsed_time_seconds": 41.47,
+            "memory_usage_gb": 15.42306137084961,
+            "memory_usage_kb": 16172252,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 18.966,
-            "field_distribution_time_seconds": 7.346
+            "matrix_creation_time_seconds": 19.637,
+            "field_distribution_time_seconds": 7.655
           }
         ],
         "failed_runs": 0,
@@ -551,104 +551,104 @@
         "polynomial_order": "8",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 59.95,
-            "memory_usage_gb": 20.957897186279297,
-            "memory_usage_kb": 21975948,
+            "elapsed_time_seconds": 59.16,
+            "memory_usage_gb": 20.99154281616211,
+            "memory_usage_kb": 22011228,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 32.089,
-            "field_distribution_time_seconds": 10.244
+            "matrix_creation_time_seconds": 30.858,
+            "field_distribution_time_seconds": 10.078
           },
           {
-            "elapsed_time_seconds": 59.88,
-            "memory_usage_gb": 20.887489318847656,
-            "memory_usage_kb": 21902120,
+            "elapsed_time_seconds": 58.57,
+            "memory_usage_gb": 21.136531829833984,
+            "memory_usage_kb": 22163260,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 31.599,
-            "field_distribution_time_seconds": 10.15
+            "matrix_creation_time_seconds": 30.905,
+            "field_distribution_time_seconds": 10.151
           },
           {
-            "elapsed_time_seconds": 59.42,
-            "memory_usage_gb": 20.912311553955078,
-            "memory_usage_kb": 21928148,
+            "elapsed_time_seconds": 60.04,
+            "memory_usage_gb": 20.82674789428711,
+            "memory_usage_kb": 21838428,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 31.524,
-            "field_distribution_time_seconds": 10.117
+            "matrix_creation_time_seconds": 32.377,
+            "field_distribution_time_seconds": 10.04
           },
           {
-            "elapsed_time_seconds": 60.53,
-            "memory_usage_gb": 20.947254180908203,
-            "memory_usage_kb": 21964788,
+            "elapsed_time_seconds": 59.12,
+            "memory_usage_gb": 20.953899383544922,
+            "memory_usage_kb": 21971756,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 31.494,
-            "field_distribution_time_seconds": 10.057
+            "matrix_creation_time_seconds": 31.555,
+            "field_distribution_time_seconds": 9.874
           },
           {
-            "elapsed_time_seconds": 61.33,
-            "memory_usage_gb": 21.040145874023438,
-            "memory_usage_kb": 22062192,
+            "elapsed_time_seconds": 62.31,
+            "memory_usage_gb": 20.950233459472656,
+            "memory_usage_kb": 21967912,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 32.484,
-            "field_distribution_time_seconds": 10.184
+            "matrix_creation_time_seconds": 32.498,
+            "field_distribution_time_seconds": 10.524
           },
           {
-            "elapsed_time_seconds": 59.38,
-            "memory_usage_gb": 20.942180633544922,
-            "memory_usage_kb": 21959468,
+            "elapsed_time_seconds": 65.25,
+            "memory_usage_gb": 21.104591369628906,
+            "memory_usage_kb": 22129768,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 31.421,
-            "field_distribution_time_seconds": 9.731
+            "matrix_creation_time_seconds": 32.706,
+            "field_distribution_time_seconds": 9.883
           },
           {
-            "elapsed_time_seconds": 59.19,
-            "memory_usage_gb": 20.987655639648438,
-            "memory_usage_kb": 22007152,
+            "elapsed_time_seconds": 58.93,
+            "memory_usage_gb": 20.867416381835938,
+            "memory_usage_kb": 21881072,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 31.638,
-            "field_distribution_time_seconds": 9.768
+            "matrix_creation_time_seconds": 31.81,
+            "field_distribution_time_seconds": 9.756
           },
           {
-            "elapsed_time_seconds": 63.79,
-            "memory_usage_gb": 20.997650146484375,
-            "memory_usage_kb": 22017632,
+            "elapsed_time_seconds": 60.39,
+            "memory_usage_gb": 20.902870178222656,
+            "memory_usage_kb": 21918248,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 34.867,
-            "field_distribution_time_seconds": 10.37
+            "matrix_creation_time_seconds": 32.556,
+            "field_distribution_time_seconds": 10.029
           },
           {
-            "elapsed_time_seconds": 59.88,
-            "memory_usage_gb": 21.002056121826172,
-            "memory_usage_kb": 22022252,
+            "elapsed_time_seconds": 57.69,
+            "memory_usage_gb": 21.041400909423828,
+            "memory_usage_kb": 22063508,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 32.203,
-            "field_distribution_time_seconds": 9.965
+            "matrix_creation_time_seconds": 30.208,
+            "field_distribution_time_seconds": 9.7
           },
           {
-            "elapsed_time_seconds": 59.05,
-            "memory_usage_gb": 20.98813247680664,
-            "memory_usage_kb": 22007652,
+            "elapsed_time_seconds": 58.61,
+            "memory_usage_gb": 20.821788787841797,
+            "memory_usage_kb": 21833228,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 32.191,
-            "field_distribution_time_seconds": 9.626
+            "matrix_creation_time_seconds": 31.574,
+            "field_distribution_time_seconds": 9.972
           }
         ],
         "failed_runs": 0,
@@ -660,104 +660,104 @@
         "polynomial_order": "9",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 103.57,
-            "memory_usage_gb": 27.517955780029297,
-            "memory_usage_kb": 28854668,
+            "elapsed_time_seconds": 102.55,
+            "memory_usage_gb": 28.04842758178711,
+            "memory_usage_kb": 29410908,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
             "matrix_creation_time_seconds": 65.0,
-            "field_distribution_time_seconds": 13.087
+            "field_distribution_time_seconds": 13.718
           },
           {
-            "elapsed_time_seconds": 102.41,
-            "memory_usage_gb": 28.004722595214844,
-            "memory_usage_kb": 29365080,
+            "elapsed_time_seconds": 106.18,
+            "memory_usage_gb": 28.116607666015625,
+            "memory_usage_kb": 29482400,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 64.0,
-            "field_distribution_time_seconds": 12.679
+            "matrix_creation_time_seconds": 66.0,
+            "field_distribution_time_seconds": 13.61
           },
           {
-            "elapsed_time_seconds": 99.46,
-            "memory_usage_gb": 28.003482818603516,
-            "memory_usage_kb": 29363780,
+            "elapsed_time_seconds": 103.92,
+            "memory_usage_gb": 28.101009368896484,
+            "memory_usage_kb": 29466044,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 64.0,
-            "field_distribution_time_seconds": 12.528
+            "matrix_creation_time_seconds": 67.0,
+            "field_distribution_time_seconds": 13.066
           },
           {
-            "elapsed_time_seconds": 98.42,
-            "memory_usage_gb": 28.190250396728516,
-            "memory_usage_kb": 29559620,
+            "elapsed_time_seconds": 100.99,
+            "memory_usage_gb": 28.00314712524414,
+            "memory_usage_kb": 29363428,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 63.0,
-            "field_distribution_time_seconds": 12.503
+            "matrix_creation_time_seconds": 65.0,
+            "field_distribution_time_seconds": 13.128
           },
           {
-            "elapsed_time_seconds": 97.98,
-            "memory_usage_gb": 28.089168548583984,
-            "memory_usage_kb": 29453628,
+            "elapsed_time_seconds": 107.73,
+            "memory_usage_gb": 28.21704864501953,
+            "memory_usage_kb": 29587720,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 63.0,
-            "field_distribution_time_seconds": 12.333
+            "matrix_creation_time_seconds": 72.0,
+            "field_distribution_time_seconds": 13.155
           },
           {
-            "elapsed_time_seconds": 101.19,
-            "memory_usage_gb": 28.100570678710938,
-            "memory_usage_kb": 29465584,
+            "elapsed_time_seconds": 102.33,
+            "memory_usage_gb": 28.184226989746094,
+            "memory_usage_kb": 29553304,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
             "matrix_creation_time_seconds": 65.0,
-            "field_distribution_time_seconds": 12.87
+            "field_distribution_time_seconds": 12.911
           },
           {
-            "elapsed_time_seconds": 99.17,
-            "memory_usage_gb": 28.155296325683594,
-            "memory_usage_kb": 29522968,
+            "elapsed_time_seconds": 105.63,
+            "memory_usage_gb": 28.68195343017578,
+            "memory_usage_kb": 30075208,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 64.0,
-            "field_distribution_time_seconds": 12.68
+            "matrix_creation_time_seconds": 67.0,
+            "field_distribution_time_seconds": 13.567
           },
           {
-            "elapsed_time_seconds": 99.82,
-            "memory_usage_gb": 28.11944580078125,
-            "memory_usage_kb": 29485376,
+            "elapsed_time_seconds": 101.2,
+            "memory_usage_gb": 28.215198516845703,
+            "memory_usage_kb": 29585780,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 64.0,
-            "field_distribution_time_seconds": 12.394
+            "matrix_creation_time_seconds": 66.0,
+            "field_distribution_time_seconds": 12.513
           },
           {
-            "elapsed_time_seconds": 99.07,
-            "memory_usage_gb": 27.973682403564453,
-            "memory_usage_kb": 29332532,
+            "elapsed_time_seconds": 100.89,
+            "memory_usage_gb": 27.800914764404297,
+            "memory_usage_kb": 29151372,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 64.0,
-            "field_distribution_time_seconds": 12.771
+            "matrix_creation_time_seconds": 65.0,
+            "field_distribution_time_seconds": 12.652
           },
           {
-            "elapsed_time_seconds": 100.11,
-            "memory_usage_gb": 28.04004669189453,
-            "memory_usage_kb": 29402120,
+            "elapsed_time_seconds": 99.85,
+            "memory_usage_gb": 28.517745971679688,
+            "memory_usage_kb": 29903024,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
             "matrix_creation_time_seconds": 64.0,
-            "field_distribution_time_seconds": 12.911
+            "field_distribution_time_seconds": 12.669
           }
         ],
         "failed_runs": 0,
@@ -769,104 +769,104 @@
         "polynomial_order": "I01",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 238.72,
-            "memory_usage_gb": 11.127670288085938,
-            "memory_usage_kb": 11668208,
+            "elapsed_time_seconds": 231.81,
+            "memory_usage_gb": 11.219818115234375,
+            "memory_usage_kb": 11764832,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 212.0,
-            "field_distribution_time_seconds": 7.069
+            "matrix_creation_time_seconds": 211.0,
+            "field_distribution_time_seconds": 7.311
           },
           {
-            "elapsed_time_seconds": 236.11,
-            "memory_usage_gb": 11.220840454101562,
-            "memory_usage_kb": 11765904,
+            "elapsed_time_seconds": 230.25,
+            "memory_usage_gb": 11.185482025146484,
+            "memory_usage_kb": 11728828,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 217.0,
-            "field_distribution_time_seconds": 7.161
+            "matrix_creation_time_seconds": 210.0,
+            "field_distribution_time_seconds": 7.135
           },
           {
-            "elapsed_time_seconds": 245.85,
-            "memory_usage_gb": 11.219661712646484,
-            "memory_usage_kb": 11764668,
+            "elapsed_time_seconds": 236.65,
+            "memory_usage_gb": 11.019474029541016,
+            "memory_usage_kb": 11554756,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 226.0,
-            "field_distribution_time_seconds": 7.114
+            "matrix_creation_time_seconds": 216.0,
+            "field_distribution_time_seconds": 7.263
           },
           {
-            "elapsed_time_seconds": 229.55,
-            "memory_usage_gb": 11.271400451660156,
-            "memory_usage_kb": 11818920,
+            "elapsed_time_seconds": 251.92,
+            "memory_usage_gb": 11.321399688720703,
+            "memory_usage_kb": 11871348,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 209.0,
-            "field_distribution_time_seconds": 7.163
+            "matrix_creation_time_seconds": 225.0,
+            "field_distribution_time_seconds": 7.365
           },
           {
-            "elapsed_time_seconds": 244.74,
-            "memory_usage_gb": 11.24871826171875,
-            "memory_usage_kb": 11795136,
+            "elapsed_time_seconds": 233.47,
+            "memory_usage_gb": 11.187732696533203,
+            "memory_usage_kb": 11731188,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 218.0,
-            "field_distribution_time_seconds": 7.117
+            "matrix_creation_time_seconds": 213.0,
+            "field_distribution_time_seconds": 7.27
           },
           {
-            "elapsed_time_seconds": 238.38,
-            "memory_usage_gb": 11.14046859741211,
-            "memory_usage_kb": 11681628,
+            "elapsed_time_seconds": 234.74,
+            "memory_usage_gb": 11.199199676513672,
+            "memory_usage_kb": 11743212,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 218.0,
-            "field_distribution_time_seconds": 7.214
+            "matrix_creation_time_seconds": 214.0,
+            "field_distribution_time_seconds": 7.298
           },
           {
-            "elapsed_time_seconds": 228.57,
-            "memory_usage_gb": 10.857723236083984,
-            "memory_usage_kb": 11385148,
+            "elapsed_time_seconds": 234.25,
+            "memory_usage_gb": 11.24325942993164,
+            "memory_usage_kb": 11789412,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 208.0,
-            "field_distribution_time_seconds": 7.137
+            "matrix_creation_time_seconds": 214.0,
+            "field_distribution_time_seconds": 7.265
           },
           {
-            "elapsed_time_seconds": 243.64,
-            "memory_usage_gb": 11.139945983886719,
-            "memory_usage_kb": 11681080,
+            "elapsed_time_seconds": 244.9,
+            "memory_usage_gb": 11.15069580078125,
+            "memory_usage_kb": 11692352,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 223.0,
-            "field_distribution_time_seconds": 7.279
+            "matrix_creation_time_seconds": 218.0,
+            "field_distribution_time_seconds": 7.245
           },
           {
-            "elapsed_time_seconds": 241.76,
-            "memory_usage_gb": 11.201229095458984,
-            "memory_usage_kb": 11745340,
+            "elapsed_time_seconds": 239.55,
+            "memory_usage_gb": 11.197452545166016,
+            "memory_usage_kb": 11741380,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
             "matrix_creation_time_seconds": 220.0,
-            "field_distribution_time_seconds": 7.195
+            "field_distribution_time_seconds": 7.286
           },
           {
-            "elapsed_time_seconds": 234.77,
-            "memory_usage_gb": 11.18996810913086,
-            "memory_usage_kb": 11733532,
+            "elapsed_time_seconds": 249.19,
+            "memory_usage_gb": 11.104591369628906,
+            "memory_usage_kb": 11644008,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 215.0,
-            "field_distribution_time_seconds": 7.059
+            "matrix_creation_time_seconds": 230.0,
+            "field_distribution_time_seconds": 7.129
           }
         ],
         "failed_runs": 0,
@@ -874,110 +874,110 @@
         "success_rate": 1.0
       }
     },
-    "anotinv_and_loop_order": {
+    "Remove inversions & Cache locality": {
       "p3": {
         "mesh_size": "100k",
         "polynomial_order": "3",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 12.1,
-            "memory_usage_gb": 4.233722686767578,
-            "memory_usage_kb": 4439380,
+            "elapsed_time_seconds": 12.16,
+            "memory_usage_gb": 4.217525482177734,
+            "memory_usage_kb": 4422396,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 2.117,
-            "field_distribution_time_seconds": 2.315
+            "matrix_creation_time_seconds": 2.217,
+            "field_distribution_time_seconds": 2.024
           },
           {
-            "elapsed_time_seconds": 10.97,
-            "memory_usage_gb": 4.217720031738281,
-            "memory_usage_kb": 4422600,
+            "elapsed_time_seconds": 11.7,
+            "memory_usage_gb": 4.24615478515625,
+            "memory_usage_kb": 4452416,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 2.142,
-            "field_distribution_time_seconds": 1.778
+            "matrix_creation_time_seconds": 2.309,
+            "field_distribution_time_seconds": 1.982
           },
           {
-            "elapsed_time_seconds": 11.88,
-            "memory_usage_gb": 4.253608703613281,
-            "memory_usage_kb": 4460232,
+            "elapsed_time_seconds": 11.28,
+            "memory_usage_gb": 4.206912994384766,
+            "memory_usage_kb": 4411268,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 2.198,
-            "field_distribution_time_seconds": 2.029
+            "matrix_creation_time_seconds": 2.362,
+            "field_distribution_time_seconds": 1.914
           },
           {
-            "elapsed_time_seconds": 12.14,
-            "memory_usage_gb": 4.247257232666016,
-            "memory_usage_kb": 4453572,
+            "elapsed_time_seconds": 11.37,
+            "memory_usage_gb": 4.245758056640625,
+            "memory_usage_kb": 4452000,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 2.262,
-            "field_distribution_time_seconds": 1.798
+            "matrix_creation_time_seconds": 2.324,
+            "field_distribution_time_seconds": 2.127
           },
           {
-            "elapsed_time_seconds": 11.12,
-            "memory_usage_gb": 4.195098876953125,
-            "memory_usage_kb": 4398880,
+            "elapsed_time_seconds": 11.55,
+            "memory_usage_gb": 4.25732421875,
+            "memory_usage_kb": 4464128,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 2.144,
-            "field_distribution_time_seconds": 1.929
+            "matrix_creation_time_seconds": 2.249,
+            "field_distribution_time_seconds": 2.157
           },
           {
-            "elapsed_time_seconds": 11.36,
-            "memory_usage_gb": 4.233943939208984,
-            "memory_usage_kb": 4439612,
+            "elapsed_time_seconds": 11.88,
+            "memory_usage_gb": 4.214015960693359,
+            "memory_usage_kb": 4418716,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 2.147,
-            "field_distribution_time_seconds": 1.928
+            "matrix_creation_time_seconds": 2.418,
+            "field_distribution_time_seconds": 1.99
           },
           {
-            "elapsed_time_seconds": 10.95,
-            "memory_usage_gb": 4.2183990478515625,
-            "memory_usage_kb": 4423312,
+            "elapsed_time_seconds": 11.31,
+            "memory_usage_gb": 4.230373382568359,
+            "memory_usage_kb": 4435868,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 2.199,
-            "field_distribution_time_seconds": 1.797
+            "matrix_creation_time_seconds": 2.239,
+            "field_distribution_time_seconds": 1.892
           },
           {
-            "elapsed_time_seconds": 11.26,
-            "memory_usage_gb": 4.220432281494141,
-            "memory_usage_kb": 4425444,
+            "elapsed_time_seconds": 11.2,
+            "memory_usage_gb": 4.226139068603516,
+            "memory_usage_kb": 4431428,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 2.153,
-            "field_distribution_time_seconds": 1.985
+            "matrix_creation_time_seconds": 2.175,
+            "field_distribution_time_seconds": 1.929
           },
           {
-            "elapsed_time_seconds": 11.39,
-            "memory_usage_gb": 4.241142272949219,
-            "memory_usage_kb": 4447160,
+            "elapsed_time_seconds": 11.64,
+            "memory_usage_gb": 4.279640197753906,
+            "memory_usage_kb": 4487528,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 2.168,
-            "field_distribution_time_seconds": 1.965
+            "matrix_creation_time_seconds": 2.255,
+            "field_distribution_time_seconds": 1.971
           },
           {
-            "elapsed_time_seconds": 11.59,
-            "memory_usage_gb": 4.2554931640625,
-            "memory_usage_kb": 4462208,
+            "elapsed_time_seconds": 11.48,
+            "memory_usage_gb": 4.211334228515625,
+            "memory_usage_kb": 4415904,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 2.3,
-            "field_distribution_time_seconds": 1.857
+            "matrix_creation_time_seconds": 2.215,
+            "field_distribution_time_seconds": 2.027
           }
         ],
         "failed_runs": 0,
@@ -989,104 +989,104 @@
         "polynomial_order": "4",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 15.87,
-            "memory_usage_gb": 5.950717926025391,
-            "memory_usage_kb": 6239780,
+            "elapsed_time_seconds": 15.75,
+            "memory_usage_gb": 5.911556243896484,
+            "memory_usage_kb": 6198716,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 3.089,
-            "field_distribution_time_seconds": 2.823
+            "matrix_creation_time_seconds": 3.354,
+            "field_distribution_time_seconds": 3.388
           },
           {
-            "elapsed_time_seconds": 14.77,
-            "memory_usage_gb": 5.882408142089844,
-            "memory_usage_kb": 6168152,
+            "elapsed_time_seconds": 15.26,
+            "memory_usage_gb": 5.9341888427734375,
+            "memory_usage_kb": 6222448,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 3.177,
-            "field_distribution_time_seconds": 2.944
+            "matrix_creation_time_seconds": 3.381,
+            "field_distribution_time_seconds": 3.013
           },
           {
-            "elapsed_time_seconds": 14.78,
-            "memory_usage_gb": 5.925437927246094,
-            "memory_usage_kb": 6213272,
+            "elapsed_time_seconds": 15.12,
+            "memory_usage_gb": 5.8921661376953125,
+            "memory_usage_kb": 6178384,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 3.226,
-            "field_distribution_time_seconds": 2.807
+            "matrix_creation_time_seconds": 3.375,
+            "field_distribution_time_seconds": 3.15
           },
           {
-            "elapsed_time_seconds": 15.14,
-            "memory_usage_gb": 5.904605865478516,
-            "memory_usage_kb": 6191428,
+            "elapsed_time_seconds": 15.08,
+            "memory_usage_gb": 5.891960144042969,
+            "memory_usage_kb": 6178168,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 3.291,
-            "field_distribution_time_seconds": 3.076
+            "matrix_creation_time_seconds": 3.298,
+            "field_distribution_time_seconds": 3.029
           },
           {
-            "elapsed_time_seconds": 14.31,
-            "memory_usage_gb": 5.920997619628906,
-            "memory_usage_kb": 6208616,
+            "elapsed_time_seconds": 14.89,
+            "memory_usage_gb": 5.928409576416016,
+            "memory_usage_kb": 6216388,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 3.137,
-            "field_distribution_time_seconds": 2.78
+            "matrix_creation_time_seconds": 3.218,
+            "field_distribution_time_seconds": 3.08
           },
           {
-            "elapsed_time_seconds": 14.69,
-            "memory_usage_gb": 5.948879241943359,
-            "memory_usage_kb": 6237852,
+            "elapsed_time_seconds": 14.75,
+            "memory_usage_gb": 5.923206329345703,
+            "memory_usage_kb": 6210932,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 3.266,
-            "field_distribution_time_seconds": 2.898
+            "matrix_creation_time_seconds": 3.26,
+            "field_distribution_time_seconds": 3.098
           },
           {
-            "elapsed_time_seconds": 14.45,
-            "memory_usage_gb": 5.929546356201172,
-            "memory_usage_kb": 6217580,
+            "elapsed_time_seconds": 14.95,
+            "memory_usage_gb": 5.919563293457031,
+            "memory_usage_kb": 6207112,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 3.209,
-            "field_distribution_time_seconds": 2.855
+            "matrix_creation_time_seconds": 3.371,
+            "field_distribution_time_seconds": 3.034
           },
           {
-            "elapsed_time_seconds": 14.98,
-            "memory_usage_gb": 5.931632995605469,
-            "memory_usage_kb": 6219768,
+            "elapsed_time_seconds": 15.14,
+            "memory_usage_gb": 5.951290130615234,
+            "memory_usage_kb": 6240380,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 3.15,
-            "field_distribution_time_seconds": 2.951
+            "matrix_creation_time_seconds": 3.488,
+            "field_distribution_time_seconds": 3.175
           },
           {
-            "elapsed_time_seconds": 14.42,
-            "memory_usage_gb": 5.90960693359375,
-            "memory_usage_kb": 6196672,
+            "elapsed_time_seconds": 14.98,
+            "memory_usage_gb": 5.896724700927734,
+            "memory_usage_kb": 6183164,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 3.121,
-            "field_distribution_time_seconds": 2.775
+            "matrix_creation_time_seconds": 3.384,
+            "field_distribution_time_seconds": 3.048
           },
           {
-            "elapsed_time_seconds": 14.62,
-            "memory_usage_gb": 5.901569366455078,
-            "memory_usage_kb": 6188244,
+            "elapsed_time_seconds": 14.61,
+            "memory_usage_gb": 5.912265777587891,
+            "memory_usage_kb": 6199460,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 3.157,
-            "field_distribution_time_seconds": 2.803
+            "matrix_creation_time_seconds": 3.137,
+            "field_distribution_time_seconds": 3.048
           }
         ],
         "failed_runs": 0,
@@ -1098,104 +1098,104 @@
         "polynomial_order": "5",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 19.72,
-            "memory_usage_gb": 8.199516296386719,
-            "memory_usage_kb": 8597816,
+            "elapsed_time_seconds": 19.99,
+            "memory_usage_gb": 8.186927795410156,
+            "memory_usage_kb": 8584616,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 5.246,
-            "field_distribution_time_seconds": 3.945
+            "matrix_creation_time_seconds": 5.168,
+            "field_distribution_time_seconds": 4.037
           },
           {
-            "elapsed_time_seconds": 20.13,
-            "memory_usage_gb": 8.157764434814453,
-            "memory_usage_kb": 8554036,
+            "elapsed_time_seconds": 20.06,
+            "memory_usage_gb": 8.15362548828125,
+            "memory_usage_kb": 8549696,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 5.096,
-            "field_distribution_time_seconds": 3.981
+            "matrix_creation_time_seconds": 5.176,
+            "field_distribution_time_seconds": 4.312
           },
           {
-            "elapsed_time_seconds": 20.03,
-            "memory_usage_gb": 8.32281494140625,
-            "memory_usage_kb": 8727104,
+            "elapsed_time_seconds": 19.32,
+            "memory_usage_gb": 8.216136932373047,
+            "memory_usage_kb": 8615244,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 5.018,
-            "field_distribution_time_seconds": 3.831
+            "matrix_creation_time_seconds": 5.064,
+            "field_distribution_time_seconds": 4.061
           },
           {
-            "elapsed_time_seconds": 19.62,
-            "memory_usage_gb": 8.16250991821289,
-            "memory_usage_kb": 8559012,
+            "elapsed_time_seconds": 20.82,
+            "memory_usage_gb": 8.111568450927734,
+            "memory_usage_kb": 8505596,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 5.273,
-            "field_distribution_time_seconds": 4.047
+            "matrix_creation_time_seconds": 5.307,
+            "field_distribution_time_seconds": 5.063
           },
           {
-            "elapsed_time_seconds": 19.3,
-            "memory_usage_gb": 8.274063110351562,
-            "memory_usage_kb": 8675984,
+            "elapsed_time_seconds": 19.87,
+            "memory_usage_gb": 8.153709411621094,
+            "memory_usage_kb": 8549784,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 5.062,
-            "field_distribution_time_seconds": 3.759
+            "matrix_creation_time_seconds": 5.15,
+            "field_distribution_time_seconds": 4.215
           },
           {
-            "elapsed_time_seconds": 19.16,
-            "memory_usage_gb": 8.134105682373047,
-            "memory_usage_kb": 8529228,
+            "elapsed_time_seconds": 19.99,
+            "memory_usage_gb": 8.18377685546875,
+            "memory_usage_kb": 8581312,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 5.011,
-            "field_distribution_time_seconds": 4.0
-          },
-          {
-            "elapsed_time_seconds": 19.68,
-            "memory_usage_gb": 8.176158905029297,
-            "memory_usage_kb": 8573324,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 7,
-            "matrix_creation_time_seconds": 5.239,
-            "field_distribution_time_seconds": 4.01
-          },
-          {
-            "elapsed_time_seconds": 19.18,
-            "memory_usage_gb": 8.14230728149414,
-            "memory_usage_kb": 8537828,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 8,
-            "matrix_creation_time_seconds": 5.166,
-            "field_distribution_time_seconds": 3.916
-          },
-          {
-            "elapsed_time_seconds": 19.1,
-            "memory_usage_gb": 8.14101791381836,
-            "memory_usage_kb": 8536476,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 9,
-            "matrix_creation_time_seconds": 5.082,
-            "field_distribution_time_seconds": 4.015
+            "matrix_creation_time_seconds": 5.231,
+            "field_distribution_time_seconds": 4.339
           },
           {
             "elapsed_time_seconds": 19.78,
-            "memory_usage_gb": 8.079025268554688,
-            "memory_usage_kb": 8471472,
+            "memory_usage_gb": 8.166439056396484,
+            "memory_usage_kb": 8563132,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 7,
+            "matrix_creation_time_seconds": 5.229,
+            "field_distribution_time_seconds": 4.21
+          },
+          {
+            "elapsed_time_seconds": 19.57,
+            "memory_usage_gb": 8.142486572265625,
+            "memory_usage_kb": 8538016,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 8,
+            "matrix_creation_time_seconds": 5.131,
+            "field_distribution_time_seconds": 4.066
+          },
+          {
+            "elapsed_time_seconds": 19.31,
+            "memory_usage_gb": 8.153091430664062,
+            "memory_usage_kb": 8549136,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 9,
+            "matrix_creation_time_seconds": 5.25,
+            "field_distribution_time_seconds": 4.124
+          },
+          {
+            "elapsed_time_seconds": 19.69,
+            "memory_usage_gb": 8.096595764160156,
+            "memory_usage_kb": 8489896,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 5.059,
-            "field_distribution_time_seconds": 3.859
+            "matrix_creation_time_seconds": 5.148,
+            "field_distribution_time_seconds": 4.11
           }
         ],
         "failed_runs": 0,
@@ -1207,104 +1207,104 @@
         "polynomial_order": "6",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 26.09,
-            "memory_usage_gb": 11.196208953857422,
-            "memory_usage_kb": 11740076,
+            "elapsed_time_seconds": 26.98,
+            "memory_usage_gb": 11.154865264892578,
+            "memory_usage_kb": 11696724,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 8.06,
-            "field_distribution_time_seconds": 5.845
+            "matrix_creation_time_seconds": 8.247,
+            "field_distribution_time_seconds": 6.39
           },
           {
-            "elapsed_time_seconds": 27.89,
-            "memory_usage_gb": 11.207817077636719,
-            "memory_usage_kb": 11752248,
+            "elapsed_time_seconds": 27.23,
+            "memory_usage_gb": 11.182830810546875,
+            "memory_usage_kb": 11726048,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 7.948,
-            "field_distribution_time_seconds": 8.201
+            "matrix_creation_time_seconds": 8.156,
+            "field_distribution_time_seconds": 6.123
           },
           {
-            "elapsed_time_seconds": 25.64,
-            "memory_usage_gb": 11.121768951416016,
-            "memory_usage_kb": 11662020,
+            "elapsed_time_seconds": 26.08,
+            "memory_usage_gb": 11.12832260131836,
+            "memory_usage_kb": 11668892,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 7.961,
-            "field_distribution_time_seconds": 5.414
+            "matrix_creation_time_seconds": 8.031,
+            "field_distribution_time_seconds": 6.02
           },
           {
-            "elapsed_time_seconds": 25.62,
-            "memory_usage_gb": 11.160697937011719,
-            "memory_usage_kb": 11702840,
+            "elapsed_time_seconds": 25.56,
+            "memory_usage_gb": 11.122825622558594,
+            "memory_usage_kb": 11663128,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 7.777,
-            "field_distribution_time_seconds": 5.607
+            "matrix_creation_time_seconds": 7.842,
+            "field_distribution_time_seconds": 5.97
           },
           {
-            "elapsed_time_seconds": 25.91,
-            "memory_usage_gb": 11.163330078125,
-            "memory_usage_kb": 11705600,
+            "elapsed_time_seconds": 25.98,
+            "memory_usage_gb": 11.209075927734375,
+            "memory_usage_kb": 11753568,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 7.904,
-            "field_distribution_time_seconds": 5.713
+            "matrix_creation_time_seconds": 7.889,
+            "field_distribution_time_seconds": 6.249
           },
           {
-            "elapsed_time_seconds": 25.89,
-            "memory_usage_gb": 11.284629821777344,
-            "memory_usage_kb": 11832792,
+            "elapsed_time_seconds": 26.7,
+            "memory_usage_gb": 11.22481918334961,
+            "memory_usage_kb": 11770076,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 7.99,
-            "field_distribution_time_seconds": 5.505
+            "matrix_creation_time_seconds": 8.256,
+            "field_distribution_time_seconds": 6.301
           },
           {
-            "elapsed_time_seconds": 25.69,
-            "memory_usage_gb": 11.160240173339844,
-            "memory_usage_kb": 11702360,
+            "elapsed_time_seconds": 26.01,
+            "memory_usage_gb": 11.159595489501953,
+            "memory_usage_kb": 11701684,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 8.216,
-            "field_distribution_time_seconds": 5.478
+            "matrix_creation_time_seconds": 8.149,
+            "field_distribution_time_seconds": 5.864
           },
           {
-            "elapsed_time_seconds": 26.58,
-            "memory_usage_gb": 11.13925552368164,
-            "memory_usage_kb": 11680356,
+            "elapsed_time_seconds": 26.23,
+            "memory_usage_gb": 11.202491760253906,
+            "memory_usage_kb": 11746664,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 8.221,
-            "field_distribution_time_seconds": 5.968
+            "matrix_creation_time_seconds": 7.773,
+            "field_distribution_time_seconds": 6.253
           },
           {
-            "elapsed_time_seconds": 27.17,
-            "memory_usage_gb": 11.13043212890625,
-            "memory_usage_kb": 11671104,
+            "elapsed_time_seconds": 26.6,
+            "memory_usage_gb": 11.121353149414062,
+            "memory_usage_kb": 11661584,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 8.176,
-            "field_distribution_time_seconds": 6.737
+            "matrix_creation_time_seconds": 8.29,
+            "field_distribution_time_seconds": 6.226
           },
           {
-            "elapsed_time_seconds": 28.87,
-            "memory_usage_gb": 11.10855484008789,
-            "memory_usage_kb": 11648164,
+            "elapsed_time_seconds": 26.67,
+            "memory_usage_gb": 11.26552963256836,
+            "memory_usage_kb": 11812764,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 8.005,
-            "field_distribution_time_seconds": 5.559
+            "matrix_creation_time_seconds": 8.348,
+            "field_distribution_time_seconds": 6.037
           }
         ],
         "failed_runs": 0,
@@ -1316,104 +1316,104 @@
         "polynomial_order": "7",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 37.04,
-            "memory_usage_gb": 15.41937255859375,
-            "memory_usage_kb": 16168384,
+            "elapsed_time_seconds": 35.68,
+            "memory_usage_gb": 15.504615783691406,
+            "memory_usage_kb": 16257768,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 12.872,
-            "field_distribution_time_seconds": 8.306
+            "matrix_creation_time_seconds": 13.002,
+            "field_distribution_time_seconds": 8.097
           },
           {
-            "elapsed_time_seconds": 34.37,
-            "memory_usage_gb": 15.418949127197266,
-            "memory_usage_kb": 16167940,
+            "elapsed_time_seconds": 35.87,
+            "memory_usage_gb": 15.501476287841797,
+            "memory_usage_kb": 16254476,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 12.839,
-            "field_distribution_time_seconds": 7.17
+            "matrix_creation_time_seconds": 12.755,
+            "field_distribution_time_seconds": 8.364
           },
           {
-            "elapsed_time_seconds": 35.1,
-            "memory_usage_gb": 15.482501983642578,
-            "memory_usage_kb": 16234580,
+            "elapsed_time_seconds": 35.94,
+            "memory_usage_gb": 15.4154052734375,
+            "memory_usage_kb": 16164224,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 12.817,
-            "field_distribution_time_seconds": 7.567
+            "matrix_creation_time_seconds": 13.119,
+            "field_distribution_time_seconds": 8.138
           },
           {
-            "elapsed_time_seconds": 35.09,
-            "memory_usage_gb": 15.434864044189453,
-            "memory_usage_kb": 16184628,
+            "elapsed_time_seconds": 36.23,
+            "memory_usage_gb": 15.471084594726562,
+            "memory_usage_kb": 16222608,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 13.186,
-            "field_distribution_time_seconds": 7.695
+            "matrix_creation_time_seconds": 13.278,
+            "field_distribution_time_seconds": 8.567
           },
           {
-            "elapsed_time_seconds": 34.8,
-            "memory_usage_gb": 15.460464477539062,
-            "memory_usage_kb": 16211472,
+            "elapsed_time_seconds": 35.31,
+            "memory_usage_gb": 15.303199768066406,
+            "memory_usage_kb": 16046568,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 12.721,
-            "field_distribution_time_seconds": 7.286
+            "matrix_creation_time_seconds": 12.821,
+            "field_distribution_time_seconds": 8.054
           },
           {
-            "elapsed_time_seconds": 35.13,
-            "memory_usage_gb": 15.447486877441406,
-            "memory_usage_kb": 16197864,
+            "elapsed_time_seconds": 36.17,
+            "memory_usage_gb": 15.484512329101562,
+            "memory_usage_kb": 16236688,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 13.312,
-            "field_distribution_time_seconds": 7.471
+            "matrix_creation_time_seconds": 12.888,
+            "field_distribution_time_seconds": 8.24
           },
           {
-            "elapsed_time_seconds": 35.78,
-            "memory_usage_gb": 15.480712890625,
-            "memory_usage_kb": 16232704,
+            "elapsed_time_seconds": 35.49,
+            "memory_usage_gb": 15.426815032958984,
+            "memory_usage_kb": 16176188,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 12.952,
-            "field_distribution_time_seconds": 7.57
+            "matrix_creation_time_seconds": 12.419,
+            "field_distribution_time_seconds": 8.091
           },
           {
-            "elapsed_time_seconds": 34.59,
-            "memory_usage_gb": 15.461811065673828,
-            "memory_usage_kb": 16212884,
+            "elapsed_time_seconds": 35.18,
+            "memory_usage_gb": 15.512004852294922,
+            "memory_usage_kb": 16265516,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 13.015,
-            "field_distribution_time_seconds": 7.416
+            "matrix_creation_time_seconds": 12.794,
+            "field_distribution_time_seconds": 8.2
           },
           {
-            "elapsed_time_seconds": 37.45,
-            "memory_usage_gb": 15.468090057373047,
-            "memory_usage_kb": 16219468,
+            "elapsed_time_seconds": 35.73,
+            "memory_usage_gb": 15.42559814453125,
+            "memory_usage_kb": 16174912,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 12.362,
-            "field_distribution_time_seconds": 7.677
+            "matrix_creation_time_seconds": 12.91,
+            "field_distribution_time_seconds": 8.132
           },
           {
-            "elapsed_time_seconds": 34.63,
-            "memory_usage_gb": 15.493698120117188,
-            "memory_usage_kb": 16246320,
+            "elapsed_time_seconds": 35.96,
+            "memory_usage_gb": 15.440666198730469,
+            "memory_usage_kb": 16190712,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 12.978,
-            "field_distribution_time_seconds": 7.455
+            "matrix_creation_time_seconds": 13.026,
+            "field_distribution_time_seconds": 8.233
           }
         ],
         "failed_runs": 0,
@@ -1425,104 +1425,104 @@
         "polynomial_order": "8",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 49.02,
-            "memory_usage_gb": 20.993751525878906,
-            "memory_usage_kb": 22013544,
+            "elapsed_time_seconds": 49.33,
+            "memory_usage_gb": 20.939247131347656,
+            "memory_usage_kb": 21956392,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 20.934,
-            "field_distribution_time_seconds": 10.147
+            "matrix_creation_time_seconds": 20.021,
+            "field_distribution_time_seconds": 10.771
           },
           {
-            "elapsed_time_seconds": 48.24,
-            "memory_usage_gb": 20.92496109008789,
-            "memory_usage_kb": 21941412,
+            "elapsed_time_seconds": 48.18,
+            "memory_usage_gb": 21.037700653076172,
+            "memory_usage_kb": 22059628,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 21.194,
-            "field_distribution_time_seconds": 10.067
+            "matrix_creation_time_seconds": 19.669,
+            "field_distribution_time_seconds": 10.942
           },
           {
-            "elapsed_time_seconds": 51.09,
-            "memory_usage_gb": 21.022106170654297,
-            "memory_usage_kb": 22043276,
+            "elapsed_time_seconds": 48.16,
+            "memory_usage_gb": 20.977439880371094,
+            "memory_usage_kb": 21996440,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 20.924,
-            "field_distribution_time_seconds": 10.289
+            "matrix_creation_time_seconds": 19.66,
+            "field_distribution_time_seconds": 11.032
           },
           {
-            "elapsed_time_seconds": 48.87,
-            "memory_usage_gb": 20.96784210205078,
-            "memory_usage_kb": 21986376,
+            "elapsed_time_seconds": 47.92,
+            "memory_usage_gb": 20.891944885253906,
+            "memory_usage_kb": 21906792,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 20.412,
-            "field_distribution_time_seconds": 9.554
+            "matrix_creation_time_seconds": 19.758,
+            "field_distribution_time_seconds": 10.687
           },
           {
-            "elapsed_time_seconds": 48.49,
-            "memory_usage_gb": 20.94546127319336,
-            "memory_usage_kb": 21962908,
+            "elapsed_time_seconds": 49.3,
+            "memory_usage_gb": 20.903011322021484,
+            "memory_usage_kb": 21918396,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 20.656,
-            "field_distribution_time_seconds": 10.622
+            "matrix_creation_time_seconds": 19.967,
+            "field_distribution_time_seconds": 11.267
           },
           {
-            "elapsed_time_seconds": 48.99,
-            "memory_usage_gb": 20.994049072265625,
-            "memory_usage_kb": 22013856,
+            "elapsed_time_seconds": 54.1,
+            "memory_usage_gb": 20.952102661132812,
+            "memory_usage_kb": 21969872,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 20.911,
-            "field_distribution_time_seconds": 9.857
+            "matrix_creation_time_seconds": 19.847,
+            "field_distribution_time_seconds": 11.054
           },
           {
-            "elapsed_time_seconds": 47.87,
-            "memory_usage_gb": 20.952495574951172,
-            "memory_usage_kb": 21970284,
+            "elapsed_time_seconds": 48.49,
+            "memory_usage_gb": 21.039764404296875,
+            "memory_usage_kb": 22061792,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 20.195,
-            "field_distribution_time_seconds": 10.05
+            "matrix_creation_time_seconds": 19.758,
+            "field_distribution_time_seconds": 10.92
           },
           {
-            "elapsed_time_seconds": 49.07,
-            "memory_usage_gb": 21.199684143066406,
-            "memory_usage_kb": 22229480,
+            "elapsed_time_seconds": 48.2,
+            "memory_usage_gb": 20.98239517211914,
+            "memory_usage_kb": 22001636,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 20.746,
-            "field_distribution_time_seconds": 9.906
+            "matrix_creation_time_seconds": 20.118,
+            "field_distribution_time_seconds": 10.785
           },
           {
-            "elapsed_time_seconds": 48.02,
-            "memory_usage_gb": 20.88686752319336,
-            "memory_usage_kb": 21901468,
+            "elapsed_time_seconds": 50.41,
+            "memory_usage_gb": 20.87734603881836,
+            "memory_usage_kb": 21891484,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 20.858,
-            "field_distribution_time_seconds": 10.361
+            "matrix_creation_time_seconds": 19.88,
+            "field_distribution_time_seconds": 12.743
           },
           {
-            "elapsed_time_seconds": 48.68,
-            "memory_usage_gb": 21.028793334960938,
-            "memory_usage_kb": 22050288,
+            "elapsed_time_seconds": 48.66,
+            "memory_usage_gb": 21.119380950927734,
+            "memory_usage_kb": 22145276,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 21.063,
-            "field_distribution_time_seconds": 9.949
+            "matrix_creation_time_seconds": 19.843,
+            "field_distribution_time_seconds": 11.061
           }
         ],
         "failed_runs": 0,
@@ -1534,104 +1534,104 @@
         "polynomial_order": "9",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 94.73,
-            "memory_usage_gb": 28.100440979003906,
-            "memory_usage_kb": 29465448,
+            "elapsed_time_seconds": 91.77,
+            "memory_usage_gb": 27.801570892333984,
+            "memory_usage_kb": 29152060,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 59.703,
-            "field_distribution_time_seconds": 12.817
+            "matrix_creation_time_seconds": 54.255,
+            "field_distribution_time_seconds": 13.769
           },
           {
-            "elapsed_time_seconds": 95.75,
-            "memory_usage_gb": 28.17728042602539,
-            "memory_usage_kb": 29546020,
+            "elapsed_time_seconds": 93.16,
+            "memory_usage_gb": 28.066539764404297,
+            "memory_usage_kb": 29429900,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 60.0,
-            "field_distribution_time_seconds": 12.916
+            "matrix_creation_time_seconds": 56.633,
+            "field_distribution_time_seconds": 13.981
           },
           {
-            "elapsed_time_seconds": 90.16,
-            "memory_usage_gb": 28.067569732666016,
-            "memory_usage_kb": 29430980,
+            "elapsed_time_seconds": 94.66,
+            "memory_usage_gb": 28.83975601196289,
+            "memory_usage_kb": 30240676,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 53.305,
-            "field_distribution_time_seconds": 14.198
+            "matrix_creation_time_seconds": 55.483,
+            "field_distribution_time_seconds": 13.843
           },
           {
-            "elapsed_time_seconds": 92.34,
-            "memory_usage_gb": 27.966415405273438,
-            "memory_usage_kb": 29324912,
+            "elapsed_time_seconds": 92.92,
+            "memory_usage_gb": 28.08013153076172,
+            "memory_usage_kb": 29444152,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 57.452,
-            "field_distribution_time_seconds": 12.812
+            "matrix_creation_time_seconds": 54.194,
+            "field_distribution_time_seconds": 13.945
           },
           {
-            "elapsed_time_seconds": 91.34,
-            "memory_usage_gb": 28.036510467529297,
-            "memory_usage_kb": 29398412,
+            "elapsed_time_seconds": 98.17,
+            "memory_usage_gb": 27.934127807617188,
+            "memory_usage_kb": 29291056,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 56.236,
-            "field_distribution_time_seconds": 13.154
+            "matrix_creation_time_seconds": 58.257,
+            "field_distribution_time_seconds": 13.729
           },
           {
-            "elapsed_time_seconds": 92.97,
-            "memory_usage_gb": 28.142383575439453,
-            "memory_usage_kb": 29509428,
+            "elapsed_time_seconds": 85.65,
+            "memory_usage_gb": 27.91647720336914,
+            "memory_usage_kb": 29272548,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 57.054,
-            "field_distribution_time_seconds": 12.781
+            "matrix_creation_time_seconds": 49.598,
+            "field_distribution_time_seconds": 14.579
           },
           {
-            "elapsed_time_seconds": 89.47,
-            "memory_usage_gb": 28.191162109375,
-            "memory_usage_kb": 29560576,
+            "elapsed_time_seconds": 91.4,
+            "memory_usage_gb": 28.046070098876953,
+            "memory_usage_kb": 29408436,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 55.156,
-            "field_distribution_time_seconds": 12.201
+            "matrix_creation_time_seconds": 55.667,
+            "field_distribution_time_seconds": 13.654
           },
           {
-            "elapsed_time_seconds": 96.04,
-            "memory_usage_gb": 28.266033172607422,
-            "memory_usage_kb": 29639084,
+            "elapsed_time_seconds": 92.77,
+            "memory_usage_gb": 28.122539520263672,
+            "memory_usage_kb": 29488620,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 60.0,
-            "field_distribution_time_seconds": 12.696
+            "matrix_creation_time_seconds": 57.253,
+            "field_distribution_time_seconds": 13.704
           },
           {
-            "elapsed_time_seconds": 94.77,
-            "memory_usage_gb": 28.049053192138672,
-            "memory_usage_kb": 29411564,
+            "elapsed_time_seconds": 91.43,
+            "memory_usage_gb": 27.97713851928711,
+            "memory_usage_kb": 29336156,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 60.0,
-            "field_distribution_time_seconds": 12.375
+            "matrix_creation_time_seconds": 55.501,
+            "field_distribution_time_seconds": 13.768
           },
           {
-            "elapsed_time_seconds": 90.48,
-            "memory_usage_gb": 28.074970245361328,
-            "memory_usage_kb": 29438740,
+            "elapsed_time_seconds": 89.68,
+            "memory_usage_gb": 28.29620361328125,
+            "memory_usage_kb": 29670720,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 56.765,
-            "field_distribution_time_seconds": 12.339
+            "matrix_creation_time_seconds": 53.32,
+            "field_distribution_time_seconds": 13.602
           }
         ],
         "failed_runs": 0,
@@ -1643,104 +1643,104 @@
         "polynomial_order": "I01",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 130.99,
-            "memory_usage_gb": 10.838356018066406,
-            "memory_usage_kb": 11364840,
+            "elapsed_time_seconds": 126.42,
+            "memory_usage_gb": 11.173774719238281,
+            "memory_usage_kb": 11716552,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 110.0,
-            "field_distribution_time_seconds": 7.092
+            "matrix_creation_time_seconds": 105.0,
+            "field_distribution_time_seconds": 7.493
           },
           {
-            "elapsed_time_seconds": 129.26,
-            "memory_usage_gb": 11.117477416992188,
-            "memory_usage_kb": 11657520,
+            "elapsed_time_seconds": 125.7,
+            "memory_usage_gb": 11.134773254394531,
+            "memory_usage_kb": 11675656,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 109.0,
-            "field_distribution_time_seconds": 7.632
+            "matrix_creation_time_seconds": 104.0,
+            "field_distribution_time_seconds": 7.526
           },
           {
-            "elapsed_time_seconds": 129.3,
-            "memory_usage_gb": 11.249336242675781,
-            "memory_usage_kb": 11795784,
+            "elapsed_time_seconds": 131.72,
+            "memory_usage_gb": 11.289848327636719,
+            "memory_usage_kb": 11838264,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 109.0,
-            "field_distribution_time_seconds": 7.227
+            "matrix_creation_time_seconds": 104.0,
+            "field_distribution_time_seconds": 7.665
           },
           {
-            "elapsed_time_seconds": 129.55,
-            "memory_usage_gb": 11.231258392333984,
-            "memory_usage_kb": 11776828,
+            "elapsed_time_seconds": 125.0,
+            "memory_usage_gb": 11.125686645507812,
+            "memory_usage_kb": 11666128,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 109.0,
-            "field_distribution_time_seconds": 7.258
+            "matrix_creation_time_seconds": 104.0,
+            "field_distribution_time_seconds": 7.507
           },
           {
-            "elapsed_time_seconds": 132.04,
-            "memory_usage_gb": 11.146961212158203,
-            "memory_usage_kb": 11688436,
+            "elapsed_time_seconds": 126.88,
+            "memory_usage_gb": 11.241046905517578,
+            "memory_usage_kb": 11787092,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 109.0,
-            "field_distribution_time_seconds": 7.245
+            "matrix_creation_time_seconds": 106.0,
+            "field_distribution_time_seconds": 7.642
           },
           {
-            "elapsed_time_seconds": 129.25,
-            "memory_usage_gb": 11.19906997680664,
-            "memory_usage_kb": 11743076,
+            "elapsed_time_seconds": 124.15,
+            "memory_usage_gb": 11.058177947998047,
+            "memory_usage_kb": 11595340,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 109.0,
-            "field_distribution_time_seconds": 7.309
+            "matrix_creation_time_seconds": 104.0,
+            "field_distribution_time_seconds": 7.537
           },
           {
-            "elapsed_time_seconds": 130.4,
-            "memory_usage_gb": 11.192325592041016,
-            "memory_usage_kb": 11736004,
+            "elapsed_time_seconds": 127.85,
+            "memory_usage_gb": 11.0418701171875,
+            "memory_usage_kb": 11578240,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 110.0,
-            "field_distribution_time_seconds": 7.156
+            "matrix_creation_time_seconds": 106.0,
+            "field_distribution_time_seconds": 9.008
           },
           {
-            "elapsed_time_seconds": 125.9,
-            "memory_usage_gb": 11.171218872070312,
-            "memory_usage_kb": 11713872,
+            "elapsed_time_seconds": 124.26,
+            "memory_usage_gb": 11.136425018310547,
+            "memory_usage_kb": 11677388,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 106.0,
-            "field_distribution_time_seconds": 7.279
+            "matrix_creation_time_seconds": 103.0,
+            "field_distribution_time_seconds": 7.946
           },
           {
-            "elapsed_time_seconds": 127.35,
-            "memory_usage_gb": 10.8319091796875,
-            "memory_usage_kb": 11358080,
+            "elapsed_time_seconds": 125.76,
+            "memory_usage_gb": 11.149478912353516,
+            "memory_usage_kb": 11691076,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 107.0,
-            "field_distribution_time_seconds": 7.262
+            "matrix_creation_time_seconds": 105.0,
+            "field_distribution_time_seconds": 7.57
           },
           {
-            "elapsed_time_seconds": 126.21,
-            "memory_usage_gb": 11.07198715209961,
-            "memory_usage_kb": 11609820,
+            "elapsed_time_seconds": 127.47,
+            "memory_usage_gb": 11.027225494384766,
+            "memory_usage_kb": 11562884,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
             "matrix_creation_time_seconds": 106.0,
-            "field_distribution_time_seconds": 7.125
+            "field_distribution_time_seconds": 8.731
           }
         ],
         "failed_runs": 0,
@@ -1748,110 +1748,110 @@
         "success_rate": 1.0
       }
     },
-    "loop_order": {
+    "Cache locality": {
       "p3": {
         "mesh_size": "100k",
         "polynomial_order": "3",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 12.52,
-            "memory_usage_gb": 4.119102478027344,
-            "memory_usage_kb": 4319192,
+            "elapsed_time_seconds": 12.11,
+            "memory_usage_gb": 4.0023651123046875,
+            "memory_usage_kb": 4196784,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 2.021,
-            "field_distribution_time_seconds": 2.273
+            "matrix_creation_time_seconds": 2.082,
+            "field_distribution_time_seconds": 2.002
           },
           {
-            "elapsed_time_seconds": 11.3,
-            "memory_usage_gb": 4.0170440673828125,
-            "memory_usage_kb": 4212176,
+            "elapsed_time_seconds": 11.47,
+            "memory_usage_gb": 3.9875335693359375,
+            "memory_usage_kb": 4181232,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 2.234,
-            "field_distribution_time_seconds": 1.826
+            "matrix_creation_time_seconds": 2.138,
+            "field_distribution_time_seconds": 1.95
           },
           {
-            "elapsed_time_seconds": 14.73,
-            "memory_usage_gb": 3.9641456604003906,
-            "memory_usage_kb": 4156708,
+            "elapsed_time_seconds": 11.57,
+            "memory_usage_gb": 4.000785827636719,
+            "memory_usage_kb": 4195128,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 2.428,
-            "field_distribution_time_seconds": 1.828
+            "matrix_creation_time_seconds": 2.237,
+            "field_distribution_time_seconds": 1.935
           },
           {
-            "elapsed_time_seconds": 12.65,
-            "memory_usage_gb": 4.0108642578125,
-            "memory_usage_kb": 4205696,
+            "elapsed_time_seconds": 11.48,
+            "memory_usage_gb": 3.9597244262695312,
+            "memory_usage_kb": 4152072,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 2.102,
-            "field_distribution_time_seconds": 2.046
+            "matrix_creation_time_seconds": 2.236,
+            "field_distribution_time_seconds": 2.064
           },
           {
-            "elapsed_time_seconds": 10.8,
-            "memory_usage_gb": 3.962799072265625,
-            "memory_usage_kb": 4155296,
+            "elapsed_time_seconds": 11.55,
+            "memory_usage_gb": 3.9670791625976562,
+            "memory_usage_kb": 4159784,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 1.949,
-            "field_distribution_time_seconds": 1.762
+            "matrix_creation_time_seconds": 2.192,
+            "field_distribution_time_seconds": 2.161
           },
           {
-            "elapsed_time_seconds": 11.19,
-            "memory_usage_gb": 3.9905319213867188,
-            "memory_usage_kb": 4184376,
+            "elapsed_time_seconds": 11.97,
+            "memory_usage_gb": 3.9900436401367188,
+            "memory_usage_kb": 4183864,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 2.223,
-            "field_distribution_time_seconds": 1.844
+            "matrix_creation_time_seconds": 2.146,
+            "field_distribution_time_seconds": 2.31
           },
           {
-            "elapsed_time_seconds": 11.13,
-            "memory_usage_gb": 4.035465240478516,
-            "memory_usage_kb": 4231492,
+            "elapsed_time_seconds": 11.68,
+            "memory_usage_gb": 4.024204254150391,
+            "memory_usage_kb": 4219684,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 2.031,
-            "field_distribution_time_seconds": 1.829
-          },
-          {
-            "elapsed_time_seconds": 10.9,
-            "memory_usage_gb": 3.9777603149414062,
-            "memory_usage_kb": 4170984,
-            "exit_code": 0,
-            "success": true,
-            "run_number": 8,
-            "matrix_creation_time_seconds": 2.05,
-            "field_distribution_time_seconds": 1.942
+            "matrix_creation_time_seconds": 2.322,
+            "field_distribution_time_seconds": 2.332
           },
           {
             "elapsed_time_seconds": 11.23,
-            "memory_usage_gb": 3.9800186157226562,
-            "memory_usage_kb": 4173352,
+            "memory_usage_gb": 3.9619064331054688,
+            "memory_usage_kb": 4154360,
+            "exit_code": 0,
+            "success": true,
+            "run_number": 8,
+            "matrix_creation_time_seconds": 2.145,
+            "field_distribution_time_seconds": 1.992
+          },
+          {
+            "elapsed_time_seconds": 11.16,
+            "memory_usage_gb": 4.011058807373047,
+            "memory_usage_kb": 4205900,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 2.245,
-            "field_distribution_time_seconds": 1.97
+            "matrix_creation_time_seconds": 2.069,
+            "field_distribution_time_seconds": 1.946
           },
           {
-            "elapsed_time_seconds": 11.34,
-            "memory_usage_gb": 3.9844322204589844,
-            "memory_usage_kb": 4177980,
+            "elapsed_time_seconds": 12.38,
+            "memory_usage_gb": 4.018672943115234,
+            "memory_usage_kb": 4213884,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 2.171,
-            "field_distribution_time_seconds": 2.033
+            "matrix_creation_time_seconds": 2.203,
+            "field_distribution_time_seconds": 2.594
           }
         ],
         "failed_runs": 0,
@@ -1863,104 +1863,104 @@
         "polynomial_order": "4",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 14.29,
-            "memory_usage_gb": 5.385608673095703,
-            "memory_usage_kb": 5647220,
+            "elapsed_time_seconds": 16.18,
+            "memory_usage_gb": 5.568138122558594,
+            "memory_usage_kb": 5838616,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 3.313,
-            "field_distribution_time_seconds": 2.873
+            "matrix_creation_time_seconds": 3.567,
+            "field_distribution_time_seconds": 3.108
           },
           {
-            "elapsed_time_seconds": 15.5,
-            "memory_usage_gb": 5.376380920410156,
-            "memory_usage_kb": 5637544,
+            "elapsed_time_seconds": 15.19,
+            "memory_usage_gb": 5.367481231689453,
+            "memory_usage_kb": 5628212,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 3.642,
-            "field_distribution_time_seconds": 2.998
+            "matrix_creation_time_seconds": 3.519,
+            "field_distribution_time_seconds": 2.97
           },
           {
-            "elapsed_time_seconds": 14.71,
-            "memory_usage_gb": 5.370532989501953,
-            "memory_usage_kb": 5631412,
+            "elapsed_time_seconds": 14.88,
+            "memory_usage_gb": 5.371711730957031,
+            "memory_usage_kb": 5632648,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 3.329,
-            "field_distribution_time_seconds": 3.09
+            "matrix_creation_time_seconds": 3.409,
+            "field_distribution_time_seconds": 2.923
           },
           {
-            "elapsed_time_seconds": 15.43,
-            "memory_usage_gb": 5.408885955810547,
-            "memory_usage_kb": 5671628,
+            "elapsed_time_seconds": 15.34,
+            "memory_usage_gb": 5.537498474121094,
+            "memory_usage_kb": 5806488,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 3.417,
-            "field_distribution_time_seconds": 3.119
+            "matrix_creation_time_seconds": 3.38,
+            "field_distribution_time_seconds": 3.074
           },
           {
-            "elapsed_time_seconds": 15.2,
-            "memory_usage_gb": 5.407756805419922,
-            "memory_usage_kb": 5670444,
+            "elapsed_time_seconds": 15.23,
+            "memory_usage_gb": 5.389030456542969,
+            "memory_usage_kb": 5650808,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 3.48,
-            "field_distribution_time_seconds": 3.007
+            "matrix_creation_time_seconds": 3.522,
+            "field_distribution_time_seconds": 3.104
           },
           {
-            "elapsed_time_seconds": 14.51,
-            "memory_usage_gb": 5.363288879394531,
-            "memory_usage_kb": 5623816,
+            "elapsed_time_seconds": 14.91,
+            "memory_usage_gb": 5.377040863037109,
+            "memory_usage_kb": 5638236,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 3.386,
-            "field_distribution_time_seconds": 2.85
+            "matrix_creation_time_seconds": 3.472,
+            "field_distribution_time_seconds": 3.04
           },
           {
-            "elapsed_time_seconds": 14.87,
-            "memory_usage_gb": 5.356605529785156,
-            "memory_usage_kb": 5616808,
+            "elapsed_time_seconds": 14.83,
+            "memory_usage_gb": 5.375583648681641,
+            "memory_usage_kb": 5636708,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 3.267,
-            "field_distribution_time_seconds": 3.056
+            "matrix_creation_time_seconds": 3.488,
+            "field_distribution_time_seconds": 2.978
           },
           {
-            "elapsed_time_seconds": 15.55,
-            "memory_usage_gb": 5.377330780029297,
-            "memory_usage_kb": 5638540,
+            "elapsed_time_seconds": 16.06,
+            "memory_usage_gb": 5.310901641845703,
+            "memory_usage_kb": 5568884,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 3.405,
-            "field_distribution_time_seconds": 3.018
+            "matrix_creation_time_seconds": 3.522,
+            "field_distribution_time_seconds": 2.907
           },
           {
-            "elapsed_time_seconds": 14.19,
-            "memory_usage_gb": 5.386909484863281,
-            "memory_usage_kb": 5648584,
+            "elapsed_time_seconds": 15.65,
+            "memory_usage_gb": 5.53240966796875,
+            "memory_usage_kb": 5801152,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 3.323,
-            "field_distribution_time_seconds": 2.716
+            "matrix_creation_time_seconds": 3.551,
+            "field_distribution_time_seconds": 3.272
           },
           {
-            "elapsed_time_seconds": 15.15,
-            "memory_usage_gb": 5.392543792724609,
-            "memory_usage_kb": 5654492,
+            "elapsed_time_seconds": 15.06,
+            "memory_usage_gb": 5.400806427001953,
+            "memory_usage_kb": 5663156,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 3.361,
-            "field_distribution_time_seconds": 3.069
+            "matrix_creation_time_seconds": 3.625,
+            "field_distribution_time_seconds": 3.071
           }
         ],
         "failed_runs": 0,
@@ -1972,104 +1972,104 @@
         "polynomial_order": "5",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 20.12,
-            "memory_usage_gb": 7.128444671630859,
-            "memory_usage_kb": 7474716,
+            "elapsed_time_seconds": 20.81,
+            "memory_usage_gb": 7.148521423339844,
+            "memory_usage_kb": 7495768,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 6.224,
-            "field_distribution_time_seconds": 3.797
+            "matrix_creation_time_seconds": 6.311,
+            "field_distribution_time_seconds": 4.142
           },
           {
-            "elapsed_time_seconds": 20.63,
-            "memory_usage_gb": 7.0958709716796875,
-            "memory_usage_kb": 7440560,
+            "elapsed_time_seconds": 20.98,
+            "memory_usage_gb": 7.120506286621094,
+            "memory_usage_kb": 7466392,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 6.204,
-            "field_distribution_time_seconds": 3.952
+            "matrix_creation_time_seconds": 6.4,
+            "field_distribution_time_seconds": 4.543
           },
           {
-            "elapsed_time_seconds": 20.21,
-            "memory_usage_gb": 7.139118194580078,
-            "memory_usage_kb": 7485908,
+            "elapsed_time_seconds": 21.62,
+            "memory_usage_gb": 7.217067718505859,
+            "memory_usage_kb": 7567644,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 6.163,
-            "field_distribution_time_seconds": 3.879
+            "matrix_creation_time_seconds": 6.359,
+            "field_distribution_time_seconds": 4.137
           },
           {
-            "elapsed_time_seconds": 20.04,
-            "memory_usage_gb": 7.132255554199219,
-            "memory_usage_kb": 7478712,
+            "elapsed_time_seconds": 20.7,
+            "memory_usage_gb": 7.109081268310547,
+            "memory_usage_kb": 7454412,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 6.139,
-            "field_distribution_time_seconds": 3.979
+            "matrix_creation_time_seconds": 6.449,
+            "field_distribution_time_seconds": 4.085
           },
           {
-            "elapsed_time_seconds": 20.44,
-            "memory_usage_gb": 7.125690460205078,
-            "memory_usage_kb": 7471828,
+            "elapsed_time_seconds": 21.64,
+            "memory_usage_gb": 7.21337890625,
+            "memory_usage_kb": 7563776,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
             "matrix_creation_time_seconds": 6.454,
-            "field_distribution_time_seconds": 3.882
+            "field_distribution_time_seconds": 4.221
           },
           {
-            "elapsed_time_seconds": 19.78,
-            "memory_usage_gb": 7.148200988769531,
-            "memory_usage_kb": 7495432,
+            "elapsed_time_seconds": 20.5,
+            "memory_usage_gb": 7.127315521240234,
+            "memory_usage_kb": 7473532,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 6.297,
-            "field_distribution_time_seconds": 3.838
+            "matrix_creation_time_seconds": 6.495,
+            "field_distribution_time_seconds": 4.097
           },
           {
-            "elapsed_time_seconds": 20.2,
-            "memory_usage_gb": 7.167606353759766,
-            "memory_usage_kb": 7515780,
+            "elapsed_time_seconds": 20.43,
+            "memory_usage_gb": 7.080997467041016,
+            "memory_usage_kb": 7424964,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 6.357,
-            "field_distribution_time_seconds": 3.832
+            "matrix_creation_time_seconds": 6.38,
+            "field_distribution_time_seconds": 4.166
           },
           {
-            "elapsed_time_seconds": 19.81,
-            "memory_usage_gb": 7.076206207275391,
-            "memory_usage_kb": 7419940,
+            "elapsed_time_seconds": 20.96,
+            "memory_usage_gb": 7.167102813720703,
+            "memory_usage_kb": 7515252,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 6.165,
-            "field_distribution_time_seconds": 3.699
+            "matrix_creation_time_seconds": 6.342,
+            "field_distribution_time_seconds": 4.383
           },
           {
-            "elapsed_time_seconds": 20.28,
-            "memory_usage_gb": 7.100677490234375,
-            "memory_usage_kb": 7445600,
+            "elapsed_time_seconds": 20.96,
+            "memory_usage_gb": 7.1136016845703125,
+            "memory_usage_kb": 7459152,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 6.235,
-            "field_distribution_time_seconds": 3.832
+            "matrix_creation_time_seconds": 6.418,
+            "field_distribution_time_seconds": 4.388
           },
           {
-            "elapsed_time_seconds": 20.72,
-            "memory_usage_gb": 7.121364593505859,
-            "memory_usage_kb": 7467292,
+            "elapsed_time_seconds": 21.07,
+            "memory_usage_gb": 7.127098083496094,
+            "memory_usage_kb": 7473304,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 6.291,
-            "field_distribution_time_seconds": 3.859
+            "matrix_creation_time_seconds": 6.446,
+            "field_distribution_time_seconds": 4.361
           }
         ],
         "failed_runs": 0,
@@ -2081,104 +2081,104 @@
         "polynomial_order": "6",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 28.64,
-            "memory_usage_gb": 9.352882385253906,
-            "memory_usage_kb": 9807208,
+            "elapsed_time_seconds": 30.52,
+            "memory_usage_gb": 9.365032196044922,
+            "memory_usage_kb": 9819948,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 11.281,
-            "field_distribution_time_seconds": 5.311
+            "matrix_creation_time_seconds": 11.778,
+            "field_distribution_time_seconds": 6.261
           },
           {
-            "elapsed_time_seconds": 28.88,
-            "memory_usage_gb": 9.334434509277344,
-            "memory_usage_kb": 9787864,
+            "elapsed_time_seconds": 29.97,
+            "memory_usage_gb": 9.325759887695312,
+            "memory_usage_kb": 9778768,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 11.196,
-            "field_distribution_time_seconds": 5.365
+            "matrix_creation_time_seconds": 11.422,
+            "field_distribution_time_seconds": 6.133
           },
           {
-            "elapsed_time_seconds": 29.47,
-            "memory_usage_gb": 9.481586456298828,
-            "memory_usage_kb": 9942164,
+            "elapsed_time_seconds": 29.78,
+            "memory_usage_gb": 9.411178588867188,
+            "memory_usage_kb": 9868336,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 11.109,
-            "field_distribution_time_seconds": 5.768
+            "matrix_creation_time_seconds": 11.766,
+            "field_distribution_time_seconds": 6.219
           },
           {
-            "elapsed_time_seconds": 30.2,
-            "memory_usage_gb": 9.382198333740234,
-            "memory_usage_kb": 9837948,
+            "elapsed_time_seconds": 29.59,
+            "memory_usage_gb": 9.337379455566406,
+            "memory_usage_kb": 9790952,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 11.266,
-            "field_distribution_time_seconds": 6.496
+            "matrix_creation_time_seconds": 11.53,
+            "field_distribution_time_seconds": 6.245
           },
           {
-            "elapsed_time_seconds": 28.96,
-            "memory_usage_gb": 9.292354583740234,
-            "memory_usage_kb": 9743740,
+            "elapsed_time_seconds": 29.05,
+            "memory_usage_gb": 9.348396301269531,
+            "memory_usage_kb": 9802504,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 11.226,
-            "field_distribution_time_seconds": 5.823
+            "matrix_creation_time_seconds": 11.394,
+            "field_distribution_time_seconds": 6.223
           },
           {
-            "elapsed_time_seconds": 28.52,
-            "memory_usage_gb": 9.335899353027344,
-            "memory_usage_kb": 9789400,
+            "elapsed_time_seconds": 32.03,
+            "memory_usage_gb": 9.312969207763672,
+            "memory_usage_kb": 9765356,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 11.263,
-            "field_distribution_time_seconds": 5.486
+            "matrix_creation_time_seconds": 11.309,
+            "field_distribution_time_seconds": 8.583
           },
           {
-            "elapsed_time_seconds": 28.47,
-            "memory_usage_gb": 9.369071960449219,
-            "memory_usage_kb": 9824184,
+            "elapsed_time_seconds": 28.81,
+            "memory_usage_gb": 9.33822250366211,
+            "memory_usage_kb": 9791836,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 11.174,
-            "field_distribution_time_seconds": 5.515
+            "matrix_creation_time_seconds": 11.466,
+            "field_distribution_time_seconds": 6.053
           },
           {
-            "elapsed_time_seconds": 28.8,
-            "memory_usage_gb": 9.30316162109375,
-            "memory_usage_kb": 9755072,
+            "elapsed_time_seconds": 29.65,
+            "memory_usage_gb": 9.349418640136719,
+            "memory_usage_kb": 9803576,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 11.107,
-            "field_distribution_time_seconds": 5.732
+            "matrix_creation_time_seconds": 11.529,
+            "field_distribution_time_seconds": 6.297
           },
           {
-            "elapsed_time_seconds": 29.11,
-            "memory_usage_gb": 9.379020690917969,
-            "memory_usage_kb": 9834616,
+            "elapsed_time_seconds": 36.1,
+            "memory_usage_gb": 9.50571060180664,
+            "memory_usage_kb": 9967460,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 11.235,
-            "field_distribution_time_seconds": 5.549
+            "matrix_creation_time_seconds": 11.391,
+            "field_distribution_time_seconds": 6.236
           },
           {
-            "elapsed_time_seconds": 29.19,
-            "memory_usage_gb": 9.314212799072266,
-            "memory_usage_kb": 9766660,
+            "elapsed_time_seconds": 30.09,
+            "memory_usage_gb": 9.376747131347656,
+            "memory_usage_kb": 9832232,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 11.259,
-            "field_distribution_time_seconds": 5.91
+            "matrix_creation_time_seconds": 11.515,
+            "field_distribution_time_seconds": 6.899
           }
         ],
         "failed_runs": 0,
@@ -2190,104 +2190,104 @@
         "polynomial_order": "7",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 41.65,
-            "memory_usage_gb": 12.338924407958984,
-            "memory_usage_kb": 12938300,
+            "elapsed_time_seconds": 43.2,
+            "memory_usage_gb": 12.302108764648438,
+            "memory_usage_kb": 12899696,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 20.027,
-            "field_distribution_time_seconds": 7.656
+            "matrix_creation_time_seconds": 20.074,
+            "field_distribution_time_seconds": 8.42
           },
           {
-            "elapsed_time_seconds": 41.16,
-            "memory_usage_gb": 12.346080780029297,
-            "memory_usage_kb": 12945804,
+            "elapsed_time_seconds": 41.62,
+            "memory_usage_gb": 12.36172866821289,
+            "memory_usage_kb": 12962212,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 20.21,
-            "field_distribution_time_seconds": 7.446
+            "matrix_creation_time_seconds": 19.832,
+            "field_distribution_time_seconds": 8.194
           },
           {
-            "elapsed_time_seconds": 42.03,
-            "memory_usage_gb": 12.415863037109375,
-            "memory_usage_kb": 13018976,
+            "elapsed_time_seconds": 42.18,
+            "memory_usage_gb": 12.364639282226562,
+            "memory_usage_kb": 12965264,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 20.384,
-            "field_distribution_time_seconds": 7.616
+            "matrix_creation_time_seconds": 19.963,
+            "field_distribution_time_seconds": 8.338
           },
           {
-            "elapsed_time_seconds": 42.93,
-            "memory_usage_gb": 12.345977783203125,
-            "memory_usage_kb": 12945696,
+            "elapsed_time_seconds": 42.7,
+            "memory_usage_gb": 12.385128021240234,
+            "memory_usage_kb": 12986748,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 20.101,
-            "field_distribution_time_seconds": 7.745
+            "matrix_creation_time_seconds": 20.186,
+            "field_distribution_time_seconds": 8.607
           },
           {
-            "elapsed_time_seconds": 41.52,
-            "memory_usage_gb": 12.393253326416016,
-            "memory_usage_kb": 12995268,
+            "elapsed_time_seconds": 42.14,
+            "memory_usage_gb": 12.364768981933594,
+            "memory_usage_kb": 12965400,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 20.099,
-            "field_distribution_time_seconds": 7.401
+            "matrix_creation_time_seconds": 20.078,
+            "field_distribution_time_seconds": 8.14
           },
           {
-            "elapsed_time_seconds": 41.48,
-            "memory_usage_gb": 12.361396789550781,
-            "memory_usage_kb": 12961864,
+            "elapsed_time_seconds": 41.55,
+            "memory_usage_gb": 12.386219024658203,
+            "memory_usage_kb": 12987892,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 19.726,
-            "field_distribution_time_seconds": 7.412
+            "matrix_creation_time_seconds": 20.076,
+            "field_distribution_time_seconds": 7.997
           },
           {
-            "elapsed_time_seconds": 41.32,
-            "memory_usage_gb": 12.532222747802734,
-            "memory_usage_kb": 13140988,
+            "elapsed_time_seconds": 42.66,
+            "memory_usage_gb": 12.295421600341797,
+            "memory_usage_kb": 12892684,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 19.85,
-            "field_distribution_time_seconds": 7.296
+            "matrix_creation_time_seconds": 20.352,
+            "field_distribution_time_seconds": 8.301
           },
           {
-            "elapsed_time_seconds": 41.7,
-            "memory_usage_gb": 12.378482818603516,
-            "memory_usage_kb": 12979780,
+            "elapsed_time_seconds": 43.21,
+            "memory_usage_gb": 12.54581069946289,
+            "memory_usage_kb": 13155236,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 20.305,
-            "field_distribution_time_seconds": 7.679
+            "matrix_creation_time_seconds": 20.065,
+            "field_distribution_time_seconds": 8.372
           },
           {
-            "elapsed_time_seconds": 41.3,
-            "memory_usage_gb": 12.367183685302734,
-            "memory_usage_kb": 12967932,
+            "elapsed_time_seconds": 42.4,
+            "memory_usage_gb": 12.363101959228516,
+            "memory_usage_kb": 12963652,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 19.783,
-            "field_distribution_time_seconds": 7.435
+            "matrix_creation_time_seconds": 20.199,
+            "field_distribution_time_seconds": 8.17
           },
           {
-            "elapsed_time_seconds": 42.17,
-            "memory_usage_gb": 12.375518798828125,
-            "memory_usage_kb": 12976672,
+            "elapsed_time_seconds": 46.55,
+            "memory_usage_gb": 12.351764678955078,
+            "memory_usage_kb": 12951764,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 20.19,
-            "field_distribution_time_seconds": 7.687
+            "matrix_creation_time_seconds": 20.022,
+            "field_distribution_time_seconds": 8.206
           }
         ],
         "failed_runs": 0,
@@ -2299,104 +2299,104 @@
         "polynomial_order": "8",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 62.08,
-            "memory_usage_gb": 16.288978576660156,
-            "memory_usage_kb": 17080232,
+            "elapsed_time_seconds": 61.85,
+            "memory_usage_gb": 16.181671142578125,
+            "memory_usage_kb": 16967712,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 34.508,
-            "field_distribution_time_seconds": 10.43
+            "matrix_creation_time_seconds": 33.899,
+            "field_distribution_time_seconds": 10.81
           },
           {
-            "elapsed_time_seconds": 61.08,
-            "memory_usage_gb": 16.17516326904297,
-            "memory_usage_kb": 16960888,
+            "elapsed_time_seconds": 61.8,
+            "memory_usage_gb": 16.26041030883789,
+            "memory_usage_kb": 17050276,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 34.083,
-            "field_distribution_time_seconds": 10.071
+            "matrix_creation_time_seconds": 33.549,
+            "field_distribution_time_seconds": 11.23
           },
           {
-            "elapsed_time_seconds": 60.25,
-            "memory_usage_gb": 16.256725311279297,
-            "memory_usage_kb": 17046412,
+            "elapsed_time_seconds": 60.66,
+            "memory_usage_gb": 16.155635833740234,
+            "memory_usage_kb": 16940412,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 33.058,
-            "field_distribution_time_seconds": 10.001
+            "matrix_creation_time_seconds": 33.305,
+            "field_distribution_time_seconds": 11.126
           },
           {
-            "elapsed_time_seconds": 66.06,
-            "memory_usage_gb": 16.387401580810547,
-            "memory_usage_kb": 17183436,
+            "elapsed_time_seconds": 61.84,
+            "memory_usage_gb": 16.207290649414062,
+            "memory_usage_kb": 16994576,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 34.151,
-            "field_distribution_time_seconds": 10.043
+            "matrix_creation_time_seconds": 33.339,
+            "field_distribution_time_seconds": 12.141
           },
           {
-            "elapsed_time_seconds": 61.69,
-            "memory_usage_gb": 16.167255401611328,
-            "memory_usage_kb": 16952596,
+            "elapsed_time_seconds": 62.46,
+            "memory_usage_gb": 16.208972930908203,
+            "memory_usage_kb": 16996340,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 33.78,
-            "field_distribution_time_seconds": 10.301
+            "matrix_creation_time_seconds": 33.784,
+            "field_distribution_time_seconds": 10.989
           },
           {
-            "elapsed_time_seconds": 62.07,
-            "memory_usage_gb": 16.142032623291016,
-            "memory_usage_kb": 16926148,
+            "elapsed_time_seconds": 62.24,
+            "memory_usage_gb": 16.181964874267578,
+            "memory_usage_kb": 16968020,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 34.244,
-            "field_distribution_time_seconds": 10.708
+            "matrix_creation_time_seconds": 33.625,
+            "field_distribution_time_seconds": 11.439
           },
           {
-            "elapsed_time_seconds": 62.22,
-            "memory_usage_gb": 16.173480987548828,
-            "memory_usage_kb": 16959124,
+            "elapsed_time_seconds": 61.45,
+            "memory_usage_gb": 16.155601501464844,
+            "memory_usage_kb": 16940376,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 34.503,
-            "field_distribution_time_seconds": 10.552
+            "matrix_creation_time_seconds": 33.136,
+            "field_distribution_time_seconds": 11.006
           },
           {
-            "elapsed_time_seconds": 61.86,
-            "memory_usage_gb": 16.264759063720703,
-            "memory_usage_kb": 17054836,
+            "elapsed_time_seconds": 62.72,
+            "memory_usage_gb": 16.19034194946289,
+            "memory_usage_kb": 16976804,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 33.868,
-            "field_distribution_time_seconds": 10.293
+            "matrix_creation_time_seconds": 33.514,
+            "field_distribution_time_seconds": 11.008
           },
           {
-            "elapsed_time_seconds": 62.62,
-            "memory_usage_gb": 16.335918426513672,
-            "memory_usage_kb": 17129452,
+            "elapsed_time_seconds": 62.08,
+            "memory_usage_gb": 16.14346694946289,
+            "memory_usage_kb": 16927652,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 33.638,
-            "field_distribution_time_seconds": 11.326
+            "matrix_creation_time_seconds": 33.71,
+            "field_distribution_time_seconds": 11.023
           },
           {
-            "elapsed_time_seconds": 62.7,
-            "memory_usage_gb": 16.133567810058594,
-            "memory_usage_kb": 16917272,
+            "elapsed_time_seconds": 61.74,
+            "memory_usage_gb": 16.2235107421875,
+            "memory_usage_kb": 17011584,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 34.425,
-            "field_distribution_time_seconds": 10.058
+            "matrix_creation_time_seconds": 33.966,
+            "field_distribution_time_seconds": 10.858
           }
         ],
         "failed_runs": 0,
@@ -2408,104 +2408,104 @@
         "polynomial_order": "9",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 118.9,
-            "memory_usage_gb": 20.983932495117188,
-            "memory_usage_kb": 22003248,
+            "elapsed_time_seconds": 115.91,
+            "memory_usage_gb": 20.957420349121094,
+            "memory_usage_kb": 21975448,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 84.0,
-            "field_distribution_time_seconds": 12.668
+            "matrix_creation_time_seconds": 79.0,
+            "field_distribution_time_seconds": 14.08
           },
           {
-            "elapsed_time_seconds": 114.29,
-            "memory_usage_gb": 20.988285064697266,
-            "memory_usage_kb": 22007812,
+            "elapsed_time_seconds": 115.34,
+            "memory_usage_gb": 20.923572540283203,
+            "memory_usage_kb": 21939956,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
             "matrix_creation_time_seconds": 80.0,
-            "field_distribution_time_seconds": 12.752
+            "field_distribution_time_seconds": 13.702
           },
           {
-            "elapsed_time_seconds": 115.23,
-            "memory_usage_gb": 20.93881607055664,
-            "memory_usage_kb": 21955940,
+            "elapsed_time_seconds": 116.29,
+            "memory_usage_gb": 20.938007354736328,
+            "memory_usage_kb": 21955092,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 81.0,
-            "field_distribution_time_seconds": 12.612
+            "matrix_creation_time_seconds": 80.0,
+            "field_distribution_time_seconds": 13.855
           },
           {
-            "elapsed_time_seconds": 124.38,
-            "memory_usage_gb": 20.843502044677734,
-            "memory_usage_kb": 21855996,
+            "elapsed_time_seconds": 116.75,
+            "memory_usage_gb": 20.87887191772461,
+            "memory_usage_kb": 21893084,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 90.0,
-            "field_distribution_time_seconds": 12.932
+            "matrix_creation_time_seconds": 81.0,
+            "field_distribution_time_seconds": 13.542
           },
           {
-            "elapsed_time_seconds": 121.36,
-            "memory_usage_gb": 21.030174255371094,
-            "memory_usage_kb": 22051736,
+            "elapsed_time_seconds": 120.79,
+            "memory_usage_gb": 20.893959045410156,
+            "memory_usage_kb": 21908904,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 87.0,
-            "field_distribution_time_seconds": 13.028
+            "matrix_creation_time_seconds": 85.0,
+            "field_distribution_time_seconds": 13.779
           },
           {
-            "elapsed_time_seconds": 117.2,
-            "memory_usage_gb": 20.966384887695312,
-            "memory_usage_kb": 21984848,
+            "elapsed_time_seconds": 113.8,
+            "memory_usage_gb": 20.900039672851562,
+            "memory_usage_kb": 21915280,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 81.0,
-            "field_distribution_time_seconds": 12.967
+            "matrix_creation_time_seconds": 72.0,
+            "field_distribution_time_seconds": 14.138
           },
           {
-            "elapsed_time_seconds": 115.64,
-            "memory_usage_gb": 20.632369995117188,
-            "memory_usage_kb": 21634608,
+            "elapsed_time_seconds": 111.7,
+            "memory_usage_gb": 20.963581085205078,
+            "memory_usage_kb": 21981908,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 80.0,
-            "field_distribution_time_seconds": 12.974
+            "matrix_creation_time_seconds": 76.0,
+            "field_distribution_time_seconds": 13.846
           },
           {
-            "elapsed_time_seconds": 119.39,
-            "memory_usage_gb": 21.528823852539062,
-            "memory_usage_kb": 22574608,
+            "elapsed_time_seconds": 115.53,
+            "memory_usage_gb": 21.090808868408203,
+            "memory_usage_kb": 22115316,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 83.0,
-            "field_distribution_time_seconds": 12.523
+            "matrix_creation_time_seconds": 78.0,
+            "field_distribution_time_seconds": 13.825
           },
           {
-            "elapsed_time_seconds": 120.83,
-            "memory_usage_gb": 20.920921325683594,
-            "memory_usage_kb": 21937176,
+            "elapsed_time_seconds": 113.2,
+            "memory_usage_gb": 20.90605926513672,
+            "memory_usage_kb": 21921592,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 86.0,
-            "field_distribution_time_seconds": 12.634
+            "matrix_creation_time_seconds": 78.0,
+            "field_distribution_time_seconds": 13.967
           },
           {
-            "elapsed_time_seconds": 118.37,
-            "memory_usage_gb": 20.942951202392578,
-            "memory_usage_kb": 21960276,
+            "elapsed_time_seconds": 111.92,
+            "memory_usage_gb": 20.749916076660156,
+            "memory_usage_kb": 21757864,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 84.0,
-            "field_distribution_time_seconds": 12.727
+            "matrix_creation_time_seconds": 77.0,
+            "field_distribution_time_seconds": 13.856
           }
         ],
         "failed_runs": 0,
@@ -2517,104 +2517,104 @@
         "polynomial_order": "I01",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 140.26,
-            "memory_usage_gb": 9.188098907470703,
-            "memory_usage_kb": 9634420,
+            "elapsed_time_seconds": 130.51,
+            "memory_usage_gb": 9.184162139892578,
+            "memory_usage_kb": 9630292,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 117.0,
-            "field_distribution_time_seconds": 7.356
+            "matrix_creation_time_seconds": 109.0,
+            "field_distribution_time_seconds": 7.702
           },
           {
-            "elapsed_time_seconds": 135.6,
-            "memory_usage_gb": 9.11391830444336,
-            "memory_usage_kb": 9556636,
+            "elapsed_time_seconds": 131.57,
+            "memory_usage_gb": 9.212272644042969,
+            "memory_usage_kb": 9659768,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 115.0,
-            "field_distribution_time_seconds": 7.369
+            "matrix_creation_time_seconds": 111.0,
+            "field_distribution_time_seconds": 8.053
           },
           {
-            "elapsed_time_seconds": 141.89,
-            "memory_usage_gb": 9.118701934814453,
-            "memory_usage_kb": 9561652,
+            "elapsed_time_seconds": 130.33,
+            "memory_usage_gb": 9.205669403076172,
+            "memory_usage_kb": 9652844,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 117.0,
-            "field_distribution_time_seconds": 7.536
+            "matrix_creation_time_seconds": 110.0,
+            "field_distribution_time_seconds": 7.629
           },
           {
-            "elapsed_time_seconds": 152.95,
-            "memory_usage_gb": 9.209213256835938,
-            "memory_usage_kb": 9656560,
+            "elapsed_time_seconds": 130.43,
+            "memory_usage_gb": 9.230838775634766,
+            "memory_usage_kb": 9679236,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 115.0,
-            "field_distribution_time_seconds": 7.788
+            "matrix_creation_time_seconds": 110.0,
+            "field_distribution_time_seconds": 7.69
           },
           {
-            "elapsed_time_seconds": 134.07,
-            "memory_usage_gb": 9.15096664428711,
-            "memory_usage_kb": 9595484,
+            "elapsed_time_seconds": 129.97,
+            "memory_usage_gb": 9.182415008544922,
+            "memory_usage_kb": 9628460,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 114.0,
-            "field_distribution_time_seconds": 7.334
+            "matrix_creation_time_seconds": 109.0,
+            "field_distribution_time_seconds": 7.605
           },
           {
-            "elapsed_time_seconds": 133.47,
-            "memory_usage_gb": 9.130584716796875,
-            "memory_usage_kb": 9574112,
+            "elapsed_time_seconds": 137.45,
+            "memory_usage_gb": 9.396095275878906,
+            "memory_usage_kb": 9852520,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 114.0,
-            "field_distribution_time_seconds": 7.342
+            "matrix_creation_time_seconds": 109.0,
+            "field_distribution_time_seconds": 7.769
           },
           {
-            "elapsed_time_seconds": 135.58,
-            "memory_usage_gb": 9.15911865234375,
-            "memory_usage_kb": 9604032,
+            "elapsed_time_seconds": 132.68,
+            "memory_usage_gb": 9.151802062988281,
+            "memory_usage_kb": 9596360,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 114.0,
-            "field_distribution_time_seconds": 7.344
+            "matrix_creation_time_seconds": 111.0,
+            "field_distribution_time_seconds": 7.686
           },
           {
-            "elapsed_time_seconds": 143.46,
-            "memory_usage_gb": 9.272964477539062,
-            "memory_usage_kb": 9723408,
+            "elapsed_time_seconds": 132.73,
+            "memory_usage_gb": 9.25783920288086,
+            "memory_usage_kb": 9707548,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 116.0,
-            "field_distribution_time_seconds": 7.444
+            "matrix_creation_time_seconds": 111.0,
+            "field_distribution_time_seconds": 7.845
           },
           {
-            "elapsed_time_seconds": 137.51,
-            "memory_usage_gb": 9.306709289550781,
-            "memory_usage_kb": 9758792,
+            "elapsed_time_seconds": 129.19,
+            "memory_usage_gb": 9.166675567626953,
+            "memory_usage_kb": 9611956,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 118.0,
-            "field_distribution_time_seconds": 7.3
+            "matrix_creation_time_seconds": 108.0,
+            "field_distribution_time_seconds": 7.736
           },
           {
-            "elapsed_time_seconds": 135.87,
-            "memory_usage_gb": 9.165748596191406,
-            "memory_usage_kb": 9610984,
+            "elapsed_time_seconds": 130.57,
+            "memory_usage_gb": 9.148040771484375,
+            "memory_usage_kb": 9592416,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 116.0,
-            "field_distribution_time_seconds": 7.251
+            "matrix_creation_time_seconds": 110.0,
+            "field_distribution_time_seconds": 7.654
           }
         ],
         "failed_runs": 0,
@@ -2622,110 +2622,110 @@
         "success_rate": 1.0
       }
     },
-    "master": {
+    "Original": {
       "p3": {
         "mesh_size": "100k",
         "polynomial_order": "3",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 11.91,
-            "memory_usage_gb": 4.0272064208984375,
-            "memory_usage_kb": 4222832,
+            "elapsed_time_seconds": 11.78,
+            "memory_usage_gb": 3.98193359375,
+            "memory_usage_kb": 4175360,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 2.515,
-            "field_distribution_time_seconds": 1.994
+            "matrix_creation_time_seconds": 2.59,
+            "field_distribution_time_seconds": 1.936
           },
           {
-            "elapsed_time_seconds": 12.07,
-            "memory_usage_gb": 4.108898162841797,
-            "memory_usage_kb": 4308492,
+            "elapsed_time_seconds": 11.06,
+            "memory_usage_gb": 3.9898452758789062,
+            "memory_usage_kb": 4183656,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 2.551,
-            "field_distribution_time_seconds": 1.795
+            "matrix_creation_time_seconds": 2.511,
+            "field_distribution_time_seconds": 1.888
           },
           {
-            "elapsed_time_seconds": 11.42,
-            "memory_usage_gb": 3.9928627014160156,
-            "memory_usage_kb": 4186820,
+            "elapsed_time_seconds": 11.25,
+            "memory_usage_gb": 3.9985313415527344,
+            "memory_usage_kb": 4192764,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 2.443,
-            "field_distribution_time_seconds": 2.136
+            "matrix_creation_time_seconds": 2.523,
+            "field_distribution_time_seconds": 1.935
           },
           {
-            "elapsed_time_seconds": 11.32,
-            "memory_usage_gb": 4.007362365722656,
-            "memory_usage_kb": 4202024,
+            "elapsed_time_seconds": 11.18,
+            "memory_usage_gb": 3.9822769165039062,
+            "memory_usage_kb": 4175720,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 2.549,
-            "field_distribution_time_seconds": 1.925
+            "matrix_creation_time_seconds": 2.517,
+            "field_distribution_time_seconds": 1.933
           },
           {
-            "elapsed_time_seconds": 11.28,
-            "memory_usage_gb": 3.9947357177734375,
-            "memory_usage_kb": 4188784,
+            "elapsed_time_seconds": 12.71,
+            "memory_usage_gb": 4.0894012451171875,
+            "memory_usage_kb": 4288048,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 2.46,
-            "field_distribution_time_seconds": 1.787
+            "matrix_creation_time_seconds": 2.631,
+            "field_distribution_time_seconds": 1.978
           },
           {
-            "elapsed_time_seconds": 11.57,
-            "memory_usage_gb": 3.9777984619140625,
-            "memory_usage_kb": 4171024,
+            "elapsed_time_seconds": 11.47,
+            "memory_usage_gb": 4.022331237792969,
+            "memory_usage_kb": 4217720,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 2.492,
-            "field_distribution_time_seconds": 2.056
+            "matrix_creation_time_seconds": 2.574,
+            "field_distribution_time_seconds": 1.786
           },
           {
-            "elapsed_time_seconds": 11.51,
-            "memory_usage_gb": 4.012332916259766,
-            "memory_usage_kb": 4207236,
+            "elapsed_time_seconds": 11.76,
+            "memory_usage_gb": 3.99017333984375,
+            "memory_usage_kb": 4184000,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 2.584,
-            "field_distribution_time_seconds": 2.027
+            "matrix_creation_time_seconds": 2.508,
+            "field_distribution_time_seconds": 2.189
           },
           {
-            "elapsed_time_seconds": 11.46,
-            "memory_usage_gb": 3.962299346923828,
-            "memory_usage_kb": 4154772,
+            "elapsed_time_seconds": 11.67,
+            "memory_usage_gb": 4.012538909912109,
+            "memory_usage_kb": 4207452,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 2.443,
-            "field_distribution_time_seconds": 2.106
+            "matrix_creation_time_seconds": 2.567,
+            "field_distribution_time_seconds": 1.954
           },
           {
-            "elapsed_time_seconds": 12.27,
-            "memory_usage_gb": 4.100028991699219,
-            "memory_usage_kb": 4299192,
+            "elapsed_time_seconds": 11.5,
+            "memory_usage_gb": 3.9949798583984375,
+            "memory_usage_kb": 4189040,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 2.595,
-            "field_distribution_time_seconds": 1.99
+            "matrix_creation_time_seconds": 2.492,
+            "field_distribution_time_seconds": 1.925
           },
           {
-            "elapsed_time_seconds": 11.93,
-            "memory_usage_gb": 3.997894287109375,
-            "memory_usage_kb": 4192096,
+            "elapsed_time_seconds": 11.21,
+            "memory_usage_gb": 4.020805358886719,
+            "memory_usage_kb": 4216120,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 2.521,
-            "field_distribution_time_seconds": 2.012
+            "matrix_creation_time_seconds": 2.652,
+            "field_distribution_time_seconds": 1.911
           }
         ],
         "failed_runs": 0,
@@ -2737,104 +2737,104 @@
         "polynomial_order": "4",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 18.19,
-            "memory_usage_gb": 5.712009429931641,
-            "memory_usage_kb": 5989476,
+            "elapsed_time_seconds": 16.58,
+            "memory_usage_gb": 5.373626708984375,
+            "memory_usage_kb": 5634656,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 4.818,
-            "field_distribution_time_seconds": 3.019
+            "matrix_creation_time_seconds": 5.129,
+            "field_distribution_time_seconds": 2.725
           },
           {
-            "elapsed_time_seconds": 15.61,
-            "memory_usage_gb": 5.357807159423828,
-            "memory_usage_kb": 5618068,
+            "elapsed_time_seconds": 15.74,
+            "memory_usage_gb": 5.415214538574219,
+            "memory_usage_kb": 5678264,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 4.724,
-            "field_distribution_time_seconds": 2.828
+            "matrix_creation_time_seconds": 4.862,
+            "field_distribution_time_seconds": 2.878
           },
           {
-            "elapsed_time_seconds": 15.94,
-            "memory_usage_gb": 5.359279632568359,
-            "memory_usage_kb": 5619612,
+            "elapsed_time_seconds": 16.15,
+            "memory_usage_gb": 5.374076843261719,
+            "memory_usage_kb": 5635128,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 4.801,
-            "field_distribution_time_seconds": 2.897
+            "matrix_creation_time_seconds": 4.934,
+            "field_distribution_time_seconds": 2.759
           },
           {
-            "elapsed_time_seconds": 15.82,
-            "memory_usage_gb": 5.3726959228515625,
-            "memory_usage_kb": 5633680,
+            "elapsed_time_seconds": 15.98,
+            "memory_usage_gb": 5.397731781005859,
+            "memory_usage_kb": 5659932,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 4.944,
-            "field_distribution_time_seconds": 2.658
+            "matrix_creation_time_seconds": 4.936,
+            "field_distribution_time_seconds": 2.929
           },
           {
-            "elapsed_time_seconds": 16.17,
-            "memory_usage_gb": 5.385551452636719,
-            "memory_usage_kb": 5647160,
+            "elapsed_time_seconds": 16.04,
+            "memory_usage_gb": 5.374122619628906,
+            "memory_usage_kb": 5635176,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 4.915,
-            "field_distribution_time_seconds": 2.747
+            "matrix_creation_time_seconds": 4.877,
+            "field_distribution_time_seconds": 2.872
           },
           {
-            "elapsed_time_seconds": 17.62,
-            "memory_usage_gb": 5.370872497558594,
-            "memory_usage_kb": 5631768,
+            "elapsed_time_seconds": 16.27,
+            "memory_usage_gb": 5.385662078857422,
+            "memory_usage_kb": 5647276,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 4.906,
-            "field_distribution_time_seconds": 3.198
+            "matrix_creation_time_seconds": 4.876,
+            "field_distribution_time_seconds": 2.739
           },
           {
-            "elapsed_time_seconds": 19.4,
-            "memory_usage_gb": 5.388736724853516,
-            "memory_usage_kb": 5650500,
+            "elapsed_time_seconds": 16.33,
+            "memory_usage_gb": 5.390132904052734,
+            "memory_usage_kb": 5651964,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 4.9,
-            "field_distribution_time_seconds": 3.024
+            "matrix_creation_time_seconds": 4.953,
+            "field_distribution_time_seconds": 2.97
           },
           {
-            "elapsed_time_seconds": 18.11,
-            "memory_usage_gb": 5.354091644287109,
-            "memory_usage_kb": 5614172,
+            "elapsed_time_seconds": 17.43,
+            "memory_usage_gb": 5.563385009765625,
+            "memory_usage_kb": 5833632,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 4.878,
-            "field_distribution_time_seconds": 2.995
+            "matrix_creation_time_seconds": 4.999,
+            "field_distribution_time_seconds": 3.454
           },
           {
-            "elapsed_time_seconds": 16.3,
-            "memory_usage_gb": 5.374347686767578,
-            "memory_usage_kb": 5635412,
+            "elapsed_time_seconds": 16.13,
+            "memory_usage_gb": 5.361804962158203,
+            "memory_usage_kb": 5622260,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 4.84,
-            "field_distribution_time_seconds": 3.113
+            "matrix_creation_time_seconds": 4.848,
+            "field_distribution_time_seconds": 2.886
           },
           {
-            "elapsed_time_seconds": 15.89,
-            "memory_usage_gb": 5.399284362792969,
-            "memory_usage_kb": 5661560,
+            "elapsed_time_seconds": 16.18,
+            "memory_usage_gb": 5.363166809082031,
+            "memory_usage_kb": 5623688,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 4.771,
-            "field_distribution_time_seconds": 2.926
+            "matrix_creation_time_seconds": 5.021,
+            "field_distribution_time_seconds": 2.921
           }
         ],
         "failed_runs": 0,
@@ -2846,104 +2846,104 @@
         "polynomial_order": "5",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 24.82,
-            "memory_usage_gb": 7.121921539306641,
-            "memory_usage_kb": 7467876,
+            "elapsed_time_seconds": 24.7,
+            "memory_usage_gb": 7.13232421875,
+            "memory_usage_kb": 7478784,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 11.014,
-            "field_distribution_time_seconds": 4.047
+            "matrix_creation_time_seconds": 10.445,
+            "field_distribution_time_seconds": 3.97
           },
           {
-            "elapsed_time_seconds": 25.51,
-            "memory_usage_gb": 7.111568450927734,
-            "memory_usage_kb": 7457020,
+            "elapsed_time_seconds": 24.07,
+            "memory_usage_gb": 7.116050720214844,
+            "memory_usage_kb": 7461720,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 10.643,
-            "field_distribution_time_seconds": 4.086
+            "matrix_creation_time_seconds": 10.417,
+            "field_distribution_time_seconds": 3.873
           },
           {
-            "elapsed_time_seconds": 26.4,
-            "memory_usage_gb": 7.1486968994140625,
-            "memory_usage_kb": 7495952,
+            "elapsed_time_seconds": 24.4,
+            "memory_usage_gb": 7.128154754638672,
+            "memory_usage_kb": 7474412,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 10.901,
-            "field_distribution_time_seconds": 3.899
+            "matrix_creation_time_seconds": 10.796,
+            "field_distribution_time_seconds": 3.855
           },
           {
-            "elapsed_time_seconds": 24.83,
-            "memory_usage_gb": 7.124164581298828,
-            "memory_usage_kb": 7470228,
+            "elapsed_time_seconds": 23.81,
+            "memory_usage_gb": 7.132682800292969,
+            "memory_usage_kb": 7479160,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 10.31,
-            "field_distribution_time_seconds": 4.2
+            "matrix_creation_time_seconds": 9.899,
+            "field_distribution_time_seconds": 3.93
           },
           {
-            "elapsed_time_seconds": 25.31,
-            "memory_usage_gb": 7.140342712402344,
-            "memory_usage_kb": 7487192,
+            "elapsed_time_seconds": 23.35,
+            "memory_usage_gb": 7.118686676025391,
+            "memory_usage_kb": 7464484,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 11.237,
-            "field_distribution_time_seconds": 4.016
+            "matrix_creation_time_seconds": 10.026,
+            "field_distribution_time_seconds": 3.841
           },
           {
-            "elapsed_time_seconds": 24.47,
-            "memory_usage_gb": 7.092472076416016,
-            "memory_usage_kb": 7436996,
+            "elapsed_time_seconds": 24.27,
+            "memory_usage_gb": 7.0766754150390625,
+            "memory_usage_kb": 7420432,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 10.642,
-            "field_distribution_time_seconds": 3.976
+            "matrix_creation_time_seconds": 10.188,
+            "field_distribution_time_seconds": 3.939
           },
           {
-            "elapsed_time_seconds": 24.62,
-            "memory_usage_gb": 7.077293395996094,
-            "memory_usage_kb": 7421080,
+            "elapsed_time_seconds": 24.05,
+            "memory_usage_gb": 7.108036041259766,
+            "memory_usage_kb": 7453316,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 10.718,
-            "field_distribution_time_seconds": 3.914
+            "matrix_creation_time_seconds": 10.545,
+            "field_distribution_time_seconds": 3.89
           },
           {
-            "elapsed_time_seconds": 24.06,
-            "memory_usage_gb": 7.098461151123047,
-            "memory_usage_kb": 7443276,
+            "elapsed_time_seconds": 24.81,
+            "memory_usage_gb": 7.1132965087890625,
+            "memory_usage_kb": 7458832,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 10.484,
-            "field_distribution_time_seconds": 3.842
+            "matrix_creation_time_seconds": 10.783,
+            "field_distribution_time_seconds": 3.987
           },
           {
-            "elapsed_time_seconds": 24.74,
-            "memory_usage_gb": 7.118206024169922,
-            "memory_usage_kb": 7463980,
+            "elapsed_time_seconds": 24.93,
+            "memory_usage_gb": 7.118110656738281,
+            "memory_usage_kb": 7463880,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 10.803,
-            "field_distribution_time_seconds": 3.967
+            "matrix_creation_time_seconds": 10.722,
+            "field_distribution_time_seconds": 4.173
           },
           {
-            "elapsed_time_seconds": 24.69,
-            "memory_usage_gb": 7.1292266845703125,
-            "memory_usage_kb": 7475536,
+            "elapsed_time_seconds": 24.4,
+            "memory_usage_gb": 7.0906982421875,
+            "memory_usage_kb": 7435136,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 10.803,
-            "field_distribution_time_seconds": 4.052
+            "matrix_creation_time_seconds": 10.535,
+            "field_distribution_time_seconds": 3.855
           }
         ],
         "failed_runs": 0,
@@ -2955,104 +2955,104 @@
         "polynomial_order": "6",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 32.8,
-            "memory_usage_gb": 9.340950012207031,
-            "memory_usage_kb": 9794696,
+            "elapsed_time_seconds": 35.36,
+            "memory_usage_gb": 9.359668731689453,
+            "memory_usage_kb": 9814324,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 15.256,
-            "field_distribution_time_seconds": 5.656
+            "matrix_creation_time_seconds": 17.644,
+            "field_distribution_time_seconds": 5.713
           },
           {
-            "elapsed_time_seconds": 33.08,
-            "memory_usage_gb": 9.295513153076172,
-            "memory_usage_kb": 9747052,
+            "elapsed_time_seconds": 37.9,
+            "memory_usage_gb": 9.359916687011719,
+            "memory_usage_kb": 9814584,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 15.829,
-            "field_distribution_time_seconds": 5.397
+            "matrix_creation_time_seconds": 19.828,
+            "field_distribution_time_seconds": 5.936
           },
           {
-            "elapsed_time_seconds": 33.28,
-            "memory_usage_gb": 9.393280029296875,
-            "memory_usage_kb": 9849568,
+            "elapsed_time_seconds": 35.64,
+            "memory_usage_gb": 9.30084228515625,
+            "memory_usage_kb": 9752640,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 16.238,
-            "field_distribution_time_seconds": 5.292
+            "matrix_creation_time_seconds": 17.892,
+            "field_distribution_time_seconds": 5.771
           },
           {
-            "elapsed_time_seconds": 34.97,
-            "memory_usage_gb": 9.350692749023438,
-            "memory_usage_kb": 9804912,
+            "elapsed_time_seconds": 35.42,
+            "memory_usage_gb": 9.322551727294922,
+            "memory_usage_kb": 9775404,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 16.902,
-            "field_distribution_time_seconds": 6.265
+            "matrix_creation_time_seconds": 17.849,
+            "field_distribution_time_seconds": 5.711
           },
           {
-            "elapsed_time_seconds": 32.78,
-            "memory_usage_gb": 9.413627624511719,
-            "memory_usage_kb": 9870904,
+            "elapsed_time_seconds": 36.31,
+            "memory_usage_gb": 9.342742919921875,
+            "memory_usage_kb": 9796576,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 15.094,
-            "field_distribution_time_seconds": 5.428
+            "matrix_creation_time_seconds": 18.106,
+            "field_distribution_time_seconds": 5.892
           },
           {
-            "elapsed_time_seconds": 33.81,
-            "memory_usage_gb": 9.323959350585938,
-            "memory_usage_kb": 9776880,
+            "elapsed_time_seconds": 35.26,
+            "memory_usage_gb": 9.286827087402344,
+            "memory_usage_kb": 9737944,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 16.767,
-            "field_distribution_time_seconds": 5.584
+            "matrix_creation_time_seconds": 17.842,
+            "field_distribution_time_seconds": 5.591
           },
           {
-            "elapsed_time_seconds": 34.5,
-            "memory_usage_gb": 9.32843017578125,
-            "memory_usage_kb": 9781568,
+            "elapsed_time_seconds": 34.97,
+            "memory_usage_gb": 9.294971466064453,
+            "memory_usage_kb": 9746484,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 17.124,
-            "field_distribution_time_seconds": 5.66
+            "matrix_creation_time_seconds": 17.541,
+            "field_distribution_time_seconds": 5.732
           },
           {
-            "elapsed_time_seconds": 34.37,
-            "memory_usage_gb": 9.306774139404297,
-            "memory_usage_kb": 9758860,
+            "elapsed_time_seconds": 36.77,
+            "memory_usage_gb": 9.32889175415039,
+            "memory_usage_kb": 9782052,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 17.188,
-            "field_distribution_time_seconds": 5.52
+            "matrix_creation_time_seconds": 19.339,
+            "field_distribution_time_seconds": 5.431
           },
           {
-            "elapsed_time_seconds": 33.49,
-            "memory_usage_gb": 9.34786605834961,
-            "memory_usage_kb": 9801948,
+            "elapsed_time_seconds": 34.94,
+            "memory_usage_gb": 9.400653839111328,
+            "memory_usage_kb": 9857300,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 16.158,
-            "field_distribution_time_seconds": 5.279
+            "matrix_creation_time_seconds": 17.769,
+            "field_distribution_time_seconds": 5.737
           },
           {
-            "elapsed_time_seconds": 33.48,
-            "memory_usage_gb": 9.333877563476562,
-            "memory_usage_kb": 9787280,
+            "elapsed_time_seconds": 35.44,
+            "memory_usage_gb": 9.313308715820312,
+            "memory_usage_kb": 9765712,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 16.152,
-            "field_distribution_time_seconds": 5.727
+            "matrix_creation_time_seconds": 17.75,
+            "field_distribution_time_seconds": 6.16
           }
         ],
         "failed_runs": 0,
@@ -3064,104 +3064,104 @@
         "polynomial_order": "7",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 52.49,
-            "memory_usage_gb": 12.453571319580078,
-            "memory_usage_kb": 13058516,
+            "elapsed_time_seconds": 58.8,
+            "memory_usage_gb": 12.335502624511719,
+            "memory_usage_kb": 12934712,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 30.709,
-            "field_distribution_time_seconds": 7.393
+            "matrix_creation_time_seconds": 30.386,
+            "field_distribution_time_seconds": 7.748
           },
           {
-            "elapsed_time_seconds": 53.24,
-            "memory_usage_gb": 12.472442626953125,
-            "memory_usage_kb": 13078304,
+            "elapsed_time_seconds": 51.92,
+            "memory_usage_gb": 12.314460754394531,
+            "memory_usage_kb": 12912648,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 31.335,
-            "field_distribution_time_seconds": 7.675
+            "matrix_creation_time_seconds": 30.54,
+            "field_distribution_time_seconds": 7.607
           },
           {
-            "elapsed_time_seconds": 54.74,
-            "memory_usage_gb": 12.378700256347656,
-            "memory_usage_kb": 12980008,
+            "elapsed_time_seconds": 52.69,
+            "memory_usage_gb": 12.48342514038086,
+            "memory_usage_kb": 13089820,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 33.092,
-            "field_distribution_time_seconds": 7.467
+            "matrix_creation_time_seconds": 31.465,
+            "field_distribution_time_seconds": 7.116
           },
           {
-            "elapsed_time_seconds": 53.04,
-            "memory_usage_gb": 12.418075561523438,
-            "memory_usage_kb": 13021296,
+            "elapsed_time_seconds": 51.72,
+            "memory_usage_gb": 12.575408935546875,
+            "memory_usage_kb": 13186272,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 30.662,
-            "field_distribution_time_seconds": 7.993
+            "matrix_creation_time_seconds": 29.469,
+            "field_distribution_time_seconds": 7.559
           },
           {
-            "elapsed_time_seconds": 51.63,
-            "memory_usage_gb": 12.356868743896484,
-            "memory_usage_kb": 12957116,
+            "elapsed_time_seconds": 52.74,
+            "memory_usage_gb": 12.370903015136719,
+            "memory_usage_kb": 12971832,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 30.096,
-            "field_distribution_time_seconds": 7.686
+            "matrix_creation_time_seconds": 30.823,
+            "field_distribution_time_seconds": 7.871
           },
           {
-            "elapsed_time_seconds": 52.03,
-            "memory_usage_gb": 12.335453033447266,
-            "memory_usage_kb": 12934660,
+            "elapsed_time_seconds": 54.2,
+            "memory_usage_gb": 12.293964385986328,
+            "memory_usage_kb": 12891156,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 29.639,
-            "field_distribution_time_seconds": 7.734
+            "matrix_creation_time_seconds": 32.289,
+            "field_distribution_time_seconds": 7.735
           },
           {
-            "elapsed_time_seconds": 53.31,
-            "memory_usage_gb": 12.347484588623047,
-            "memory_usage_kb": 12947276,
+            "elapsed_time_seconds": 52.05,
+            "memory_usage_gb": 12.327713012695312,
+            "memory_usage_kb": 12926544,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 30.914,
-            "field_distribution_time_seconds": 7.371
+            "matrix_creation_time_seconds": 31.154,
+            "field_distribution_time_seconds": 7.272
           },
           {
-            "elapsed_time_seconds": 53.59,
-            "memory_usage_gb": 12.379512786865234,
-            "memory_usage_kb": 12980860,
+            "elapsed_time_seconds": 51.93,
+            "memory_usage_gb": 12.37152099609375,
+            "memory_usage_kb": 12972480,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 30.902,
-            "field_distribution_time_seconds": 7.781
+            "matrix_creation_time_seconds": 30.203,
+            "field_distribution_time_seconds": 7.51
           },
           {
-            "elapsed_time_seconds": 51.94,
-            "memory_usage_gb": 12.413883209228516,
-            "memory_usage_kb": 13016900,
+            "elapsed_time_seconds": 51.21,
+            "memory_usage_gb": 12.351604461669922,
+            "memory_usage_kb": 12951596,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 30.66,
-            "field_distribution_time_seconds": 7.528
+            "matrix_creation_time_seconds": 29.869,
+            "field_distribution_time_seconds": 7.519
           },
           {
-            "elapsed_time_seconds": 53.78,
-            "memory_usage_gb": 12.423175811767578,
-            "memory_usage_kb": 13026644,
+            "elapsed_time_seconds": 52.45,
+            "memory_usage_gb": 12.4180908203125,
+            "memory_usage_kb": 13021312,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 31.693,
-            "field_distribution_time_seconds": 7.759
+            "matrix_creation_time_seconds": 31.203,
+            "field_distribution_time_seconds": 7.602
           }
         ],
         "failed_runs": 0,
@@ -3173,104 +3173,104 @@
         "polynomial_order": "8",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 78.2,
-            "memory_usage_gb": 16.12411117553711,
-            "memory_usage_kb": 16907356,
+            "elapsed_time_seconds": 71.31,
+            "memory_usage_gb": 16.164295196533203,
+            "memory_usage_kb": 16949492,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 44.32,
-            "field_distribution_time_seconds": 10.181
+            "matrix_creation_time_seconds": 44.615,
+            "field_distribution_time_seconds": 10.104
           },
           {
-            "elapsed_time_seconds": 71.47,
-            "memory_usage_gb": 16.245986938476562,
-            "memory_usage_kb": 17035152,
+            "elapsed_time_seconds": 73.66,
+            "memory_usage_gb": 16.27981185913086,
+            "memory_usage_kb": 17070620,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 44.75,
-            "field_distribution_time_seconds": 9.984
+            "matrix_creation_time_seconds": 45.877,
+            "field_distribution_time_seconds": 10.546
           },
           {
-            "elapsed_time_seconds": 73.14,
-            "memory_usage_gb": 16.259296417236328,
-            "memory_usage_kb": 17049108,
+            "elapsed_time_seconds": 72.52,
+            "memory_usage_gb": 16.202171325683594,
+            "memory_usage_kb": 16989208,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 44.43,
-            "field_distribution_time_seconds": 10.171
+            "matrix_creation_time_seconds": 45.725,
+            "field_distribution_time_seconds": 9.913
           },
           {
-            "elapsed_time_seconds": 73.14,
-            "memory_usage_gb": 16.15283966064453,
-            "memory_usage_kb": 16937480,
+            "elapsed_time_seconds": 75.17,
+            "memory_usage_gb": 16.20062255859375,
+            "memory_usage_kb": 16987584,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 45.549,
-            "field_distribution_time_seconds": 10.091
+            "matrix_creation_time_seconds": 47.713,
+            "field_distribution_time_seconds": 10.208
           },
           {
-            "elapsed_time_seconds": 73.61,
-            "memory_usage_gb": 16.123268127441406,
-            "memory_usage_kb": 16906472,
+            "elapsed_time_seconds": 74.19,
+            "memory_usage_gb": 16.28402328491211,
+            "memory_usage_kb": 17075036,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 46.065,
-            "field_distribution_time_seconds": 9.989
+            "matrix_creation_time_seconds": 45.917,
+            "field_distribution_time_seconds": 10.216
           },
           {
-            "elapsed_time_seconds": 75.74,
-            "memory_usage_gb": 16.223133087158203,
-            "memory_usage_kb": 17011188,
+            "elapsed_time_seconds": 76.49,
+            "memory_usage_gb": 16.17630386352539,
+            "memory_usage_kb": 16962084,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 46.264,
-            "field_distribution_time_seconds": 11.084
+            "matrix_creation_time_seconds": 45.334,
+            "field_distribution_time_seconds": 14.253
           },
           {
-            "elapsed_time_seconds": 73.81,
-            "memory_usage_gb": 16.078777313232422,
-            "memory_usage_kb": 16859820,
+            "elapsed_time_seconds": 72.8,
+            "memory_usage_gb": 16.28311538696289,
+            "memory_usage_kb": 17074084,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 45.931,
-            "field_distribution_time_seconds": 10.372
+            "matrix_creation_time_seconds": 44.319,
+            "field_distribution_time_seconds": 10.902
           },
           {
-            "elapsed_time_seconds": 74.24,
-            "memory_usage_gb": 16.23802947998047,
-            "memory_usage_kb": 17026808,
+            "elapsed_time_seconds": 73.04,
+            "memory_usage_gb": 16.184768676757812,
+            "memory_usage_kb": 16970960,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 46.588,
-            "field_distribution_time_seconds": 10.283
+            "matrix_creation_time_seconds": 45.789,
+            "field_distribution_time_seconds": 10.143
           },
           {
-            "elapsed_time_seconds": 72.25,
-            "memory_usage_gb": 16.19173812866211,
-            "memory_usage_kb": 16978268,
+            "elapsed_time_seconds": 74.01,
+            "memory_usage_gb": 16.24816131591797,
+            "memory_usage_kb": 17037432,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 44.467,
-            "field_distribution_time_seconds": 10.229
+            "matrix_creation_time_seconds": 46.132,
+            "field_distribution_time_seconds": 10.402
           },
           {
-            "elapsed_time_seconds": 75.64,
-            "memory_usage_gb": 16.23748779296875,
-            "memory_usage_kb": 17026240,
+            "elapsed_time_seconds": 80.41,
+            "memory_usage_gb": 16.162464141845703,
+            "memory_usage_kb": 16947572,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 47.783,
-            "field_distribution_time_seconds": 10.055
+            "matrix_creation_time_seconds": 45.796,
+            "field_distribution_time_seconds": 10.38
           }
         ],
         "failed_runs": 0,
@@ -3282,104 +3282,104 @@
         "polynomial_order": "9",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 133.17,
-            "memory_usage_gb": 21.712539672851562,
-            "memory_usage_kb": 22767248,
+            "elapsed_time_seconds": 131.55,
+            "memory_usage_gb": 21.018882751464844,
+            "memory_usage_kb": 22039896,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 94.0,
-            "field_distribution_time_seconds": 12.845
+            "matrix_creation_time_seconds": 93.0,
+            "field_distribution_time_seconds": 12.662
           },
           {
-            "elapsed_time_seconds": 134.36,
-            "memory_usage_gb": 20.993221282958984,
-            "memory_usage_kb": 22012988,
+            "elapsed_time_seconds": 128.21,
+            "memory_usage_gb": 20.93813705444336,
+            "memory_usage_kb": 21955228,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 96.0,
-            "field_distribution_time_seconds": 12.806
+            "matrix_creation_time_seconds": 94.0,
+            "field_distribution_time_seconds": 12.487
           },
           {
-            "elapsed_time_seconds": 123.84,
-            "memory_usage_gb": 20.85808563232422,
-            "memory_usage_kb": 21871288,
+            "elapsed_time_seconds": 130.35,
+            "memory_usage_gb": 20.835529327392578,
+            "memory_usage_kb": 21847636,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 89.0,
-            "field_distribution_time_seconds": 12.959
+            "matrix_creation_time_seconds": 96.0,
+            "field_distribution_time_seconds": 12.799
           },
           {
-            "elapsed_time_seconds": 128.61,
-            "memory_usage_gb": 20.99139404296875,
-            "memory_usage_kb": 22011072,
+            "elapsed_time_seconds": 132.59,
+            "memory_usage_gb": 20.94251251220703,
+            "memory_usage_kb": 21959816,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
             "matrix_creation_time_seconds": 94.0,
-            "field_distribution_time_seconds": 12.994
+            "field_distribution_time_seconds": 15.698
           },
           {
-            "elapsed_time_seconds": 128.46,
-            "memory_usage_gb": 20.895225524902344,
-            "memory_usage_kb": 21910232,
+            "elapsed_time_seconds": 131.59,
+            "memory_usage_gb": 20.938915252685547,
+            "memory_usage_kb": 21956044,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 93.0,
-            "field_distribution_time_seconds": 12.968
+            "matrix_creation_time_seconds": 97.0,
+            "field_distribution_time_seconds": 12.941
           },
           {
-            "elapsed_time_seconds": 133.35,
-            "memory_usage_gb": 20.927860260009766,
-            "memory_usage_kb": 21944452,
+            "elapsed_time_seconds": 132.01,
+            "memory_usage_gb": 20.87713623046875,
+            "memory_usage_kb": 21891264,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 99.0,
-            "field_distribution_time_seconds": 12.775
+            "matrix_creation_time_seconds": 97.0,
+            "field_distribution_time_seconds": 12.661
           },
           {
-            "elapsed_time_seconds": 126.55,
-            "memory_usage_gb": 20.916515350341797,
-            "memory_usage_kb": 21932556,
+            "elapsed_time_seconds": 132.51,
+            "memory_usage_gb": 21.096012115478516,
+            "memory_usage_kb": 22120772,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 92.0,
-            "field_distribution_time_seconds": 13.025
+            "matrix_creation_time_seconds": 98.0,
+            "field_distribution_time_seconds": 12.961
           },
           {
-            "elapsed_time_seconds": 126.52,
-            "memory_usage_gb": 20.960002899169922,
-            "memory_usage_kb": 21978156,
+            "elapsed_time_seconds": 137.96,
+            "memory_usage_gb": 21.02071762084961,
+            "memory_usage_kb": 22041820,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
             "matrix_creation_time_seconds": 92.0,
-            "field_distribution_time_seconds": 12.959
+            "field_distribution_time_seconds": 13.026
           },
           {
-            "elapsed_time_seconds": 134.9,
-            "memory_usage_gb": 21.078792572021484,
-            "memory_usage_kb": 22102716,
+            "elapsed_time_seconds": 127.35,
+            "memory_usage_gb": 20.990619659423828,
+            "memory_usage_kb": 22010260,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 99.0,
-            "field_distribution_time_seconds": 12.891
+            "matrix_creation_time_seconds": 93.0,
+            "field_distribution_time_seconds": 12.689
           },
           {
-            "elapsed_time_seconds": 129.4,
-            "memory_usage_gb": 20.335010528564453,
-            "memory_usage_kb": 21322804,
+            "elapsed_time_seconds": 125.51,
+            "memory_usage_gb": 20.93267822265625,
+            "memory_usage_kb": 21949504,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 93.0,
-            "field_distribution_time_seconds": 12.664
+            "matrix_creation_time_seconds": 91.0,
+            "field_distribution_time_seconds": 12.464
           }
         ],
         "failed_runs": 0,
@@ -3391,104 +3391,104 @@
         "polynomial_order": "I01",
         "successful_runs": [
           {
-            "elapsed_time_seconds": 240.07,
-            "memory_usage_gb": 9.081794738769531,
-            "memory_usage_kb": 9522952,
+            "elapsed_time_seconds": 248.21,
+            "memory_usage_gb": 9.160503387451172,
+            "memory_usage_kb": 9605484,
             "exit_code": 0,
             "success": true,
             "run_number": 1,
-            "matrix_creation_time_seconds": 219.0,
-            "field_distribution_time_seconds": 7.415
+            "matrix_creation_time_seconds": 227.0,
+            "field_distribution_time_seconds": 7.49
           },
           {
-            "elapsed_time_seconds": 260.68,
-            "memory_usage_gb": 9.254886627197266,
-            "memory_usage_kb": 9704452,
+            "elapsed_time_seconds": 255.39,
+            "memory_usage_gb": 8.985660552978516,
+            "memory_usage_kb": 9422148,
             "exit_code": 0,
             "success": true,
             "run_number": 2,
-            "matrix_creation_time_seconds": 240.0,
-            "field_distribution_time_seconds": 7.471
+            "matrix_creation_time_seconds": 231.0,
+            "field_distribution_time_seconds": 7.436
           },
           {
-            "elapsed_time_seconds": 255.97,
-            "memory_usage_gb": 9.339729309082031,
-            "memory_usage_kb": 9793416,
+            "elapsed_time_seconds": 246.61,
+            "memory_usage_gb": 9.12619400024414,
+            "memory_usage_kb": 9569508,
             "exit_code": 0,
             "success": true,
             "run_number": 3,
-            "matrix_creation_time_seconds": 230.0,
-            "field_distribution_time_seconds": 7.457
+            "matrix_creation_time_seconds": 225.0,
+            "field_distribution_time_seconds": 7.509
           },
           {
-            "elapsed_time_seconds": 254.04,
-            "memory_usage_gb": 9.045406341552734,
-            "memory_usage_kb": 9484796,
+            "elapsed_time_seconds": 240.88,
+            "memory_usage_gb": 9.136970520019531,
+            "memory_usage_kb": 9580808,
             "exit_code": 0,
             "success": true,
             "run_number": 4,
-            "matrix_creation_time_seconds": 233.0,
-            "field_distribution_time_seconds": 7.583
+            "matrix_creation_time_seconds": 220.0,
+            "field_distribution_time_seconds": 7.857
           },
           {
-            "elapsed_time_seconds": 256.99,
-            "memory_usage_gb": 9.204402923583984,
-            "memory_usage_kb": 9651516,
+            "elapsed_time_seconds": 245.76,
+            "memory_usage_gb": 9.220481872558594,
+            "memory_usage_kb": 9668376,
             "exit_code": 0,
             "success": true,
             "run_number": 5,
-            "matrix_creation_time_seconds": 237.0,
-            "field_distribution_time_seconds": 7.344
+            "matrix_creation_time_seconds": 226.0,
+            "field_distribution_time_seconds": 7.356
           },
           {
-            "elapsed_time_seconds": 234.78,
-            "memory_usage_gb": 9.180992126464844,
-            "memory_usage_kb": 9626968,
+            "elapsed_time_seconds": 252.02,
+            "memory_usage_gb": 9.182609558105469,
+            "memory_usage_kb": 9628664,
             "exit_code": 0,
             "success": true,
             "run_number": 6,
-            "matrix_creation_time_seconds": 215.0,
-            "field_distribution_time_seconds": 7.411
+            "matrix_creation_time_seconds": 225.0,
+            "field_distribution_time_seconds": 7.348
           },
           {
-            "elapsed_time_seconds": 260.49,
-            "memory_usage_gb": 9.19000244140625,
-            "memory_usage_kb": 9636416,
+            "elapsed_time_seconds": 233.69,
+            "memory_usage_gb": 9.162841796875,
+            "memory_usage_kb": 9607936,
             "exit_code": 0,
             "success": true,
             "run_number": 7,
-            "matrix_creation_time_seconds": 235.0,
-            "field_distribution_time_seconds": 7.708
+            "matrix_creation_time_seconds": 213.0,
+            "field_distribution_time_seconds": 7.35
           },
           {
-            "elapsed_time_seconds": 243.82,
-            "memory_usage_gb": 9.142181396484375,
-            "memory_usage_kb": 9586272,
+            "elapsed_time_seconds": 246.91,
+            "memory_usage_gb": 9.278541564941406,
+            "memory_usage_kb": 9729256,
             "exit_code": 0,
             "success": true,
             "run_number": 8,
-            "matrix_creation_time_seconds": 223.0,
-            "field_distribution_time_seconds": 7.612
+            "matrix_creation_time_seconds": 227.0,
+            "field_distribution_time_seconds": 7.511
           },
           {
-            "elapsed_time_seconds": 240.14,
-            "memory_usage_gb": 9.187599182128906,
-            "memory_usage_kb": 9633896,
+            "elapsed_time_seconds": 251.24,
+            "memory_usage_gb": 9.128814697265625,
+            "memory_usage_kb": 9572256,
             "exit_code": 0,
             "success": true,
             "run_number": 9,
-            "matrix_creation_time_seconds": 220.0,
-            "field_distribution_time_seconds": 7.238
+            "matrix_creation_time_seconds": 230.0,
+            "field_distribution_time_seconds": 7.351
           },
           {
-            "elapsed_time_seconds": 241.78,
-            "memory_usage_gb": 9.195697784423828,
-            "memory_usage_kb": 9642388,
+            "elapsed_time_seconds": 250.02,
+            "memory_usage_gb": 9.189750671386719,
+            "memory_usage_kb": 9636152,
             "exit_code": 0,
             "success": true,
             "run_number": 10,
-            "matrix_creation_time_seconds": 221.0,
-            "field_distribution_time_seconds": 7.549
+            "matrix_creation_time_seconds": 223.0,
+            "field_distribution_time_seconds": 7.657
           }
         ],
         "failed_runs": 0,
