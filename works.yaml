@@ -12,6 +12,51 @@ XKBlas:
       title: "28th Euromicro International Conference on Parallel, Distributed and Network-Based Processing (PDP)"
       date: 2020-03
 
+Amdahl:
+  type: Proceedings
+  title: "Validity of the single processor approach to achieving large scale computing capabilities"
+  author: ["Gene M. Amdahl"]  
+  date: 1967-04
+  url: https://doi.org/10.1145/1465482.1465560
+  serial-number:
+    doi: 10.1145/1465482.1465560
+    isbn: 9781450378956
+  page-total: 3
+  abstract: "For over a decade prophets have voiced the contention that the organization of a single computer has reached its limits and that truly significant advances can be made only by interconnection of a multiplicity of computers in such a manner as to permit cooperative solution. Variously the proper direction has been pointed out as general purpose computers with a generalized interconnection of memories, or as specialized computers with geometrically related memory interconnections and controlled by one or more instruction streams."
+  publisher:
+    name: "Association for Computing Machinery"
+    location: "New York, NY, USA"
+  parent:
+    - type: Conference
+      title: "Spring Joint Computer Conference"
+      location: "Atlantic City, New Jersey"
+
+148884:
+  type: Web
+  title: "Assertion failure at kmp_sched.cpp(364): chunk != 0"
+  author: ["eduardz1"]
+  url: https://github.com/llvm/llvm-project/issues/148884
+
+GETRF:
+  type: Web
+  title: "getrf: triangular factor"
+  url: https://netlib.org/lapack/explore-html/db/d04/group__getrf.html
+
+GETRS:
+  type: Web
+  title: "getrs: triangular solve using factor"
+  url: https://netlib.org/lapack/explore-html/df/d36/group__getrs.html
+
+PTX:
+  type: Article
+  title: "Understanding PTX, the Assembly Language of CUDA GPU Computing"
+  author: ["Tony Scudiero", "Jonathan Bentz"]
+  date: 2025-03-12
+  url: https://developer.nvidia.com/blog/understanding-ptx-the-assembly-language-of-cuda-gpu-computing/
+  parent:
+    - type: Blog
+      url: https://developer.nvidia.com/blog
+
 CMake:
   type: Web
   title: "CMake: A Powerful Software Build System"

@@ -19,6 +19,26 @@ MUMPS:
   short: MUMPS
   long: MUltifrontal Massively Parallel sparse direct Solver
 
+PTX:
+  short: PTX
+  long: Parallel Thread Execution
+  description: A virtual machine instruction set that is part of the CUDA platform from its inception and acts as a sort of assembly language for NVIDIA GPUs.
+
+VM:
+  short: VM
+  long: Virtual Machine
+  description: In the context of process virtual machines, like Java, they are designed to provide a way to execute programs in a platform-independent environment.
+
+JIT:
+  short: JIT
+  long: Just-in-time
+  description: It refers to the compilation of software during the program runtime, it is used in VMs such as the Java virtual machine to optimize on-the-fly fragments of code that are used often and in libraries such as Numba to convert to C and compile to assembly certain Python functions.
+
+ISA:
+  short: ISA
+  long: Instruction Set Architecture
+  description: An abstract model that defines how to directly control a processor in a family of processors (for example x86_64, ARMv7, RISC-V, ...).
+
 LLM:
   short: LLM
   long: Large Language Model

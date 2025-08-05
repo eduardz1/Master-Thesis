@@ -1,5 +1,8 @@
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 #import "@preview/cetz:0.4.0"
+#import "@preview/physica:0.9.5": *
+#import "@preview/algorithmic:1.0.3"
+#import algorithmic: algorithm-figure
 
 #let flo(term, color: red) = {
   text(color, box[Flo: #term])
@@ -101,15 +104,33 @@ This work will focus mainly on the first two steps. For the first step, the goal
 
 == Hybridizable Discontinuous Galerkin Methods Applied to the Acoustic Wave Problem <hdg-section>
 
-To describe the medium trough which we want to solve the wave equation in @HAWEN and find the unknowns $u$, for the forward problem, or $rho$ and $kappa$, for the inverse problem, we use 1D, 2D or 3D meshes. Common ways to solve @PDE:pl include @FDM:pl, a class of numerical methods for solving differential equations, equations of the form $f'(x) approx (f(x + d x) - f(x - d x)) / (d x)$, by approximating derivatives trough finite differences and Galerkin Methods, which instead approximate the space of the solution. This last approach is particularly useful with large meshes because it doesn't require homogeneous cell sizes, meaning that regions of particular interest can be prioritized.
+The software relies on the @HDG method for the discretization of the wave equation in the frequency domain. In the context of acoustic wave propagation, we can illustrate the problem with the following formula:
+
+$
+  - nabla dot 1/rho nabla p - omega^2 / kappa p = f .
+$ <acoustic-wave-equation>
+
+Here the medium is represented by the density $rho$ and the bulk modulus $kappa$ while $f$ represents the source. The angular frequency is represented with $omega$. To solve numerically the wave propagation problem, one needs to discretize the equation. Several methods exist for solving the @PDE:pl, common ways include @FDM:pl, a class of numerical methods for solving differential equations representable with the Taylor formula, equations of the form $f'(x) approx (f(x + d x) - f(x - d x)) / (d x)$, by approximating derivatives trough finite differences and Galerkin Methods, which instead approximate the space of the solution. This last approach is particularly useful with large meshes because it doesn't require homogeneous cell sizes, meaning that regions of particular interest can be prioritized.
 
 To achieve this partitioning, @HAWEN currently employ a partitioner called METIS @x-METIS, which splits the mesh in triangles leading the solution to each triangle being defined by a smaller equation.
 
 Once partitioned, one common way to solve the @PDE using Galerkin methods would be the @FEM:long technique. As can be seen in @fem-dg-hdg, this method results in a mesh where each triangle's solution are coupled with the neighboring triangle, limiting the potential for concurrent computations.
 
-A first approach to tackle this problem is the usage of @DG:long methods, a class of @FEM:pl using completely discontinuous basis functions which results in embarrassingly high parallel efficiency @x-DiscontinousGalerkin. @DG also enables $p$-adaptivity, meaning that each cell in a mesh can have a different order, a characteristic that is particularly useful when dealing with large meshes. The high computational cost associated with @DG, however, makes it largely unsuitable for real world applications. To address this issue, @HDG:long (@HDG:short) are introduced.
+A first approach to tackle this problem is the usage of @DG:long methods, a class of @FEM:pl using completely discontinuous basis functions which results in embarrassingly high parallel efficiency @x-DiscontinousGalerkin. @DG also enables $frak(p)$-adaptivity, meaning that each cell in a mesh can have a different order, a characteristic that is particularly useful when dealing with large meshes. The high computational cost associated with @DG, however, makes it largely unsuitable for real world applications. To address this issue, @HDG:long (@HDG:short) are introduced.
 
 Compared to traditional @DG methods, @HDG reduces significantly the number of globally coupled @DOF, which can allow for a substantial reduction in the computational cost and memory usage @x-HDG. We see in @fem-dg-hdg, how @HDG introduces additional #lower[@DOF:long] at the border of each cell. By ignoring the inner #lower[@DOF:long], this method results in a smaller when using high order basis functions, which result in a more accurate solution.
+
+More specifically, the domain is discretized in the @HDG formulation over the medium $Omega$ using a non overlapping partition. This mesh is denoted $cal(T)$ and is composed of $N$ cells $K$ such that:
+
+$
+  cal(T) = union.big_(e = 1)^N K_e
+$
+
+with their faces $cal(f)$ as
+
+$
+  Sigma = union.big_(k = 1)^N_Sigma cal(f)_k
+$
 
 #figure(
   placement: top,
@@ -171,3 +192,100 @@ Compared to traditional @DG methods, @HDG reduces significantly the number of gl
   }),
   caption: [Comparison of degrees of freedom in a mesh with the FEM method, DG and HDG using the Lagrange basis function of order 1 for interpolation. In this case, given the low order, HDG introduces too many additional degrees of freedom to be advantageous.],
 ) <fem-dg-hdg>
+
+
+In the context of acoustic wave propagation, to solve @acoustic-wave-equation, we have to use the first order formulation, where we denote with $bold(x)$ the space of coordinates (for example in 3D $bold(x) = {x, y, z}$), the scalar pressure field $p: Omega -> CC$ and the vectorial velocity $bold(v) : Omega -> CC^"dim"$. We consider the propagation in a two dimensional acoustic medium where $Omega in RR^2$ with boundary $Gamma$.
+
+$
+  cases(
+    - sigma rho(bold(x)) bold(v)(bold(x)) + gradient p(bold(x)) & = 0 & "in" Omega,
+    - sigma p (bold(x)) kappa(bold(x))^(-1) + gradient dot bold(v)(bold(x)) &= f(bold(x)) &"in" Omega,
+    - (rho(bold(x)) sqrt(kappa(bold(x)) rho(bold(x))^(-1)))^(-1) p(bold(x)) + bold(v)_bold(nu)(bold(x)) &= 0 &"on" Gamma,
+  )
+$ <first-order-system>
+
+Here we work in the complex frequency domain, where $sigma = "i" omega - frak(s)$ and $frak(s)$ is usually set to $0$, but it can also help incorporate attenuation or viscous behavior. $nu$ is the normal direction.
+
+After assuming that the source function $f in L^2(Omega)$, we can rewrite the system in its variational formulation, meaning we will integrate the first with a test function $phi(bold(x)) in L^2(Omega)$ and the second with $bold(psi(bold(x))) in (L^2(Omega))^2$, where the symbol #sym.macron denotes the conjugation.
+
+$
+  cases(
+    integral_K_e (- sigma rho bold(v) dot accent(bold(psi), macron) + gradient p dot accent(bold(psi), macron)) d K_e &= 0,
+    integral_K_e (- sigma kappa^(-1) p accent(phi, macron) + (gradient dot bold(v)) accent(phi, macron)) d K_e &= integral_K_e f accent(phi, macron) d K_e
+  )
+$
+
+Using a piecewise polynomial to represent the solutions and the velocity
+
+$
+  p(bold(x))^((e)) = sum^(N_"dof"^((e)))_(k = 1) "p"_k^((e)) phi_k (bold(x)), space space space bold(v)^((e))_circle.filled.small = sum^(N_"dof"^((e)))_(k = 1) "v"^((e))_circle.filled.small phi_k (bold(x))
+$
+
+Where the notation #sub(sym.circle.filled) indicates that the values are the same for all dimensions and $phi$ corresponds to the Lagrange basis function, commonly used to interpolate points in a given data set which ensures the lowest degree polynomial. The number of degrees of freedom ($N_"dof"$) on the triangle we choose to represent a single cell in the mesh depends on the order that we choose for the polynomial. It can be demonstrated that the equations can be rewritten as the following system:
+
+$
+  cases(
+    AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
+    sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
+  )
+$
+
+Where $Lambda$ and $cal(R)_e$ are derived using the continuity condition of the @HDG discretization and represent the boundary condition that we see as last equation in @first-order-system. For the 2D acoustic case, the matrices $AA_e$, $CC_e$ and $U_e$ in particular have the following structure:
+
+$
+  AA_e & = mat(
+    - angle.l sigma kappa^(-1) phi_i | phi_j angle.r kappa_e + tau angle.l phi_i | phi_j angle.r diff kappa_e, angle.l diff_x phi_i | phi_j angle.r kappa_e, angle.l diff_y phi_i | phi_j angle.r kappa_e;
+    - angle.l phi_i | diff_x phi_j angle.r kappa_e, - angle.l sigma rho phi_i | phi_j angle.r, 0;
+    - angle.l phi_i | diff_y phi_j angle.r kappa_e, 0, - angle.l sigma rho phi_i | phi_j angle.r kappa_e
+  ) \
+  CC_e & = mat(
+    - tau angle.l xi_k | phi_j angle.r_cal(f)_1, - tau angle.l xi_k | phi_j angle.r_cal(f)_2, - tau angle.l xi_k | phi_j angle.r_cal(f)_3;
+    angle.l xi_k | phi_j nu_x angle.r_cal(f)_1, angle.l xi_k | phi_j nu_x angle.r_cal(f)_2, angle.l xi_k | phi_j nu_x angle.r_cal(f)_3;
+    angle.l xi_k | phi_j nu_y angle.r_cal(f)_1, angle.l xi_k | phi_j nu_y angle.r_cal(f)_2, angle.l xi_k | phi_j nu_y angle.r_cal(f)_3
+  ) \
+  U_e & = mat("p"_1^((e)), "p"_2^((e)), ..., p_(N_"dof")^((e))^((e)), "v"_(x, 1)^((e)), ..., "v"_(y, N_"dof"^((e)))^((e)))^TT
+$ <matrices-hdg>
+
+Here the symbol $angle.l dot | dot angle.r$ denotes the inner product. This performance analysis will focus with the first two matrices in particular with the others being relatively inexpensive to compute. Rewriting the unknowns $U_e$ as $AA_e^(-1)(-CC_e cal(R)_e Lambda + SS_e)$ means that we can rewrite the system as:
+
+$
+  sum_e cal(R)_e^TT (BB_e AA_e^(-1) (SS_e - CC_e cal(R)_e Lambda) + LL_e cal(R)_e Lambda) &= 0 \
+  underbrace(sum_e cal(R)_e^TT (LL_e - BB_e AA_e^(-1) CC_e) cal(R)_e, cal(A)) Lambda &= underbrace(-sum_e cal(R)_e^TT BB_e AA_e^(-1) SS_e, cal(B)) \
+  cal(A) Lambda &= cal(B)
+$
+
+Which is the sparse system that is fed to the sparse solver (something that we will talk about in @sparse-solvers). A summary of the algorithm can be seen in @forward-problem.
+
+#algorithm-figure(
+  "Forward Acoustic Problem",
+  vstroke: .5pt + luma(200),
+  inset: .5em,
+  {
+    import algorithmic: *
+    Procedure(
+      "ForwardAcousticProblem",
+      ($sigma$, $rho$, $bold(v)$, $f$),
+      {
+        LineComment(
+          Assign(
+            [$cal(A)$],
+            [$sum_e cal(R)_e^TT (LL_e - BB_e AA_e^(-1) CC_e) RR_e$],
+          ),
+          [Compute the global matrix],
+        )
+        LineComment(
+          Assign[$cal(B)$][$-sum_e cal(R)_e^TT BB_e AA_e^(-1) SS_e$],
+          [Compute the forward right hand side],
+        )
+        LineComment(
+          Assign([$Lambda$], CallInline[Solve][$cal(A) Lambda = cal(B)$]),
+          [Use a sparse solver for the global system],
+        )
+        LineComment(
+          Assign([$U_e$], [$AA_e^(-1) (-CC_e cal(R) Lambda + SS_e)$]),
+          [Solve the local systems],
+        )
+      },
+    )
+  },
+) <forward-problem>

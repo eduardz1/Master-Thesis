@@ -22,6 +22,9 @@
   glossary-entries: yaml("glossarium.yaml"),
 )
 
+#set math.mat(column-gap: 1em, delim: "[")
+#set math.vec(delim: "[")
+
 #include "chapters/introduction.typ"
 
 #include "chapters/sota.typ"

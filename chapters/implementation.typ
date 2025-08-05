@@ -39,7 +39,7 @@ To ensure the correctness of the new code that was written, unit tests for each 
 
 While `test-drive` does not provide any integrated benchmarking utilities, a small wrapper around it with `volatile` arguments (to avoid targeted optimizations by the compiler) was written to benchmark some of the routines we were testing, like the `hdg_build_quadrature_integrals` routines, in an isolated and repeatable way.
 
-=== Using explicit precision kinds
+=== Using explicit precision kinds <precision-kinds>
 
 At the start of this work, it could noticed that @HAWEN was using non-portable precision kinds, such as `real(8)` and `integer(4)`, which are not guaranteed to be the same across different compilers. Interpreting the first as a 64 bit IEEE 754 floating point number and the second as a 32 bit integer is not assured by the standard. In the floating point case, the Fortran standard is particularly interesting.
 
@@ -127,11 +127,15 @@ To convert the sparse @CSR right-hand sides to dense, I instead used the `cuSpar
 
 == Accelerating the Matrix Creation <acc-mat-creation>
 
+When looking at offloading on device part of the computation of the matrix for the @HDG system, we have to keep in mind Amdahl's law. This observation states that the maximum theoretical speedup of an overall system is limited by the fraction of time that the improved section is actually used @x-Amdahl. It would be unwise, therefore, to focus on routines which are not particularly expensive, even when they offer perfect parallelism opportunities. A focused approach has been employed, with specific functions, such as the one responsible for computing the values of the matrix $AA$, being analyzed in isolation.
+
 Generating the sparse matrix that is fed to the sparse solver is, depending on the model, one of the most costly operations we can find in @HAWEN. In this section we will explore some of the techniques used to accelerate it.
 
 === Reducing Matrix Inversions <red-mat-inv>
 
-When looking at the profiles of the benchmarks (see @tau), it can be noticed that a significant amount of time was spent in @LAPACK matrix inversion routines. When solving a linear system $A x = b$, calculating the inverse $A^(-1)$ to solve $x = A^(-1) b$ is always less efficient than using direct methods @x-DontInvertThatMatrix. Even when solving for multiple right-hand sides, it is more efficient to use the LU decomposition of the matrix $A$ and solve the system $L U x = b$ directly. While both LU decomposition and matrix inversion are $O(n^3)$ operations, when analyzing the number of @FLOP:pl required, the latter comes out as three times more expensive than the former @x-WhyNotInvertMatrix @x-WhyLUbetterThanInverse.
+When looking at the profiles of the benchmarks (see @tau), it can be noticed that a significant amount of time was spent in @LAPACK matrix inversion routines. As we saw in @forward-problem, the inverse of matrix $AA_e$ in the @HDG system is reused multiple times. Originally, the code computed this matrix and stored the result for the following computations. Through some rearrangement, the systems can be rewritten in a standard linear system form, making it possible to use the standard form of $AA_e$ and the standard @LAPACK routines `*GETRF` @x-GETRF and `*GETRS` @x-GETRS for, respectively, computing the LU factors and solving the linear systems with them.
+
+More generally, when solving a linear system $A x = b$, calculating the inverse $A^(-1)$ to solve $x = A^(-1) b$ is always less efficient than using direct methods @x-DontInvertThatMatrix. Even when solving for multiple right-hand sides, it is more efficient to use the LU decomposition of the matrix $A$ and solve the system $L U x = b$ directly. While both LU decomposition and matrix inversion are $O(n^3)$ operations, when analyzing the number of @FLOP:pl required, the latter comes out as three times more expensive than the former @x-WhyNotInvertMatrix @x-WhyLUbetterThanInverse.
 
 Another disadvantage of the matrix inversion approach is that it is less numerically stable when the matrix $A$ is ill-conditioned. #cite(<x-AccuracyAndStability>, form: "prose", supplement: "Section 14.1") discusses the numerical stability in more detail, specifically, they argue that, comparing the best possible residual bound on the backward error, in the case $A^(-1)$ is computed with no rounding errors, of the two methods:
 
@@ -146,29 +150,145 @@ Where $x_"LU"$ is the solution obtained by solving the LU decomposition of $A$ a
 
 This result can be proven empirically, although it has been argued that for well-conditioned matrices, the difference in precision is lower than one would expect @x-WhyNotInvertMatrix.
 
-==== HDG Matrices
+==== Computing the Quadrature Integrals <computing-quad-int>
 
-// talk about the algorithm
-// first try to port it entirely on GPU, doesn't work because too much branching
-// even if the algorithm is emabarassingly parallel we need to simplify it and make the code more linear, GPUs don't have branch predictors like CPUs, branches are very expensive
-// Too much copy from GPU to CPU memory
-// extracting certain hot routines is more advantegeous
-// simply offloading some hot routines on GPU is ineffective because you end up with thoousands of kernels, we want only one big kernel
+#figure(
+  placement: top,
+  ```f90
+  type, public :: t_array5d_complex_kindmat_h_d
+  #ifdef _CUDA
+      complex(RKIND_MAT), device, allocatable :: array(:,:,:,:,:)
+  #else
+      complex(RKIND_MAT), allocatable :: array(:,:,:,:,:)
+  #endif
+  end type t_array5d_complex_kindmat_h_d
+  ```,
+  caption: [Example of the wrapper around a 5D array of complex type of precision `RKIND_MAT` which, when compiled with NVFortran (which introduces the `_CUDA` definition), initializes the inner array as a _device_ allocated one],
+) <host-device-array>
 
-$
-  cases(
-    AA u + CC RR Lambda = 0,
-    BB u + LL RR Lambda = 0,
+#figure(
+  placement: top,
+  ```f90
+  type t_polynomial
+    integer :: dim_domain
+    integer :: degree
+  #ifdef HAWEN_USE_CUDA
+    real(kind=RKIND_POL), managed, allocatable :: coeff_pol(:)
+  #else
+    real(kind=RKIND_POL), allocatable :: coeff_pol(:)
+  #endif
+  end type t_polynomial
+
+  pure elemental subroutine polynomial_eval_3d(p, x0, y0, z0, val)
+    !$acc routine
+    implicit none
+
+    type(t_polynomial), intent(in) :: p
+    real(RKIND_POL), intent(in) :: x0, y0, z0
+    real(RKIND_POL), intent(out) :: val
+
+    integer :: I, K, L
+
+    val = 0._RKIND_POL
+
+    do I = 1, p%degree + 1
+      do K = 1, I
+        do L = 1, K
+          val = val & ! we consider the ind1 element of F1
+              + p%coeff_pol((I + 1) * I * (I - 1) / 6 + K * (K - 1) / 2 + L) &
+              * x0**(I - K) &
+              * y0**(K - L) &
+              * z0**(L - 1)
+        end do
+    end do
+  end subroutine polynomial_eval_3d
+  ```,
+  caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.],
+) <elemental-poly>
+
+#figure(
+  placement: top,
+  ```cmake
+  if(HAWEN_USE_CUDA AND CMAKE_Fortran_COMPILER_ID STREQUAL "NVHPC")
+      set(CUF_SOURCES)
+      foreach(source ${HAWEN_PROJECT_SOURCES})
+          if(source MATCHES "\\.cuf$")
+              list(APPEND CUF_SOURCES ${source})
+          endif()
+      endforeach()
+      if(CUF_SOURCES)
+          set_source_files_properties(${CUF_SOURCES}
+              PROPERTIES
+              COMPILE_OPTIONS "-cuda;-stdpar=gpu"
+          )
+      endif()
+  endif()
+  target_link_options(
+      hawen_lib
+      PUBLIC $<$<BOOL:${HAWEN_USE_CUDA}>:-static-nvidia;-cuda>
   )
-$
+  ```,
+  caption: [Handling of the CUDA library in HAWEN.]
+) <cmake-cuf>
+
+#figure(
+  placement: top,
+  ```f90
+  ...
+  #ifdef __GFORTRAN__
+    !$omp parallel do collapse(2)
+    do n = 1, size(C, 3); do f = 1, N_FACES
+  #else
+    do concurrent (n = 1:size(C, 3), f = 1:N_FACES)
+  #endif
+      do concurrent (i = 1:ndof_vol_map(n), j = 1:ndof_face_neigh_map(n, f))
+        do d = 1, DIMENSIONS
+          C(i + (d - 1) * ndof_vol_map(n), ndf_edges_elem_map(n, f) + j, n) &
+            = face_phii_xij(f, i, j) * normal(d, f, n) * pml_coeff(d, n)
+        end do
+
+        C(DIMENSIONS * ndof_vol_map(n) + i, ndf_edges_elem_map(n, f) + j, n) &
+          = -penalization(n) * face_phii_xij(f, i, j)
+      end do
+    end do
+  #ifdef __GFORTRAN__
+    end do
+    !$omp end parallel do
+  #endif
+  ...
+  ```,
+  caption: [Fragment of the build step for matrix $CC$, in this case we can see that the values don't depend on the cells directly and can be constructed in one shot outside the loop over all cells. We see that, by taking advantage of the preprocessor, we can have both a version parallelized on OpenMP threads and one that can be compiled to a CUDA kernel: the `do concurrent` construct is first translated to OpenACC directives and then translated to an attribute `global` function.],
+) <building-c>
+
+The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with OpenMP over multiple threads. This characteristic might suggest that a solution could be directly rewritten as a @GPU kernel. While we can't exclude that this intuition might end up being the best way to generate the matrix, currently as is stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but it's easy to notice that the abundance of parameters resulted in excessive branching, combined with the high amount of data movement this results in abysmal performance.
+
+A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of time the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing with OpenMP threads on @CPU so this change should penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values don't even need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation, but the changes had to be applied to other 5 possible representations as well.
+
+Some of the miscellaneous changes required for writing code that could be compiled to @PTX instructions include, but are not limited to:
+
+- Changing the logic behind error handling, considering that device kernels cannot exit a program or call @MPI routines for termination (`MPI_Abort`/`MPI_Finalize`).
+
+- Use preprocessor directives to conditionally compile code with or without a @GPU target, something that can be seen in @host-device-array.
+
+- Utilize `device` and `managed` attributes when appropriate to ensure correct behavior. The example in @host-device-array is not only necessary for device arrays-of-arrays (a pattern that is very common in the codebase), but also for traditional host allocated arrays that we want to use on @GPU. Here, the NVIDIA compiler by default threats all variables as `managed` by default (though it can be changed, for example in platforms where unified memory is available). Managed memory is tracked automatically and moved from host to device on demand, depending on its usage in the code. For `allocatable` fields, like the ones we see in the example, this attribute is not propagated and we need to explicitly threat them as `device` arrays, meaning data explicitly allocated on @GPU global memory.
+
+- From the previous point follows that when such data structures are used throughout the codebase, we should ensure that we don't end up with too much data movement. When possible these values should always be computed on @GPU and particular care has to be given to cases where @MPI operations are performed on the data (such as `MPI_Reduce`). In this case, fortunately the NVHPC Toolkit already bundles a CUDA-aware version of OpenMPI, but we need to threat also the accumulators as `device` arrays.
+
+- Recognizing and declaring as such `pure` routines. When writing CUDA kernels only `pure` routines can be compiled to `device` routines and therefore executed inside a kernel. Most non-trivial kernels require additional functions to be called. An example of that can be seen in @elemental-poly.
+
+- As an extension to @precision-kinds, we also need to extend the working precision to cover more cases, previously a lot of variables where declared explicitly as double precision, changing it to a working precision, like we see in @elemental-poly, gives us greater control over the code.
+
+- Handling normal Fortran code differently from code that contains CUDA Fortran (`cuf`) directives. A simple way is by using the `.cuf` extension, but that is not sufficient, one also needs to add the `-cuda` flag (and in our case `-stdpar` flag to offload `do concurrent` constructs) to the sources and add the same options to the linker. This can be seen in @cmake-cuf.
+
+- The work presented in @replacing-mumps due to NVFortran having issues compiling the @HAWEN codebase. As a reminder, Fortran modules are not cross-compatible across compilers so offloading the @HAWEN code with NVFortran meant compiling also the @MUMPS code with it. Currently this leads to a failure at runtime and in particular an OpenMP bug that was reported in the LLVM project repository as issue #link("https://github.com/llvm/llvm-project/issues/148884")[\#148884] @x-148884.
+
+The @GPU code will look like the one picture in @building-c. This part required the most changes and is therefore not yet production ready. Although some of the routines are already tested with real data, a benchmark with syntectic data was prepared on the routine responsible for building the quadrature integral values for the sub-matrices.
 
 ==== Stiffness Matrix
 
 In the context of elastic wave propagation, the software uses a formulation based on the compliance tensor $S$ represented by a matrix under Voigt notation, a method used to represent a symmetric tensor by reducing its order @x-Voigt. As is detailed by #cite(<x-HDGStabilize>, form: "prose"), the compliance tensor is represented in such a way that $S = V^(-1) C^(-1) V^(-1)$, where $C$ is the elastic stiffness tensor in Voigt notation. The dimension of $S$ depends on the dimension of the mesh, in 2D, it can be represented in a $3 times 3$ matrix in Voigt notation, while in 3D, it can be represented as a $6 times 6$ matrix.
 
 Under the consideration of visco-elasticity, $C$ and $S$ are complex-valued. Evaluating the complex-valued compliance tensor $S$ meant solving the system $S = V^(-1) C^(-1) V^(-1)$, where the $C$ and $V$ matrices have the following structure, for the 2D and 3D cases:
-
-#set math.mat(column-gap: 1em, delim: "[")
 
 $
   V_"2D" = mat(

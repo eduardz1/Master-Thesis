@@ -200,13 +200,35 @@ Describe the performance metrics, experimental hypotheses, experimental conditio
   caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.],
 ) <marmousi-img>
 
+== Quadrature Integrals First Benchmarks
+
+As previously mentioned in @computing-quad-int, the @GPU code for the quadrature integrals is not yet ready for production so a synthetic benchmark was prepared. A summary of the configuration used can be seen in @config-bench, the size of the arrays used in this configuration are similar to the ones we find in real use cases but the values are generated randomly.
+
+#figure(
+  table(
+    columns: 7,
+    table.header(
+      [Model Representation], [$N_e$], [$N_#[quad points]$], [$N_"dof"$], [$N_"face points"$], [$N_"orders"$],
+    ),
+    [Piecewise constant], [50000], [300], [150], [100], [6]
+  ),
+  caption: [Configuration for the `hdg_build_quadrature` benchmarks]
+) <config-bench>
+
+#let cpu_64 = 68.575575138999994
+#let cpu_32 = 42.075588857299998
+#let gpu_64 = 11.11494379790000
+#let gpu_32 = 2.521715399800000
+
+The numbers are computed on an average of 10 runs for each configuration. The result is a #{num(cpu_64 / gpu_64, digits: 2)}#sym.times speedup compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{num(100 - (cpu_32 * 100)/ cpu_64, digits: 2)}% and by #{num(100 - (gpu_32 * 100)/ gpu_64, digits: 2)}% for the @GPU FP32 version. The A100 @GPU that we're using for our benchmark has 9.7 TFLOPS of peak FP64 performance and 19.5 TFLOPS of FP32 yet we don't see just a #{num(19.5/9.7, digits: 0)}#sym.times improvement but a #{num(gpu_64/gpu_32, digits: 1)}#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
+
 == Removing Matrix Inversions and Optimizing Cache Locality
 
 To benchmark the impact of the removal of matrix inversions and the changes related to better cache locality, we use the Marmousi2 @x-Marmousi2 model to simulate the propagation of elastic waves over a mesh of 100 thousands cells and compare the difference across a set of different polynomial orders. The Marmousi2 model covers a surface of 3.5 #sym.times 17 kilometers. The results where computed over 169 sources. In @marmousi-img we see the resulting wave field corresponding to the source number 111.
 
 In @loop-order-bench we can see how the changes made in @acc-mat-creation greatly reduce the matrix creation time for the 2D elastic case. The two changes also perfectly add onto one another, given that they target two different sections of the matrix creation algorithm. In particular we notice that eliminating matrix inversions never results in worse runtime when compared to directly solving the systems, even for very small matrices, where we could expect the inversion to perform at least on par with the direct solving, due to its simpler nature.
 
-Interestingly, we notice that the configuration `pI01`, which has degrees of freedom that vary throughout the mesh from 1 to 9, is the one that sees the greatest benefit from the changes. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `pI01` configuration which ends up faster than the original `p9` one. The loops responsible for the different orders are the ones in @reorder-loops.
+Interestingly, we notice that the configuration `pI01`, which has degrees of freedom that vary throughout the mesh from 1 to 9, is the one that sees the greatest benefit from the changes. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `pI01` configuration which ends up faster than the original `p9` one. The loops responsible for the different orders are the ones in @reorder-loops. Rewriting these loops using optimized @BLAS dot products or as GEMM operation did not result in a performance improvement, suggesting that the computations are already done in the most optimal way and only an higher level of parallelism can help reduce the time.
 
 #figure(
   kind: image,
