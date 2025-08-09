@@ -10,11 +10,13 @@
 
 = Numerical Simulations of Wave Propagation
 
-This is a generic title. Replace it with an actual title that describes the context of the work.
+The study of the propagation of waves in a medium is a well established field pioneered from the work of Newton. The solution of what are known as the _wave equation_ serve as the basis for many applications in many fields. In the field of seismology, many challenging problems are still open, such as the study of earthquakes and their prediction. In this field, both the simulation of the wave propagation and the reconstruction of the medium properties are of great interest. The @HAWEN software that we will talk about in this report is a library that is designed to solve the wave equation in the frequency domain, in @hawen-chapter we will give a brief overview of the software and its capabilities. In @hdg-section we will talk about the @HDG method that is used to solve the problem efficiently and in a scalable manner in the software. This method will serve as the basis for the performance analysis in this work, where we will try to improve the speed of the solution of the wave equation by tackling the bottlenecks in the @HDG pipeline.
 
-Give a clear statement of the research problem, and the current scientific state of the art on this problem. Use the state of the art to analyze the problem. Use the analysis to develop a proposal for a possible solution to the problem (or multiple possible solutions).
-
-// talk about how at first Hawen was only parallelized on CPU, big picture of the software and some perfomance
+#figure(
+  placement: bottom,
+  image("../resources/imgs/global-earth_simu.png"),
+  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the PREM Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 MPI processes and 14 threads for each MPI process).],
+) <earth-hawen>
 
 == HAWEN <hawen-chapter>
 
@@ -22,11 +24,6 @@ Give a clear statement of the research problem, and the current scientific state
 The @HAWEN software is a Fortran-based library designed to simulate the propagation of waves in a given medium (what we will call from now on the _forward problem_) and reconstruct the physical properties of a non-directly accessible medium (the _inverse problem_) @x-HAWEN @x-FloPhD.
 
 In the inverse problem, waves are measured and their properties are used to characterize the medium in which they propagated. This context arises in several fields, with applications ranging from medial imaging, geophysics, helio-seismology, and more.
-
-#figure(
-  image("../resources/imgs/global-earth_simu.png"),
-  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the PREM Earth models for P- and S-wave speeds, density and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 MPI processes and 14 threads for each MPI process).],
-) <earth-hawen>
 
 
 #figure(
@@ -85,13 +82,13 @@ In the inverse problem, waves are measured and their properties are used to char
 
 @HAWEN is designed specifically with large scale problems in mind. It leverages a combination of @MPI and OpenMP to achieve a high level of parallelism on @CPU:short. An example of the problems the software is designed for can be seen in @earth-hawen, where the @PREM @x-PREM model of our planet is used to simulate the propagation of elastic waves through the Earth. It is currently deployed on supercomputers.
 
-A specificity of @HAWEN is the usage of the @HDG method for the discretization of the wave equation (see @hdg-section for more informations).
+A specificity of @HAWEN is the usage of the @HDG method for the discretization of the wave equation (see @hdg-section for more information).
 
 We can identify three computationally intensive steps in the @HAWEN pipeline:
 
 - The *discretization* step, where the global matrix is built with the @HDG method from each cell of the mesh.
 
-- The *factorization* step: when the linear system is solved using a sparse solver, @MUMPS (see @mumps-section for more details), the most expensive operation is really the factorization of the matrix, given that the code relies on a direct solver, rather than an iterative one. Once factorized, the actual solve step is relatively fast. This choice allows solving for multiple right hand sides relatively cheaply (factorization only has to be performed once).
+- The *factorization* step: when the linear system is solved using a sparse solver, @MUMPS (see @mumps-section for more details), the most expensive operation is really the factorization of the matrix, given that the code relies on a direct solver, rather than an iterative one. Once factorized, the actual solve step is relatively fast. This choice allows solving for multiple right-hand sides relatively cheaply (factorization only has to be performed once).
 
 - The *save* step, where the results of the simulation are saved to disk.
 
@@ -231,9 +228,9 @@ Where $Lambda$ and $cal(R)_e$ are derived using the continuity condition of the 
 
 $
   AA_e & = mat(
-    - angle.l sigma kappa^(-1) phi_i | phi_j angle.r kappa_e + tau angle.l phi_i | phi_j angle.r diff kappa_e, angle.l diff_x phi_i | phi_j angle.r kappa_e, angle.l diff_y phi_i | phi_j angle.r kappa_e;
-    - angle.l phi_i | diff_x phi_j angle.r kappa_e, - angle.l sigma rho phi_i | phi_j angle.r, 0;
-    - angle.l phi_i | diff_y phi_j angle.r kappa_e, 0, - angle.l sigma rho phi_i | phi_j angle.r kappa_e
+    - angle.l sigma kappa^(-1) phi_i | phi_j angle.r kappa_e + tau angle.l phi_i | phi_j angle.r partial kappa_e, angle.l partial_x phi_i | phi_j angle.r kappa_e, angle.l partial_y phi_i | phi_j angle.r kappa_e;
+    - angle.l phi_i | partial_x phi_j angle.r kappa_e, - angle.l sigma rho phi_i | phi_j angle.r, 0;
+    - angle.l phi_i | partial_y phi_j angle.r kappa_e, 0, - angle.l sigma rho phi_i | phi_j angle.r kappa_e
   ) \
   CC_e & = mat(
     - tau angle.l xi_k | phi_j angle.r_cal(f)_1, - tau angle.l xi_k | phi_j angle.r_cal(f)_2, - tau angle.l xi_k | phi_j angle.r_cal(f)_3;
@@ -251,7 +248,7 @@ $
   cal(A) Lambda &= cal(B)
 $
 
-Which is the sparse system that is fed to the sparse solver (something that we will talk about in @sparse-solvers). A summary of the algorithm can be seen in @forward-problem. The final system result in a very sparse matrix and right hand side, solving this system efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel. 
+Which is the sparse system that is fed to the sparse solver (something that we will talk about in @sparse-solvers). A summary of the algorithm can be seen in @forward-problem. The final system result in a very sparse matrix and right-hand side, solving this system efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel. 
 
 #algorithm-figure(
   "Forward Acoustic Problem",
