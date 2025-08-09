@@ -16,7 +16,6 @@ Give a clear statement of the research problem, and the current scientific state
 
 // talk about how at first Hawen was only parallelized on CPU, big picture of the software and some perfomance
 
-// Maybe here I can talk about tools and technologies?
 == HAWEN <hawen-chapter>
 
 // The @HAWEN software is a Fortran-based library designed to simulate the propagation of waves in a given medium (what we will call from now on the _forward problem_) and reconstruct the physical properties of a non-directly accessible medium (the _inverse problem_) @x-HAWEN. It is a general purpose tool which can be used in fields such as medical imaging, geophysics, helio-seismology, and more. The software achieves so by solving the wave equation in the frequency domain.
@@ -110,13 +109,11 @@ $
   - nabla dot 1/rho nabla p - omega^2 / kappa p = f .
 $ <acoustic-wave-equation>
 
-Here the medium is represented by the density $rho$ and the bulk modulus $kappa$ while $f$ represents the source. The angular frequency is represented with $omega$. To solve numerically the wave propagation problem, one needs to discretize the equation. Several methods exist for solving the @PDE:pl, common ways include @FDM:pl, a class of numerical methods for solving differential equations representable with the Taylor formula, equations of the form $f'(x) approx (f(x + d x) - f(x - d x)) / (d x)$, by approximating derivatives trough finite differences and Galerkin Methods, which instead approximate the space of the solution. This last approach is particularly useful with large meshes because it doesn't require homogeneous cell sizes, meaning that regions of particular interest can be prioritized.
+Here the medium is represented by the density $rho$ and the bulk modulus $kappa$ while $f$ represents the source. The angular frequency is represented with $omega$. To solve numerically the wave propagation problem, one needs to discretize the equation. Several methods exist for solving the @PDE:pl, common ways include @FDM:pl, a class of numerical methods for solving differential equations representable with the Taylor formula, equations of the form $f'(x) approx (f(x + d x) - f(x - d x)) / (d x)$, by approximating derivatives trough finite differences and Galerkin Methods, which instead approximate the space of the solution.
 
-To achieve this partitioning, @HAWEN currently employ a partitioner called METIS @x-METIS, which splits the mesh in triangles leading the solution to each triangle being defined by a smaller equation.
+Once the domain is discretized into cells, in the case of the software we're considering we use simplexes, one common way to solve the @PDE using Galerkin methods would be the @FEM:long technique. As can be seen in @fem-dg-hdg, this method results in a mesh where each triangle's solution are coupled with the neighboring triangle, limiting the potential for concurrent computations.
 
-Once partitioned, one common way to solve the @PDE using Galerkin methods would be the @FEM:long technique. As can be seen in @fem-dg-hdg, this method results in a mesh where each triangle's solution are coupled with the neighboring triangle, limiting the potential for concurrent computations.
-
-A first approach to tackle this problem is the usage of @DG:long methods, a class of @FEM:pl using completely discontinuous basis functions which results in embarrassingly high parallel efficiency @x-DiscontinousGalerkin. @DG also enables $frak(p)$-adaptivity, meaning that each cell in a mesh can have a different order, a characteristic that is particularly useful when dealing with large meshes. The high computational cost associated with @DG, however, makes it largely unsuitable for real world applications. To address this issue, @HDG:long (@HDG:short) are introduced.
+A first approach to tackle this problem is the usage of @DG:long methods, a class of @FEM:pl using completely discontinuous basis functions which results in embarrassingly high parallel efficiency @x-DiscontinousGalerkin. This characteristic makes it a good target for @GPU acceleration, #cite(<x-GPUDG>, form: "prose") explore this with good success and high occupancy. @DG also enables $frak(p)$-adaptivity, meaning that each cell in a mesh can have a different order, a characteristic that is particularly useful when dealing with large meshes. The high computational cost associated with @DG, however, makes it very expensive, compared to traditional methods, for real world applications. To address this issue, @HDG:long (@HDG:short) are introduced.
 
 Compared to traditional @DG methods, @HDG reduces significantly the number of globally coupled @DOF, which can allow for a substantial reduction in the computational cost and memory usage @x-HDG. We see in @fem-dg-hdg, how @HDG introduces additional #lower[@DOF:long] at the border of each cell. By ignoring the inner #lower[@DOF:long], this method results in a smaller when using high order basis functions, which result in a more accurate solution.
 
@@ -194,7 +191,7 @@ $
 ) <fem-dg-hdg>
 
 
-In the context of acoustic wave propagation, to solve @acoustic-wave-equation, we have to use the first order formulation, where we denote with $bold(x)$ the space of coordinates (for example in 3D $bold(x) = {x, y, z}$), the scalar pressure field $p: Omega -> CC$ and the vectorial velocity $bold(v) : Omega -> CC^"dim"$. We consider the propagation in a two dimensional acoustic medium where $Omega in RR^2$ with boundary $Gamma$.
+In the context of acoustic wave propagation, to solve @acoustic-wave-equation, we have to use the first order formulation, where we denote with $bold(x)$ the space of coordinates (for example in 3D $bold(x) = {x, y, z}$), the scalar pressure field $p: Omega -> CC$ and the vectorial velocity $bold(v) : Omega -> CC^"dim"$. As described by #cite(<x-AdjointHDG>, form: "prose"), we consider the propagation in a two dimensional acoustic medium where $Omega in RR^2$ with boundary $Gamma$.
 
 $
   cases(
@@ -243,7 +240,7 @@ $
     angle.l xi_k | phi_j nu_x angle.r_cal(f)_1, angle.l xi_k | phi_j nu_x angle.r_cal(f)_2, angle.l xi_k | phi_j nu_x angle.r_cal(f)_3;
     angle.l xi_k | phi_j nu_y angle.r_cal(f)_1, angle.l xi_k | phi_j nu_y angle.r_cal(f)_2, angle.l xi_k | phi_j nu_y angle.r_cal(f)_3
   ) \
-  U_e & = mat("p"_1^((e)), "p"_2^((e)), ..., p_(N_"dof")^((e))^((e)), "v"_(x, 1)^((e)), ..., "v"_(y, N_"dof"^((e)))^((e)))^TT
+  U_e & = mat("p"_1^((e)), "p"_2^((e)), ..., "p"_(N_"dof")^((e))^((e)), "v"_(x, 1)^((e)), ..., "v"_(y, N_"dof"^((e)))^((e)))^TT
 $ <matrices-hdg>
 
 Here the symbol $angle.l dot | dot angle.r$ denotes the inner product. This performance analysis will focus with the first two matrices in particular with the others being relatively inexpensive to compute. Rewriting the unknowns $U_e$ as $AA_e^(-1)(-CC_e cal(R)_e Lambda + SS_e)$ means that we can rewrite the system as:
@@ -254,7 +251,7 @@ $
   cal(A) Lambda &= cal(B)
 $
 
-Which is the sparse system that is fed to the sparse solver (something that we will talk about in @sparse-solvers). A summary of the algorithm can be seen in @forward-problem.
+Which is the sparse system that is fed to the sparse solver (something that we will talk about in @sparse-solvers). A summary of the algorithm can be seen in @forward-problem. The final system result in a very sparse matrix and right hand side, solving this system efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel. 
 
 #algorithm-figure(
   "Forward Acoustic Problem",

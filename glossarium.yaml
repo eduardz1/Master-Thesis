@@ -95,7 +95,7 @@ HPC:
 
 BLAS:
   short: BLAS
-  long: Basic Lienar Algebra Subprograms
+  long: Basic Linear Algebra Subprograms
   description: A specification for a set of low-level routines for common linear algebra operations such as matrix multiplication, dot products, linear combinations, etc.
 
 SPMD:

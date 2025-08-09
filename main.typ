@@ -4,13 +4,13 @@
 
 #show: template.with(
   specialization: "Data Science and Artificial Intelligence",
-  title: "<Project Title>",
+  title: [Performance Analysis on the Open Source Software "HAWEN"],
   defense-date: datetime(year: 2025, month: 9, day: 1),
   name: "Eduard Antonovic Occhipinti",
   lab: "INRIA",
-  supervisor: "Christophe Picard",
+  supervisor: [Christophe Picard as _supervisor_ \ Florian Faucher as _expert_],
   jury: (
-    president: "<President of the Jury>",
+    president: "Sergi Pujades",
     members: ("<Jury Member 1>", "<Jury Member 2>", "<Jury Member 3>"),
   ),
   abstract: (en: abstract-en, fr: abstract-fr),

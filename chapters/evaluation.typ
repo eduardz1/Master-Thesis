@@ -167,16 +167,13 @@
 //   )),
 // )
 
-= Experimental Performance Evaluation or validation of solution
+= Evaluation of the Performance Improvements in the Proposed Changes
 
-This is a generic title. Replace it with an actual title that describes the context of the work.
+In this section we will analyze the difference in performance resulting from the proposed changes, in particular, in particular, in @quad-bench we will talk about some first analysis on the changes proposed in @computing-quad-int. In @inv-cache-bench we will explore the effects that removing matrix inversion and improving the cache locality have on an elastic 2D case, changes that where proposed in @red-mat-inv, @stiffness-matrix and @improv-cache-locality. In @cudss-vs-mumps we will compare two different sparse solvers to see if and how much could @GPU acceleration impact the solving times for the @HDG system.
 
-Describe the performance metrics, experimental hypotheses, experimental conditions, test data, and expected results. Provide the test data. Interpret the results of the experiments. Pay special attention to cases where the experiments give no information or did not come out as expected. Draw lessons and conclusions from the experiments. Explain how additional experiments could validate or confirm results.
-
-// Talk about data oriented design, explain the fact that first benchmarks that included memory transfers from CPU to GPU led to poor results. This is also the reason why cuDSS didn't perform well at the start, although in this case I don't think it's my fault, judging by the logs, but it is something intrinsic in the library. Show the outputs of compute-sanitizer
+For the experiments that only compare different @CPU only implementation, the compiler used will be @GCC `15.1.0`. For the ones that include both a @GPU and @CPU version we will use either @GCC `13.3.0` or NVHPC `24.7`. This difference is due to some incompatibilities with newer NVHPC versions on the servers we're running the benchmarks on.
 
 #figure(
-  placement: top,
   table(
     columns: 4,
     inset: 1em,
@@ -195,12 +192,8 @@ Describe the performance metrics, experimental hypotheses, experimental conditio
   caption: [Specifications of the clusters used in the following benchmarks],
 )
 
-#figure(
-  image("../resources/imgs/2D_Marmousi2_benchmark.svg"),
-  caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.],
-) <marmousi-img>
 
-== Quadrature Integrals First Benchmarks
+== Quadrature Integrals First Benchmarks <quad-bench>
 
 As previously mentioned in @computing-quad-int, the @GPU code for the quadrature integrals is not yet ready for production so a synthetic benchmark was prepared. A summary of the configuration used can be seen in @config-bench, the size of the arrays used in this configuration are similar to the ones we find in real use cases but the values are generated randomly.
 
@@ -222,7 +215,13 @@ As previously mentioned in @computing-quad-int, the @GPU code for the quadrature
 
 The numbers are computed on an average of 10 runs for each configuration. The result is a #{num(cpu_64 / gpu_64, digits: 2)}#sym.times speedup compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{num(100 - (cpu_32 * 100)/ cpu_64, digits: 2)}% and by #{num(100 - (gpu_32 * 100)/ gpu_64, digits: 2)}% for the @GPU FP32 version. The A100 @GPU that we're using for our benchmark has 9.7 TFLOPS of peak FP64 performance and 19.5 TFLOPS of FP32 yet we don't see just a #{num(19.5/9.7, digits: 0)}#sym.times improvement but a #{num(gpu_64/gpu_32, digits: 1)}#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
 
-== Removing Matrix Inversions and Optimizing Cache Locality
+#figure(
+  placement: top,
+  image("../resources/imgs/2D_Marmousi2_benchmark.svg"),
+  caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.],
+) <marmousi-img>
+
+== Removing Matrix Inversions and Optimizing Cache Locality <inv-cache-bench>
 
 To benchmark the impact of the removal of matrix inversions and the changes related to better cache locality, we use the Marmousi2 @x-Marmousi2 model to simulate the propagation of elastic waves over a mesh of 100 thousands cells and compare the difference across a set of different polynomial orders. The Marmousi2 model covers a surface of 3.5 #sym.times 17 kilometers. The results where computed over 169 sources. In @marmousi-img we see the resulting wave field corresponding to the source number 111.
 
@@ -236,13 +235,13 @@ Interestingly, we notice that the configuration `pI01`, which has degrees of fre
   caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 MPI processes and 8 OpenMP threads per process on the Suroit node.],
 ) <loop-order-bench>
 
-== Using a GPU Accelerated Sparse Solver
+== Using a GPU Accelerated Sparse Solver <cudss-vs-mumps>
 
-We compare the two sparse solvers, cuDSS and @MUMPS, using a cube of 2 #sym.times 2 #sym.times 2 meters with an homogenous acoustic plane wave. The resulting wave field can be seen in @homogeneous-wavefield. We will focus on a mesh comprised of 100 thousands cells and polynomials of order 3.
+We compare the two sparse solvers, cuDSS and @MUMPS (respectively, version `0.6.0` and `5.7.3`), using a cube of 2 #sym.times 2 #sym.times 2 meters with an homogenous acoustic plane wave. The resulting wave field can be seen in @homogeneous-wavefield. We will focus on a mesh comprised of 100 thousands cells and polynomials of order 3.
 
 As we can see in @solver-times, the total time spent in sparse solver routines for the cuDSS configuration was just #{ num((avg(sumc) / avg(summ)) * 100, digits: 2) }% of that spent with the @MUMPS solver. When compared to the smaller benchmark on the same model and polynomial order but with a mesh of 48 thousands cells, we observe a smaller speedup. The sum of the sparse solver routines for cuDSS was, in this case, #{ num((avg(total_solve_time(cudss_048k_p3)) / avg(total_solve_time(mumps_048k_p3))) * 100, digits: 2) }% of that of @MUMPS, suggesting that cuDSS scales better than @MUMPS.  We also notice that the analysis time with the @MUMPS solver is measurably faster than that of cuDSS, while the factorization and solve step benefit more from the @GPU acceleration.
 
-To be clear, this is comparing a @CPU only implementation to a @GPU accelerated solver. @MUMPS does have an experimental and unreleased @GPU accelerated version but due to various issues that we won't dive into now, it is not currently possible to run it in the Plafrim cluster. It would be interesting, when officially released, to compare their implementation with NVIDIA's one.
+To be clear, this is comparing a @CPU only implementation to a @GPU accelerated solver. @MUMPS does have an experimental and unreleased @GPU accelerated version but due to various issues that we won't dive into now, it is not currently possible to run it in the PlaFRIM cluster. It would be interesting, when officially released, to compare their implementation with NVIDIA's one.
 
 #figure(
   {
