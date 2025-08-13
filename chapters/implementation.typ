@@ -138,10 +138,10 @@ More generally, when solving a linear system $A x = b$, calculating the inverse 
 Another disadvantage of the matrix inversion approach is that it is less numerically stable when the matrix $A$ is ill-conditioned. #cite(<x-AccuracyAndStability>, form: "prose", supplement: "Section 14.1") discusses the numerical stability in more detail, specifically, they argue that, comparing the best possible residual bound on the backward error, in the case $A^(-1)$ is computed with no rounding errors, of the two methods:
 
 $
-  |b - A x_"inv"| <= gamma_n |A| |A^(-1)| |b|
+  |b - A x_"inv"| <= gamma_n |A| |A^(-1)| |b|,
 $ <backward-error-inverse>
 $
-  |b - A x_"LU"| <= gamma_n |L| |U| |x_"LU"|
+  |b - A x_"LU"| <= gamma_n |L| |U| |x_"LU"|.
 $ <backward-error-lu>
 
 Where $x_"LU"$ is the solution obtained by solving the LU decomposition of $A$ and $x_"inv"$ is the solution obtained by inverting $A$. With the assumption that the decomposition is accurate enough, the terms that dominate @backward-error-inverse are $|A^(-1)| |b|$, which can results in significantly worse backward error when $A$ is ill-conditioned, when compared to the dominant term in @backward-error-lu being $x_"LU"$.
@@ -285,7 +285,7 @@ The @GPU code will look like the one picture in @building-c. This part required 
 
 ==== Treatment of the Stiffness Matrix for Elastic Wave Propagation <stiffness-matrix>
 
-In the context of elastic wave propagation, the software uses a formulation based on the compliance tensor $S$ represented by a matrix under Voigt notation, a method used to represent a symmetric tensor by reducing its order @x-Voigt. As is detailed by #cite(<x-HDGStabilize>, form: "prose"), the compliance tensor is represented in such a way that $S = V^(-1) C^(-1) V^(-1)$, where $C$ is the elastic stiffness tensor in Voigt notation and $V$ is the transformation matrix used to convert between tensor and Voigt representations. The dimension of $S$ depends on the dimension of the domain, in 2D, it can be represented in a $3 times 3$ matrix in Voigt notation, while in 3D, it can be represented as a $6 times 6$ matrix.
+In the context of elastic wave propagation, the software uses a formulation based on the compliance tensor $S$ represented by a matrix under Voigt notation, a method used to represent a symmetric tensor by reducing its order @x-Voigt. As is detailed by #cite(<x-HDGStabilize>, form: "prose"), the compliance tensor is represented in such a way that $S = V^(-1) C^(-1) V^(-1)$, where $C$ is the elastic stiffness tensor in Voigt notation and $V$ is the transformation matrix used to reformulate the system in Voigt notation. The dimension of $S$ depends on the dimension of the domain, in 2D, it can be represented in a $3 times 3$ matrix in Voigt notation, while in 3D, it can be represented as a $6 times 6$ matrix.
 
 Under the consideration of visco-elasticity, $C$ and $S$ are complex-valued. Evaluating the complex-valued compliance tensor $S$ meant solving the system $S = V^(-1) C^(-1) V^(-1)$, where the $C$ and $V$ matrices have the following structure, for the 2D and 3D cases:
 
@@ -294,11 +294,11 @@ $
     1, 0, 0;
     0, 1, 0;
     0, 0, 2
-  ) space space space space C_"2D" = mat(
+  ), space space space space C_"2D" = mat(
     lambda + 2 mu, lambda, 0;
     lambda, lambda + 2 mu, 0;
     0, 0, mu
-  )
+  ),
 $
 $
   V_"3D" = mat(
@@ -308,19 +308,19 @@ $
     0, 0, 0, 2, 0, 0;
     0, 0, 0, 0, 2, 0;
     0, 0, 0, 0, 0, 2
-  )\ C_"3D" = mat(
+  ),\ C_"3D" = mat(
     lambda + 2 mu, lambda, lambda, 0, 0, 0;
     lambda, lambda + 2 mu, lambda, 0, 0, 0;
     lambda, lambda, lambda + 2 mu, 0, 0, 0;
     0, 0, 0, mu, 0, 0;
     0, 0, 0, 0, mu, 0;
     0, 0, 0, 0, 0, mu
-  )
+  ).
 $
 
 Given that we know the values already, we can replace the call to the @LAPACK inverse routine with an analytical solution of the systems, doing so also means that we can completely avoid the allocation of the $C$ and $V$ matrices.
 
-We can identify both $C$ and $V$ as block diagonal matrices, calculating the inverse of $V$ becomes trivial, so we will focus on $C$.
+We can identify both $C$ and $V$ as block diagonal matrices, calculating the inverse of $V$ becomes trivial, so we will focus on $C$, which can be inverted by isolating an upper left and bottom right block in the two cases:
 
 #let dmat(..args) = math.mat(..args.named(), ..args
   .pos()
@@ -339,7 +339,7 @@ $
     )^(-1),
     mat(delim: #none, 0; 0);
     mat(delim: #none, column-gap: #3.5em, 0, 0), space space space mat(mu)^(-1)
-  )\ C_"3D"^(-1) = dmat(
+  ),\ C_"3D"^(-1) = dmat(
     column-gap: #(-0.5em),
     space space space mat(
       lambda + 2 mu, lambda, lambda;
@@ -349,48 +349,48 @@ $
     mat(column-gap: #2.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0);
     mat(column-gap: #3.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0),
     space space space mat(column-gap: #2.5em, mu, 0, 0; 0, mu, 0; 0, 0, mu)^(-1)
-  )
+  ).
 $
 
-For the 2D case, we can simply solve the upper left $2 times 2$ block by computing the determinant, while $mu$ just becomes $1 slash mu$.
+For the 2D case, we can simply solve the upper left $2 times 2$ block by computing the determinant, while $mu$ just becomes $1 slash mu$
 
 $
-  C_("2D"_"upper left block")^(-1) = 1 / det mat(lambda + 2 mu, -lambda; -lambda, lambda + 2 mu) = 1 / (4 mu (lambda + mu)) mat(lambda + 2 mu, -lambda; -lambda, lambda + 2 mu)
+  C_("2D"_"upper left block")^(-1) = 1 / det mat(lambda + 2 mu, -lambda; -lambda, lambda + 2 mu) = 1 / (4 mu (lambda + mu)) mat(lambda + 2 mu, -lambda; -lambda, lambda + 2 mu),
 $
 
-So our matrix $S$ becomes:
+so our matrix $S$ becomes
 
 $
-  S = mat((lambda + 2 mu)/(4 mu (lambda + mu)), -lambda/(4 mu (lambda + mu)), 0; -lambda/(4 mu (lambda + mu)), (lambda + 2 mu)/(4 mu (lambda + mu)), 0; 0, 0, 1 / (4 mu))
+  S = mat((lambda + 2 mu)/(4 mu (lambda + mu)), -lambda/(4 mu (lambda + mu)), 0; -lambda/(4 mu (lambda + mu)), (lambda + 2 mu)/(4 mu (lambda + mu)), 0; 0, 0, 1 / (4 mu)).
 $
 
-The 3D case is a bit more complex, but we can still solve it analytically. The upper left $3 times 3$ block can be solved using the _Sherman-Morrison formula_ by rewriting it as:
+The 3D case is a bit more complex, but we can still solve it analytically. The upper left $3 times 3$ block can be solved using the _Sherman-Morrison formula_ by rewriting it as
 
 $
   C_("3D"_"upper left block") = mat(
     lambda + 2 mu, lambda, lambda;
     lambda, lambda + 2 mu, lambda;
     lambda, lambda, lambda + 2 mu
-  ) = 2 mu I + lambda J
+  ) = 2 mu I + lambda J,
 $
 
-Where $I$ is the identity matrix and $J$ is the matrix with all entries equal to $1$. From the _Sherman-Morrison formula_ we know that:
+where $I$ is the identity matrix and $J$ is the matrix with all entries equal to $1$. From the _Sherman-Morrison formula_ we know that:
 
 $
-  (A + u v^TT)^(-1) = A^(-1) - (A^(-1) u v^T A^(-1)) / (1 + v^T A^(-1) u)
+  (A + u v^TT)^(-1) = A^(-1) - (A^(-1) u v^T A^(-1)) / (1 + v^T A^(-1) u).
 $
 
-Computing the inverse of $A$ is trivial, and if we rewrite $J$ as $e e^TT$, with $u = e$ and $v = lambda e$, we get:
+Computing the inverse of $A$ is trivial, and if we rewrite $J$ as $e e^TT$, with $u = e$ and $v = lambda e$, we get
 
 $
   C_("3D"_"upper left block")^(-1) = mat(
     (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda));
     -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda));
     -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda))
-  )
+  ).
 $
 
-So our final matrix $S$ for the isotropic case becomes:
+Our final matrix $S$ for the isotropic case becomes:
 
 $
   S = mat(
@@ -400,7 +400,7 @@ $
     0, 0, 0, 1 / (4 mu), 0, 0;
     0, 0, 0, 0, 1 / (4 mu), 0;
     0, 0, 0, 0, 0, 1 / (4 mu)
-  )
+  ).
 $
 
 In the anisotropic case, $C$ is full so finding the analytical expression for matrix $S$ is a bit more complicated. At the moment we only treat isotropic cases.

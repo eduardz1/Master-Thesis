@@ -297,7 +297,7 @@ As we can see in @solver-times, the total time spent in sparse solver routines f
 
 Comparing the times with ones from a smaller benchmark with 48 thousand cells, the cuDSS times are #{ num((cudss_stats(mesh: "mesh048k").total.avg / mumps_stats(mesh: "mesh048k").at("1P/32T").total.avg) * 100, digits: 2) }% that of @MUMPS, which suggest that the @GPU solver scales better than the standard one, although further testing needs to be conducted before coming to any conclusions.
 
-Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, this could be due to a number of factors, NVIDIA's solver pulls ahead particularly in the factorization step, which in our use case coincides with the most expensive step of the sparse system resolution. The final solve step also benefits from @GPU acceleration but, being already very inexpensive before (accounting for only #{num(mumps_stats().at("1P/32T").analysis.avg * 100 / mumps_stats().at("1P/32T").total.avg, digits: 1)}% of runtime), this result is not particularly interesting for our problems. It could offer a significant benefit in simulations with more or denser right hand sides.
+Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, this could be due to a number of factors, NVIDIA's solver pulls ahead particularly in the factorization step, which in our use case coincides with the most expensive step of the sparse system resolution. The final solve step also benefits from @GPU acceleration but, being already very inexpensive before (accounting for only #{ num(mumps_stats().at("1P/32T").analysis.avg * 100 / mumps_stats().at("1P/32T").total.avg, digits: 1) }% of runtime), this result is not particularly interesting for our problems. It could offer a significant benefit in simulations with more or denser right hand sides.
 
 #figure(
   {
@@ -315,15 +315,30 @@ Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, 
       -small_width * 3 + small_width / 2,
     )
 
+    let col-map(n) = {
+      let color = lq.color.map.petroff6.at(n)
+      (
+        color.transparentize(30%),
+        color.transparentize(80%),
+        color.transparentize(80%),
+        color.transparentize(80%),
+        color.transparentize(30%),
+        color.transparentize(80%),
+        color.transparentize(80%),
+      )
+    }
+
     lq.diagram(
       xlabel: [Time in seconds],
       margin: (right: 25%, rest: 6%),
-      width: 12.3cm,
+      width: 13.4cm,
       height: 6.1cm,
       xaxis: (position: top, mirror: true),
       yaxis: (
         subticks: none,
-        ticks: (rotate(-90deg)[MUMPS], rotate(-90deg)[cuDSS]).enumerate(),
+        ticks: ([MUMPS], [cuDSS])
+          .map(rotate.with(-90deg, reflow: true))
+          .enumerate(),
       ),
 
       ..for (i, c) in mpi-configs().enumerate() {
@@ -342,18 +357,7 @@ Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, 
 
       lq.hbar(
         label: [Analysis],
-        fill: {
-          let color = lq.color.map.petroff6.at(1).transparentize(30%)
-          (
-            color,
-            color.transparentize(50%),
-            color.transparentize(50%),
-            color.transparentize(50%),
-            color,
-            color.transparentize(50%),
-            color.transparentize(50%),
-          )
-        },
+        fill: col-map(1),
         (
           cudss_stats().analysis.avg,
           ..for c in mpi-configs() { (mumps_stats().at(c).analysis.avg,) },
@@ -364,18 +368,7 @@ Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, 
 
       lq.hbar(
         label: [Factorization],
-        fill: {
-          let color = lq.color.map.petroff6.at(2).transparentize(30%)
-          (
-            color,
-            color.transparentize(50%),
-            color.transparentize(50%),
-            color.transparentize(50%),
-            color,
-            color.transparentize(50%),
-            color.transparentize(50%),
-          )
-        },
+        fill: col-map(2),
         (
           cudss_stats().analysis.avg + cudss_stats().factorization.avg,
           ..for c in mpi-configs() {
@@ -399,18 +392,7 @@ Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, 
 
       lq.hbar(
         label: [Solve],
-        fill: {
-          let color = lq.color.map.petroff6.at(0).transparentize(30%)
-          (
-            color,
-            color.transparentize(50%),
-            color.transparentize(50%),
-            color.transparentize(50%),
-            color,
-            color.transparentize(50%),
-            color.transparentize(50%),
-          )
-        },
+        fill: col-map(0),
         (
           cudss_stats().total.avg,
           ..for c in mpi-configs() {
