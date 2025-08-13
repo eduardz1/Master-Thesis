@@ -15,6 +15,10 @@ HAWEN:
   long: time-HArmonic Wave modEling and iNversion
   description: A software package for time-harmonic wave modeling and inversion using hybridizable discontinuous Galerkin discretization.
 
+SDK:
+  short: SDK
+  long: Software Development Kit
+
 MUMPS:
   short: MUMPS
   long: MUltifrontal Massively Parallel sparse direct Solver

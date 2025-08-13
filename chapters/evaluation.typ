@@ -11,8 +11,12 @@
 }
 #let std(arr) = calc.sqrt(var(arr))
 #let sem(arr) = std(arr) / calc.sqrt(arr.len())
-
-#let treedi = json("../resources/benches/3d_acoustic_homogenous.json")
+#let stats(arr) = (
+  "avg": avg(arr),
+  "var": var(arr),
+  "std": std(arr),
+  "sem": sem(arr),
+)
 
 // Sums the contributions for analysis, factorization and solve
 #let total_solve_time(dict) = {
@@ -25,44 +29,48 @@
   })
 }
 
-#let cudss_100k_p3 = treedi.mesh100k.cudss.p3.successful_runs
-#let mumps_100k_p3 = treedi.mesh100k.default.p3.successful_runs
-#let cudss_048k_p3 = treedi.mesh048k.cudss.p3.successful_runs
-#let mumps_048k_p3 = treedi.mesh048k.default.p3.successful_runs
+#let mpi-configs(
+  data: json("../resources/benches/3d_acoustic_homogenous.json"),
+  mesh: "mesh100k",
+  solver: "default",
+) = data.at(mesh).at(solver).keys()
 
-#let cudss_analysis = cudss_100k_p3.map(x => {
-  x.analysis_time_seconds
-})
-#let cudss_factorization = cudss_100k_p3.map(x => {
-  x.factorization_time_seconds
-})
-#let cudss_solve = cudss_100k_p3.map(x => {
-  x.solve_time_seconds
-})
-#let mumps_analysis = mumps_100k_p3.map(x => {
-  x.analysis_time_seconds
-})
-#let mumps_factorization = mumps_100k_p3.map(
-  x => {
-    x.factorization_time_seconds
-  },
-)
-#let mumps_solve = mumps_100k_p3.map(x => {
-  x.solve_time_seconds
-})
+#let runs(
+  data: json("../resources/benches/3d_acoustic_homogenous.json"),
+  mesh: "mesh100k",
+  solver: "default",
+  mpi_config: "1P/32T",
+  polynomial: "p3",
+) = {
+  data.at(mesh).at(solver).at(mpi_config).at(polynomial).successful_runs
+}
 
-#let cma = avg(cudss_analysis)
-#let mma = avg(mumps_analysis)
-#let cmf = avg(cudss_factorization)
-#let mmf = avg(mumps_factorization)
-#let cms = avg(cudss_solve)
-#let mms = avg(mumps_solve)
+#let cudss_stats(mesh: "mesh100k") = {
+  let r = runs(mesh: mesh, solver: "cudss")
+  (
+    "analysis": stats(r.map(x => x.analysis_time_seconds)),
+    "factorization": stats(r.map(x => x.factorization_time_seconds)),
+    "solve": stats(r.map(x => x.solve_time_seconds)),
+    "total": stats(total_solve_time(r)),
+  )
+}
 
-#let sumc = total_solve_time(cudss_100k_p3)
-#let summ = total_solve_time(mumps_100k_p3)
+#let mumps_stats(mesh: "mesh100k") = for c in mpi-configs() {
+  let r = runs(mesh: mesh, mpi_config: c)
+  (
+    (c): (
+      "analysis": stats(r.map(x => x.analysis_time_seconds)),
+      "factorization": stats(r.map(x => x.factorization_time_seconds)),
+      "solve": stats(r.map(x => x.solve_time_seconds)),
+      "total": stats(total_solve_time(r)),
+    ),
+  )
+}
 
-#let avg_with_err_cudss = num[#avg(sumc)+-#sem(sumc)]
-#let avg_with_err_mumps = num[#avg(summ)+-#sem(summ)]
+#let avg_with_err_cudss = num[#cudss_stats().total.avg+-#cudss_stats().total.sem]
+#let avg_with_err_mumps(
+  conf: "1P/32T",
+) = num[#mumps_stats().at(conf).total.avg+-#mumps_stats().at(conf).total.sem]
 
 #let flo(term, color: red) = {
   text(color, box[Flo: #term])
@@ -86,7 +94,7 @@
     lq.diagram(
       ylabel: [Time in seconds],
       width: 12.6cm,
-      height: 20.5cm,
+      height: 19.5cm,
       ylim: (0, auto),
       legend: lq.legend(position: top + left, ..for (
         branch_idx,
@@ -109,6 +117,7 @@
               x: p_order_idx,
               label: branch_name,
               stroke: lq.color.map.petroff10.at(branch_idx),
+              fill: lq.color.map.petroff10.at(branch_idx).transparentize(90%),
               median: lq.color.map.petroff10.at(branch_idx),
               outlier-stroke: lq.color.map.petroff10.at(branch_idx),
               mesh_data
@@ -167,11 +176,11 @@
 //   )),
 // )
 
-= Evaluation of the Performance Improvements in the Proposed Changes
+= Evaluation of the Performance Improvements in the Proposed Changes <evaluation-of-changes>
 
-In this section we will analyze the difference in performance resulting from the proposed changes, in particular, in particular, in @quad-bench we will talk about some first analysis on the changes proposed in @computing-quad-int. In @inv-cache-bench we will explore the effects that removing matrix inversion and improving the cache locality have on an elastic 2D case, changes that where proposed in @red-mat-inv, @stiffness-matrix and @improv-cache-locality. In @cudss-vs-mumps we will compare two different sparse solvers to see if and how much could @GPU acceleration impact the solving times for the @HDG system.
+In this section we will analyze the difference in performance resulting from the proposed changes, in particular, in @quad-bench we will talk about some first analysis on the changes proposed in @computing-quad-int. In @inv-cache-bench we will explore the effects that removing matrix inversion and improving the cache locality have on an elastic 2D case, changes that where proposed in @red-mat-inv, @stiffness-matrix and @improv-cache-locality. In @cudss-vs-mumps we will compare two different sparse solvers to see if and how much could @GPU acceleration impact the solving times for the @HDG system.
 
-For the experiments that only compare different @CPU only implementation, the compiler used will be @GCC `15.1.0`. For the ones that include both a @GPU and @CPU version we will use either @GCC `13.3.0` or NVHPC `24.7`. This difference is due to some incompatibilities with newer NVHPC versions on the servers we're running the benchmarks on.
+For the experiments that only compare different @CPU only implementation, the compiler used will be @GCC `15.1.0`. For the ones that include both a @GPU and @CPU version we will use either @GCC `13.3.0` or NVHPC `24.7`. This difference is due to some incompatibilities with newer NVHPC versions on the PlaFRIM servers we are running the benchmarks on. All results are given as a mean of 10 runs. Where multiple configurations are compared against one another, we ensure that the same node is used for all the configurations for consistency.
 
 #figure(
   table(
@@ -185,11 +194,11 @@ For the experiments that only compare different @CPU only implementation, the co
     [Sirocco22-25],
     [2 #math.times 32 core AMD Zen3 Milan EPYC 7513 \@ 2.6 GHz],
     [512GB (8GB/core) \@ 3200 MT/s],
-    [2 NVIDIA A100 (40GB)],
+    [2 #math.times NVIDIA A100 (40GB)],
     table.hline(),
     table.hline(),
   ),
-  caption: [Specifications of the clusters used in the following benchmarks],
+  caption: [Specifications of the servers used in the PlaFRIM cluster for the benchmarks],
 )
 
 
@@ -201,11 +210,16 @@ As previously mentioned in @computing-quad-int, the @GPU code for the quadrature
   table(
     columns: 7,
     table.header(
-      [Model Representation], [$N_e$], [$N_#[quad points]$], [$N_"dof"$], [$N_"face points"$], [$N_"orders"$],
+      [Model Representation],
+      [$N_e$],
+      [$N_#[quad points]$],
+      [$N_"dof"$],
+      [$N_"face points"$],
+      [$N_"orders"$],
     ),
-    [Piecewise constant], [50000], [300], [150], [100], [6]
+    [Piecewise constant], [50000], [300], [150], [100], [6],
   ),
-  caption: [Configuration for the `hdg_build_quadrature` benchmarks]
+  caption: [Configuration for the `hdg_build_quadrature` benchmarks. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_"quad points"$ is the number of quadrature points used for the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials) and $N_"orders"$ represents the number of different orders ($frak(p)$-adaptivity).],
 ) <config-bench>
 
 #let cpu_64 = 68.575575138999994
@@ -213,7 +227,9 @@ As previously mentioned in @computing-quad-int, the @GPU code for the quadrature
 #let gpu_64 = 11.11494379790000
 #let gpu_32 = 2.521715399800000
 
-The numbers are computed on an average of 10 runs for each configuration. The result is a #{num(cpu_64 / gpu_64, digits: 2)}#sym.times speedup compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{num(100 - (cpu_32 * 100)/ cpu_64, digits: 2)}% and by #{num(100 - (gpu_32 * 100)/ gpu_64, digits: 2)}% for the @GPU FP32 version. The A100 @GPU that we're using for our benchmark has 9.7 TFLOPS of peak FP64 performance and 19.5 TFLOPS of FP32 yet we don't see just a #{num(19.5/9.7, digits: 0)}#sym.times improvement but a #{num(gpu_64/gpu_32, digits: 1)}#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
+The numbers are computed on an average of 10 runs for each configuration. The result is a #{ num(cpu_64 / gpu_64, digits: 2) }#sym.times speedup compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{ num(100 - (cpu_32 * 100) / cpu_64, digits: 2) }% and by #{ num(100 - (gpu_32 * 100) / gpu_64, digits: 2) }% for the @GPU FP32 version. The A100 @GPU that we're using for our benchmark has 9.7 TFLOPS of peak FP64 performance and 19.5 TFLOPS of FP32 yet we don't see just a #{ num(19.5 / 9.7, digits: 0) }#sym.times improvement but a #{ num(gpu_64 / gpu_32, digits: 1) }#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
+
+== Removing Matrix Inversions and Optimizing Cache Locality <inv-cache-bench>
 
 #figure(
   placement: top,
@@ -221,80 +237,224 @@ The numbers are computed on an average of 10 runs for each configuration. The re
   caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.],
 ) <marmousi-img>
 
-== Removing Matrix Inversions and Optimizing Cache Locality <inv-cache-bench>
-
-To benchmark the impact of the removal of matrix inversions and the changes related to better cache locality, we use the Marmousi2 @x-Marmousi2 model to simulate the propagation of elastic waves over a mesh of 100 thousands cells and compare the difference across a set of different polynomial orders. The Marmousi2 model covers a surface of 3.5 #sym.times 17 kilometers. The results where computed over 169 sources. In @marmousi-img we see the resulting wave field corresponding to the source number 111.
+To benchmark the impact of the removal of matrix inversions and the changes related to better cache locality, we use the Marmousi2 @x-Marmousi2 model to simulate the propagation of elastic waves over a mesh of 100 thousands cells and compare the difference across a set of different polynomial orders. The Marmousi2 model covers a surface of 3.5 #sym.times 17 kilometers. This benchmark is generated with 169 sources (i.e. right-hand sides $cal(B)$ of the global linear system). In @marmousi-img we see the resulting wave field corresponding to the source number 111 at a frequency of 7Hz.
 
 In @loop-order-bench we can see how the changes made in @acc-mat-creation greatly reduce the matrix creation time for the 2D elastic case. The two changes also perfectly add onto one another, given that they target two different sections of the matrix creation algorithm. In particular we notice that eliminating matrix inversions never results in worse runtime when compared to directly solving the systems, even for very small matrices, where we could expect the inversion to perform at least on par with the direct solving, due to its simpler nature.
 
 Interestingly, we notice that the configuration `pI01`, which has degrees of freedom that vary throughout the mesh from 1 to 9, is the one that sees the greatest benefit from the changes. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `pI01` configuration which ends up faster than the original `p9` one. The loops responsible for the different orders are the ones in @reorder-loops. Rewriting these loops using optimized @BLAS dot products or as GEMM operation did not result in a performance improvement, suggesting that the computations are already done in the most optimal way and only an higher level of parallelism can help reduce the time.
 
+#let configurations = ("p3", "p4", "p5", "p6", "p7", "p8", "p9")
+#let sizes(config) = {
+  $#json("../resources/benches/2d_elastic_marmousi.json").mesh100k.at("Remove inversions").at(config).matrix_AA^2$
+}
+#figure(
+  table(
+    columns: 8,
+    table.header([], ..configurations),
+    [*Size of matrix $AA_e$*], ..configurations.map(sizes),
+  ),
+  caption: [Size of the matrix $AA_e$ that we avoid inverting with the latest changes],
+)
+
 #figure(
   kind: image,
   anotinv_diagrams(mesh: "mesh100k", additional_plots: none),
-  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 MPI processes and 8 OpenMP threads per process on the Suroit node.],
+  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 MPI processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.],
 ) <loop-order-bench>
 
 == Using a GPU Accelerated Sparse Solver <cudss-vs-mumps>
 
-We compare the two sparse solvers, cuDSS and @MUMPS (respectively, version `0.6.0` and `5.7.3`), using a cube of 2 #sym.times 2 #sym.times 2 meters with an homogenous acoustic plane wave. The resulting wave field can be seen in @homogeneous-wavefield. We will focus on a mesh comprised of 100 thousands cells and polynomials of order 3.
+#figure(
+  placement: top,
+  image("../resources/imgs/3D_homogeneous_benchmark.svg"),
+  caption: [3D wave field results for a cube of 2 #sym.times 2 #sym.times 2 meters with homogenous wave speed and frequency of 2 mHz],
+) <homogeneous-wavefield>
 
-As we can see in @solver-times, the total time spent in sparse solver routines for the cuDSS configuration was just #{ num((avg(sumc) / avg(summ)) * 100, digits: 2) }% of that spent with the @MUMPS solver. When compared to the smaller benchmark on the same model and polynomial order but with a mesh of 48 thousands cells, we observe a smaller speedup. The sum of the sparse solver routines for cuDSS was, in this case, #{ num((avg(total_solve_time(cudss_048k_p3)) / avg(total_solve_time(mumps_048k_p3))) * 100, digits: 2) }% of that of @MUMPS, suggesting that cuDSS scales better than @MUMPS.  We also notice that the analysis time with the @MUMPS solver is measurably faster than that of cuDSS, while the factorization and solve step benefit more from the @GPU acceleration.
+We now compare the two sparse solvers, cuDSS and @MUMPS (respectively, version `0.6.0` and `5.7.3`), using a cube of 2 #sym.times 2 #sym.times 2 meters with an homogenous acoustic plane wave. The resulting wave field can be seen in @homogeneous-wavefield. We will focus on a mesh comprised of 100 thousands cells and polynomials of order 3. In this benchmarks we are comparing a @CPU only implementation to a @GPU accelerated solver. @MUMPS does have an experimental @GPU accelerated version but due to various issues that would be out of scope here, it is not currently possible to have it work correctly in @HAWEN on the PlaFRIM cluster. It would be interesting in the future compare the two again, once it is officially released. The benchmarks where run in double precision float, testing in single precision would hinder the atomicity of this new added feature in the software and would require more investigation on the quality of the final results. Based on the results from @quad-bench, we can expect a significant improvement in working at lower precisions, but this is left for future works.
 
-To be clear, this is comparing a @CPU only implementation to a @GPU accelerated solver. @MUMPS does have an experimental and unreleased @GPU accelerated version but due to various issues that we won't dive into now, it is not currently possible to run it in the PlaFRIM cluster. It would be interesting, when officially released, to compare their implementation with NVIDIA's one.
+When using cuDSS, each @GPU is usually associated to a single @MPI process. Oversubscription with @MPI in the cuDSS version of the code requires more changes. While conceptually @MPI processes should be used to communicate between processors, with on-socket parallelism being better suited for thread primitives, like OpenMP, both @MUMPS and @HAWEN prioritized @MPI parallelism in their development from the start. These choices lead to programs that perform optimally when the balance of @MPI processes and OpenMP threads favors the first. In this benchmark we will test different configurations for the standard @CPU case but only the one for the @GPU case.
+
+#figure(
+  table(
+    columns: 8,
+    table.header([], ..mpi-configs()),
+    [*Speedup*],
+    ..for c in mpi-configs() {
+      (
+        [
+          #num(
+            mumps_stats().at(c).total.avg / cudss_stats().total.avg,
+            digits: 2,
+          )#sym.times
+        ],
+      )
+    },
+  ),
+  caption: [Speedup of the cuDSS 1 MPI Process 32 OpenMP Threads configuration on the average sum of the sparse solver routines, compared to tested the configurations],
+)
+
+As we can see in @solver-times, the total time spent in sparse solver routines for the cuDSS configuration was just #{ num((cudss_stats().total.avg / mumps_stats().at("1P/32T").total.avg) * 100, digits: 2) }% of that spent with the @MUMPS solver. Nonetheless, we can notice that this is not the most efficient configuration for @MUMPS, comparing to the one with 8 MPI processes with 4 OpenMP Threads each we have a solver that takes just #{ num((cudss_stats().total.avg / mumps_stats().at("8P/4T").total.avg) * 100, digits: 2) }% of the time of @MUMPS. The results are still favorable toward the cuDSS solver.
+
+Comparing the times with ones from a smaller benchmark with 48 thousand cells, the cuDSS times are #{ num((cudss_stats(mesh: "mesh048k").total.avg / mumps_stats(mesh: "mesh048k").at("1P/32T").total.avg) * 100, digits: 2) }% that of @MUMPS, which suggest that the @GPU solver scales better than the standard one, although further testing needs to be conducted before coming to any conclusions.
+
+Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, this could be due to a number of factors, NVIDIA's solver pulls ahead particularly in the factorization step, which in our use case coincides with the most expensive step of the sparse system resolution. The final solve step also benefits from @GPU acceleration but, being already very inexpensive before (accounting for only #{num(mumps_stats().at("1P/32T").analysis.avg * 100 / mumps_stats().at("1P/32T").total.avg, digits: 1)}% of runtime), this result is not particularly interesting for our problems. It could offer a significant benefit in simulations with more or denser right hand sides.
 
 #figure(
   {
-    show: lq.set-legend(position: bottom)
     show: lq.set-label(pad: 1em)
     show lq.selector(lq.label): set align(top + right)
+    let small_width = 1.5 / mpi-configs().len()
+    let normal_width = small_width
+    let offsets = (
+      0,
+      small_width * 3 - small_width / 2,
+      small_width * 2 - small_width / 2,
+      small_width / 2,
+      -small_width / 2,
+      -small_width * 2 + small_width / 2,
+      -small_width * 3 + small_width / 2,
+    )
 
     lq.diagram(
       xlabel: [Time in seconds],
       margin: (right: 25%, rest: 6%),
       width: 12.3cm,
-      height: 4cm,
+      height: 6.1cm,
       xaxis: (position: top, mirror: true),
-      yaxis: (subticks: none, ticks: ([cuDSS], [MUMPS]).enumerate()),
+      yaxis: (
+        subticks: none,
+        ticks: (rotate(-90deg)[MUMPS], rotate(-90deg)[cuDSS]).enumerate(),
+      ),
+
+      ..for (i, c) in mpi-configs().enumerate() {
+        (
+          lq.place(
+            7,
+            offsets.at(i + 1),
+          )[#text(fill: white, weight: "black")[#c]],
+        )
+      },
+
+      lq.place(
+        7,
+        1,
+      )[*#text(fill: white)[#mpi-configs().at(0)]*],
+
       lq.hbar(
         label: [Analysis],
-        fill: lq.color.map.petroff6.at(0).transparentize(30%),
-        (cma, mma),
-        (0, 1),
+        fill: {
+          let color = lq.color.map.petroff6.at(1).transparentize(30%)
+          (
+            color,
+            color.transparentize(50%),
+            color.transparentize(50%),
+            color.transparentize(50%),
+            color,
+            color.transparentize(50%),
+            color.transparentize(50%),
+          )
+        },
+        (
+          cudss_stats().analysis.avg,
+          ..for c in mpi-configs() { (mumps_stats().at(c).analysis.avg,) },
+        ),
+        lq.vec.add((1, ..(0,) * mpi-configs().len()), offsets),
+        width: (normal_width, ..(small_width,) * mpi-configs().len()),
       ),
+
       lq.hbar(
         label: [Factorization],
-        fill: lq.color.map.petroff6.at(1).transparentize(30%),
-        (cma + cmf, mma + mmf),
-        (0, 1),
-        base: (cma, mma),
+        fill: {
+          let color = lq.color.map.petroff6.at(2).transparentize(30%)
+          (
+            color,
+            color.transparentize(50%),
+            color.transparentize(50%),
+            color.transparentize(50%),
+            color,
+            color.transparentize(50%),
+            color.transparentize(50%),
+          )
+        },
+        (
+          cudss_stats().analysis.avg + cudss_stats().factorization.avg,
+          ..for c in mpi-configs() {
+            (
+              mumps_stats().at(c).analysis.avg
+                + mumps_stats().at(c).factorization.avg,
+            )
+          },
+        ),
+        base: (
+          cudss_stats().analysis.avg,
+          ..for c in mpi-configs() {
+            (
+              mumps_stats().at(c).analysis.avg,
+            )
+          },
+        ),
+        lq.vec.add((1, ..(0,) * mpi-configs().len()), offsets),
+        width: (normal_width, ..(small_width,) * mpi-configs().len()),
       ),
+
       lq.hbar(
         label: [Solve],
-        fill: lq.color.map.petroff6.at(2).transparentize(30%),
-        (cma + cmf + cms, mma + mmf + mms),
-        (0, 1),
-        base: (cma + cmf, mma + mmf),
+        fill: {
+          let color = lq.color.map.petroff6.at(0).transparentize(30%)
+          (
+            color,
+            color.transparentize(50%),
+            color.transparentize(50%),
+            color.transparentize(50%),
+            color,
+            color.transparentize(50%),
+            color.transparentize(50%),
+          )
+        },
+        (
+          cudss_stats().total.avg,
+          ..for c in mpi-configs() {
+            (
+              mumps_stats().at(c).total.avg,
+            )
+          },
+        ),
+        base: (
+          cudss_stats().analysis.avg + cudss_stats().factorization.avg,
+          ..for c in mpi-configs() {
+            (
+              mumps_stats().at(c).analysis.avg
+                + mumps_stats().at(c).factorization.avg,
+            )
+          },
+        ),
+        lq.vec.add((1, ..(0,) * mpi-configs().len()), offsets),
+        width: (normal_width, ..(small_width,) * mpi-configs().len()),
       ),
+
       lq.place(
-        cma + cmf + cms,
-        0,
+        cudss_stats().total.avg,
+        1,
         pad(.5em, avg_with_err_cudss),
         align: left,
       ),
-      lq.place(
-        mma + mmf + mms,
-        1,
-        pad(.5em, avg_with_err_mumps),
-        align: left,
-      ),
+      ..for (i, c) in mpi-configs().enumerate() {
+        (
+          lq.place(
+            mumps_stats().at(c).total.avg,
+            align: left,
+            offsets.at(i + 1),
+            pad(
+              .5em,
+              text(
+                fill: if c == "8P/4T" { black } else { gray },
+                avg_with_err_mumps(conf: c),
+              ),
+            ),
+          ),
+        )
+      },
     )
   },
-  caption: [Comparison between cuDSS and MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with 1 MPI process and 32 OpenMP threads. The cuDSS configuration was allocated 1 NVIDIA A100.],
+  caption: [Comparison between cuDSS and MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different MPI Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.],
 ) <solver-times>
-
-#figure(
-  placement: top,
-  image("../resources/imgs/3D_homogeneous_benchmark.svg"),
-  caption: [3D wave field results for a cube of 2 #sym.times 2 #sym.times 2 meters with homogenous wave speed and frequency of 4 mHz],
-) <homogeneous-wavefield>

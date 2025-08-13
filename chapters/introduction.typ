@@ -1,25 +1,13 @@
 = Introduction
 
-Write this chapter LAST. Should be 5 to 10 pages. This chapter provides a quick summary of the essential contents of the research project, principal results and contents of the report. The target audience is members of the jury who do NOT have time to completely read all 21 reports, as well academic members of other juries who wish to compare this work to other works.
+When studying the composition of the Earth, researching ways of predicting earthquakes or vulcanic eruptions, predicting the location of mineral deposits or using ultrasound imaging for medical purposes a common problem arises: the resolution of the wave equation. Depending on the problem, the resolution can have as objective the simulation of the propagation of the given waves or the reconstruction of the medium they have propagated in.
 
-== Background
+Solving the equation for non trivial problems requires the solution of a large scale linear system. Different approaches exist and are currently used when dealing with such problems, a novel approach, called @HDG, is implemented in the open source software @HAWEN and aims to provide a more scalable approach compared to traditional ones.
 
-This is a generic title. Replace it with an actual title that describes the context of the work.
+The construction of the matrices that define the linear system is particularly expensive, given that each simulation is run on an @HPC environment, researching ways to improve the efficiency of this task results in non-negligible energy savings and enables the treatment of larger problems. Due to the embarrassingly parallel nature of the algorithms used in the software, taking advantage of @GPU:pl to accelerate part of the computations would be a good intuition. In this work we will explore different ways to accelerate the main bottlenecks in the software with a particular focus on @GPU computing, in particular with the CUDA development platform.
 
-Short half a page summary of the technological context of the work and why it is interesting or important.
-
-== Problem Statement
-
-This is a generic title. Replace it with an actual title that describes the context of the work.
-
-Approx half to one-page description of the research problems that was addressed and what was required to address it.
-
-== Scientific Approach and Investigative Method and Results
-
-This is a generic title. Replace it with an actual title that describes the context of the work.
-
-Approx one to two-page description of the scientific approach or approaches to a solution and how it was investigated and evaluated. Present a summary of the principal results obtained.
+After first familiarizing ourselves with the technologies used in this library, we will tackle this optimization problem by first recognizing and isolating the most expensive routines in the code. Given that the solution of the wave equation can be used for different purposes, different benchmarks are used to cover most use cases. We will notice that different use cases exhibit different behavior and are affected by different routines in the code. While the parallelization on @GPU with CUDA of the algorithm remain experimental and is still in the early stages, other changes resulted in production-ready improvements that provide as much as double the original performance with isolated changes to the code.
 
 == Contents of this Report
 
-Approx half a page per chapter. Summarize the contents of the subsections of each chapter. Give the topics addressed and summarize what is written in each chapter.
+In @numerical-prop we will talk a bit more in depth about the wave equation and the approach used by #cite(<x-HAWEN>, form: "author") to solve it in its software. In @tools-and-tech we will talk about the tools and technologies used in this work, we will talk about different parallelism approaches that are available in the Fortran world and different compilers relevant for our work. We will also talk about profilers useful to recognize and isolate bottlenecks in the code and other pieces of software such as libraries designed for solving large scale sparse linear problems. In @contributions-to-hawen we will detail the contributions that have been made to @HAWEN, these will include more general ones, such as work on the build system and better conformance to the standard, and more strictly performance-oriented work both on the @GPU side and more traditional @CPU:short\-only code. This work will also include an interface for a @GPU accelerated sparse solver developed recently by NVIDIA. In @evaluation-of-changes the achieved results will be presented, covering both 2D and 3D use cases. Finally, in @conclusions we will talk about the future work and future approaches that can be applied to further enhance the software.

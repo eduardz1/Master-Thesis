@@ -12,6 +12,12 @@ XKBlas:
       title: "28th Euromicro International Conference on Parallel, Distributed and Network-Based Processing (PDP)"
       date: 2020-03
 
+HAWENWebsite:
+  type: Web
+  title: time-HArmonic Wave modEling and INversion using Hybridizable Discontinuous Galerkin Discretization
+  author: ["Florian Faucher"]
+  url: https://ffaucher.gitlab.io/hawen-website/
+
 DOD:
   type: Book
   title: "Data-oriented design: software engineering for limited resources and short schedules"
@@ -168,7 +174,7 @@ PTX:
   date: 2025-03-12
   url: https://developer.nvidia.com/blog/understanding-ptx-the-assembly-language-of-cuda-gpu-computing/
   parent:
-    - type: Blog
+    - type: Web
       url: https://developer.nvidia.com/blog
 
 CMake:
@@ -358,7 +364,7 @@ FlangDC:
   author: ["Flang Team"]
   url: "https://flang.llvm.org/docs/DoConcurrent.html"
   parent:
-    - type: Blog
+    - type: Web
       url: "https://flang.llvm.org"
   title: "DO CONCURRENT isn't necessarily concurrent"
 
@@ -369,11 +375,11 @@ FlangHistory:
   url: "https://blog.llvm.org/posts/2025-03-11-flang-new/"
   date: 2025-03-11
   parent:
-    - type: Blog
+    - type: Web
       url: "https://blog.llvm.org"
 
 TPR37335:
-  type: Web
+  type: Article
   title: "Nvfortran, compiler hangs when initializing transposed matrices"
   url: https://forums.developer.nvidia.com/t/nvfortran-compiler-hangs-when-initializing-transposed-matrices/331820
   author: "occhipinti.eduard"
@@ -384,7 +390,7 @@ TPR37335:
     url: https://forums.developer.nvidia.com
 
 TPR37469:
-  type: Web
+  type: Article
   title: "Memory leak when compiling with `-stdpar`"
   url: https://forums.developer.nvidia.com/t/memory-leak-when-compiling-with-stdpar/335016
   author: "occhipinti.eduard"
@@ -395,7 +401,7 @@ TPR37469:
     url: https://forums.developer.nvidia.com
 
 TPR37570:
-  type: Web
+  type: Article
   title: "Why do I keep getting \u201cmanaged attribute mismatch\u201d in my routine calls?"
   url: https://forums.developer.nvidia.com/t/why-do-i-keep-getting-managed-attribute-mismatch-in-my-routine-calls/338526
   author: "occhipinti.eduard"
@@ -410,7 +416,7 @@ CUDAAwareMPI:
   title: "An Introduction to CUDA-Aware MPI"
   url: "https://developer.nvidia.com/blog/introduction-cuda-aware-mpi/"
   parent:
-    - type: Blog
+    - type: Web
       url: "https://developer.nvidia.com/blog"
 
 DiscontinousGalerkin:
@@ -490,7 +496,7 @@ cuDSSBlogPost:
   author: ["Anton Anders", "Kirill Voronin", "Azi Riahi"]
   url: "https://developer.nvidia.com/blog/nvidia-cudss-advances-solver-technologies-for-engineering-and-scientific-computing/"
   parent:
-    - type: Blog
+    - type: Web
       url: "https://developer.nvidia.com/blog"
 
 DontInvertThatMatrix:
@@ -500,7 +506,7 @@ DontInvertThatMatrix:
   date: 2010-01-19
   url: "https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/"
   parent:
-    - type: Blog
+    - type: Web
       url: "https://www.johndcook.com/blog/"
 
 SALT:
@@ -562,7 +568,7 @@ WhyNotInvertMatrix:
   author: ["Gregory Gundersen"]
   url: "https://gregorygundersen.com/blog/2020/12/09/matrix-inversion/"
   parent:
-    - type: Blog
+    - type: Web
       url: "https://gregorygundersen.com/blog/"
 
 WhyLUbetterThanInverse:
@@ -751,6 +757,6 @@ LLVMFortran202X:
   author: ["Peter Klausler"]
   title: "A first take on Fortran 202X features for LLVM Flang"
   parent:
-    - type: Blog
+    - type: Web
       url: "https://flang.llvm.org"
   url: "https://flang.llvm.org/docs/F202X.html"

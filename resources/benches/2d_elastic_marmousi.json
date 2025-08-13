@@ -2,6 +2,9 @@
   "mesh100k": {
     "Remove inversions": {
       "p3": {
+        "matrix_global_size": 1223240,
+        "matrix_AA": 50,
+        "matrix_nnz": 30393912,
         "mesh_size": "100k",
         "polynomial_order": "3",
         "successful_runs": [
@@ -111,6 +114,9 @@
         "success_rate": 1.0
       },
       "p4": {
+        "matrix_global_size": 1529050,
+        "matrix_nnz": 47109050,
+        "matrix_AA": 75,
         "mesh_size": "100k",
         "polynomial_order": "4",
         "successful_runs": [
@@ -220,6 +226,9 @@
         "success_rate": 1.0
       },
       "p5": {
+        "matrix_global_size": 1834860,
+        "matrix_nnz": 67470852,
+        "matrix_AA": 105,
         "mesh_size": "100k",
         "polynomial_order": "5",
         "successful_runs": [
@@ -329,6 +338,9 @@
         "success_rate": 1.0
       },
       "p6": {
+        "matrix_global_size": 2140670,
+        "matrix_nnz": 91479318,
+        "matrix_AA": 140,
         "mesh_size": "100k",
         "polynomial_order": "6",
         "successful_runs": [
@@ -438,6 +450,9 @@
         "success_rate": 1.0
       },
       "p7": {
+        "matrix_global_size": 2446480,
+        "matrix_nnz": 119134448,
+        "matrix_AA": 180,
         "mesh_size": "100k",
         "polynomial_order": "7",
         "successful_runs": [
@@ -547,6 +562,9 @@
         "success_rate": 1.0
       },
       "p8": {
+        "matrix_global_size": 2752290,
+        "matrix_nnz": 150436242,
+        "matrix_AA": 225,
         "mesh_size": "100k",
         "polynomial_order": "8",
         "successful_runs": [
@@ -656,6 +674,9 @@
         "success_rate": 1.0
       },
       "p9": {
+        "matrix_global_size": 3058100,
+        "matrix_nnz": 185384700,
+        "matrix_AA": 275,
         "mesh_size": "100k",
         "polynomial_order": "9",
         "successful_runs": [
@@ -765,6 +786,8 @@
         "success_rate": 1.0
       },
       "pI01": {
+        "matrix_global_size": 2003422,
+        "matrix_nnz": 85430307,
         "mesh_size": "100k",
         "polynomial_order": "I01",
         "successful_runs": [

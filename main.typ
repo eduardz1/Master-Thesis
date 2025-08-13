@@ -4,7 +4,7 @@
 
 #show: template.with(
   specialization: "Data Science and Artificial Intelligence",
-  title: [Performance Analysis on the Open Source Software "HAWEN"],
+  title: [Performance Analysis and CUDA Acceleration of the Open Source Software "HAWEN"],
   defense-date: datetime(year: 2025, month: 9, day: 1),
   name: "Eduard Antonovic Occhipinti",
   lab: "INRIA",
@@ -18,7 +18,7 @@
   bib-func: load-bibliography(read("works.yaml", encoding: none)),
   list-of-figures: true,
   list-of-listings: true,
-  // list-of-tables: true,
+  list-of-tables: true,
   glossary-entries: yaml("glossarium.yaml"),
 )
 
@@ -35,6 +35,6 @@
 
 #include "chapters/evaluation.typ"
 
-#include "chapters/results.typ"
+// #include "chapters/results.typ"
 
 #include "chapters/conclusion.typ"
