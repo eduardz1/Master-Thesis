@@ -198,7 +198,7 @@ $
   cases(
     - sigma rho(bold(x)) bold(v)(bold(x)) + gradient p(bold(x)) & = 0 & "in" &Omega,
     - sigma p (bold(x)) kappa(bold(x))^(-1) + gradient dot bold(v)(bold(x)) &= f(bold(x)) &"in" &Omega,
-    - (rho(bold(x)) sqrt(kappa(bold(x)) rho(bold(x))^(-1)))^(-1) p(bold(x)) + bold(v)_bold(nu)(bold(x)) &= 0 &"on" &Gamma,
+    - (rho(bold(x)) sqrt(kappa(bold(x)) rho(bold(x))^(-1)))^(-1) p(bold(x)) + bold(v)_(bold(nu))(bold(x)) &= 0 &"on" &Gamma,
   ).
 $ <first-order-system>
 
@@ -237,9 +237,9 @@ $
     - angle.l phi_i | partial_y phi_j angle.r_K_e, 0, - angle.l sigma rho phi_i | phi_j angle.r_K_e
   ), \
   CC_e & = mat(
-    - tau angle.l xi_k | phi_j angle.r_cal(f)_1, - tau angle.l xi_k | phi_j angle.r_cal(f)_2, - tau angle.l xi_k | phi_j angle.r_cal(f)_3;
-    angle.l xi_k | phi_j nu_x angle.r_cal(f)_1, angle.l xi_k | phi_j nu_x angle.r_cal(f)_2, angle.l xi_k | phi_j nu_x angle.r_cal(f)_3;
-    angle.l xi_k | phi_j nu_y angle.r_cal(f)_1, angle.l xi_k | phi_j nu_y angle.r_cal(f)_2, angle.l xi_k | phi_j nu_y angle.r_cal(f)_3
+    - tau angle.l xi_k | phi_j angle.r_(cal(f)_1), - tau angle.l xi_k | phi_j angle.r_(cal(f)_2), - tau angle.l xi_k | phi_j angle.r_(cal(f)_3);
+    angle.l xi_k | phi_j nu_x angle.r_(cal(f)_1), angle.l xi_k | phi_j nu_x angle.r_(cal(f)_2), angle.l xi_k | phi_j nu_x angle.r_(cal(f)_3);
+    angle.l xi_k | phi_j nu_y angle.r_(cal(f)_1), angle.l xi_k | phi_j nu_y angle.r_(cal(f)_2), angle.l xi_k | phi_j nu_y angle.r_(cal(f)_3)
   ), \
   U_e & = mat("p"_1^((e)), "p"_2^((e)), ..., "p"_(N_"dof")^((e))^((e)), "v"_(x, 1)^((e)), ..., "v"_(y, N_"dof"^((e)))^((e)))^TT.
 $ <matrices-hdg>

@@ -9,21 +9,25 @@
 #import "resources/graphs/anotinv_loop_order.typ": anotinv_diagrams
 
 #set-round(mode: "uncertainty")
+#show: codly-init.with()
 
 #show: dewdrop-theme.with(
   aspect-ratio: "16-9",
   footer: self => self.info.institution,
   navigation: "mini-slides",
   alpha: 30%,
-  config-common(preamble: {
-    codly(
-      languages: codly-languages,
-      zebra-fill: none,
-      lang-outset: (x: -5pt, y: 5pt),
-      number-align: right + horizon,
-      number-format: it => text(fill: luma(200), str(it)),
-    )
-  }),
+  config-common(
+    bibliography-as-footnote: bibliography(title: none, "works.yaml"),
+    preamble: {
+      codly(
+        languages: codly-languages,
+        zebra-fill: none,
+        lang-outset: (x: -5pt, y: 5pt),
+        number-align: right + horizon,
+        number-format: it => text(fill: luma(200), str(it)),
+      )
+    },
+  ),
   config-info(
     title: [Performance Analysis and CUDA Acceleration \ of the Open Source Software "HAWEN"],
     subtitle: [Master thesis project at INRIA],
@@ -33,9 +37,24 @@
   ),
 )
 
+#set heading(numbering: numbly("{1}.", default: "1.1"))
+
 #title-slide()
 
+#outline-slide()
+
+// Good evening, I'm Eduard Occhipinti and in this presentation I will talk about the subject of my master internship and thesis, which is a perfomance study on an open source software for wave simulations called "HAWEN" with a particular focus on CUDA acceleration and in general GPU computing. Let's start by giving a bit of context.
+
 = Introduction
+
+#slide[
+  - Researching ways to predict earthquakes or vulcanic eruptions #pause
+
+  - Predicting the location of mineral deposits #pause
+
+  - Ultrasound imaging for medical purposes
+  
+]
 
 = Numerical Simulations of Wave Propagation
 
