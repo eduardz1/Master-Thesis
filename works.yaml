@@ -254,17 +254,17 @@ Marmousi2:
       title: "The Leading Edge"
 
 pFUnit:
-  type: Web
+  type: Repository
   title: pFUnit
   url: https://github.com/Goddard-Fortran-Ecosystem/pFUnit
 
 Fortuno:
-  type: Web
+  type: Repository
   title: "Fortuno \u2013 flextensible unit testing framework for Fortran"
   url: https://github.com/fortuno-repos/fortuno
 
 testdrive:
-  type: Web
+  type: Repository
   title: "The simple testing framework"
   url: https://github.com/fortran-lang/test-drive
 
