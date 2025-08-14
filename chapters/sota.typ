@@ -93,7 +93,7 @@ This work focuses mainly on improving the efficiency of the first two steps. For
   placement: top,
   image("../resources/imgs/global-earth_simu.png"),
   caption: [Propagation of elastic waves in the Earth in three-dimensions, using the PREM Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 MPI processes and 14 threads for each MPI process). Courtesy of Florian Faucher.
-],
+  ],
 ) <earth-hawen>
 
 == Hybridizable Discontinuous Galerkin Methods Applied to the Acoustic Wave Problem <hdg-section>
@@ -208,7 +208,7 @@ After assuming that the source function $f in L^2(Omega)$, we can rewrite the sy
 
 $
   cases(
-    integral_K_e (- sigma rho bold(v) dot accent(bold(psi), macron) + gradient p dot accent(bold(psi), macron)) d K_e &= 0 ,
+    integral_K_e (- sigma rho bold(v) dot accent(bold(psi), macron) + gradient p dot accent(bold(psi), macron)) d K_e &= 0,
     integral_K_e (- sigma kappa^(-1) p accent(phi, macron) + (gradient dot bold(v)) accent(phi, macron)) d K_e &= integral_K_e f accent(phi, macron) d K_e .
   )
 $
@@ -232,19 +232,30 @@ Where $Lambda$ and $cal(R)_e$ are derived using the continuity condition of the 
 
 $
   AA_e & = mat(
-    - angle.l sigma kappa^(-1) phi_i | phi_j angle.r kappa_e + tau angle.l phi_i | phi_j angle.r partial kappa_e, angle.l partial_x phi_i | phi_j angle.r kappa_e, angle.l partial_y phi_i | phi_j angle.r kappa_e;
-    - angle.l phi_i | partial_x phi_j angle.r kappa_e, - angle.l sigma rho phi_i | phi_j angle.r, 0;
-    - angle.l phi_i | partial_y phi_j angle.r kappa_e, 0, - angle.l sigma rho phi_i | phi_j angle.r kappa_e
-  ) \
+    - angle.l sigma kappa^(-1) phi_i | phi_j angle.r_K_e + tau angle.l phi_i | phi_j angle.r_(partial K_e), angle.l partial_x phi_i | phi_j angle.r_K_e, angle.l partial_y phi_i | phi_j angle.r_K_e;
+    - angle.l phi_i | partial_x phi_j angle.r_K_e, - angle.l sigma rho phi_i | phi_j angle.r, 0;
+    - angle.l phi_i | partial_y phi_j angle.r_K_e, 0, - angle.l sigma rho phi_i | phi_j angle.r_K_e
+  ), \
   CC_e & = mat(
     - tau angle.l xi_k | phi_j angle.r_cal(f)_1, - tau angle.l xi_k | phi_j angle.r_cal(f)_2, - tau angle.l xi_k | phi_j angle.r_cal(f)_3;
     angle.l xi_k | phi_j nu_x angle.r_cal(f)_1, angle.l xi_k | phi_j nu_x angle.r_cal(f)_2, angle.l xi_k | phi_j nu_x angle.r_cal(f)_3;
     angle.l xi_k | phi_j nu_y angle.r_cal(f)_1, angle.l xi_k | phi_j nu_y angle.r_cal(f)_2, angle.l xi_k | phi_j nu_y angle.r_cal(f)_3
-  ) \
+  ), \
   U_e & = mat("p"_1^((e)), "p"_2^((e)), ..., "p"_(N_"dof")^((e))^((e)), "v"_(x, 1)^((e)), ..., "v"_(y, N_"dof"^((e)))^((e)))^TT.
 $ <matrices-hdg>
 
-Here the symbol $angle.l dot | dot angle.r$ denotes the inner product $angle.l phi_1 | phi_2 angle.r_K_e = integral_K_e phi_1 macron(phi_2) d K_e$. The performance analysis will focus on the first two matrices $AA_e$ and $CC_e$ in particular with the others being relatively inexpensive to compute. Rewriting the unknowns $U_e$ as $AA_e^(-1)(-CC_e cal(R)_e Lambda + SS_e)$ means that we can rewrite the system as
+Here the symbol $angle.l dot | dot angle.r$ denotes the inner product $angle.l phi_1 | phi_2 angle.r_K_e = integral_K_e phi_1 macron(phi_2) d K_e$. The index $i$ represents the rows while the index $j$ the columns and their values range from $1$ to $N_"dof"^((e))$. These integrals in particular will be computed using Gaussian quadrature rules @x-GaussQuad, where integrals are approximated as
+
+$
+  integral f(x) d x approx sum^n_(i = 1) w_i f(x_i),
+$ <gauss-leg>
+
+where
+- $n$ is number of points used for the approximation
+- $w_i$ are the weights associated to each point
+- $x_i$ are the positions of the quadrature points, for example with Gauss-Legendre quadrature in the 1D case with the integral over the interval $[-1, 1]$, they correspond to the roots of the $n$#super[th] Legendre polynomial @x-LegendrePoly.
+
+The performance analysis will focus on the first two matrices $AA_e$ and $CC_e$ in particular with the others being relatively inexpensive to compute. Rewriting the unknowns $U_e$ as $AA_e^(-1)(-CC_e cal(R)_e Lambda + SS_e)$ means that we can rewrite the system as
 
 $
   sum_e cal(R)_e^TT (BB_e AA_e^(-1) (SS_e - CC_e cal(R)_e Lambda) + LL_e cal(R)_e Lambda) &= 0 \
@@ -254,42 +265,46 @@ $
 
 Which is the sparse system that is fed to the sparse solver, a topic that we discussed in @sparse-solvers. A summary of the algorithm can be seen in @forward-problem. The final system results in a very sparse matrix, solving this system efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel to solve the system iteratively.
 
-#algorithm-figure(
-  "Forward Acoustic Problem",
-  vstroke: .5pt + luma(200),
-  inset: .5em,
-  {
-    import algorithmic: *
-    Procedure(
-      "ForwardAcousticProblem",
-      ($sigma$, $rho$, $bold(v)$, $f$),
-      {
-        For($K_e in cal(T)$, {
-          Assign([$AA_e^(-1), LL_e, BB_e, CC_e$], CallInline[BuildTensors][$K_e$, $sigma$, $rho$, $bold(v)$, $f$])
-        })
-        LineBreak
-        LineComment(
-          Assign(
-            [$cal(A)$],
-            [$sum_e cal(R)_e^TT (LL_e - BB_e AA_e^(-1) CC_e) RR_e$],
-          ),
-          [Compute the global matrix],
-        )
-        LineComment(
-          Assign[$cal(B)$][$-sum_e cal(R)_e^TT BB_e AA_e^(-1) SS_e$],
-          [Compute the forward right hand side],
-        )
-        LineComment(
-          Assign([$Lambda$], CallInline[Solve][$cal(A) Lambda = cal(B)$]),
-          [Use a sparse solver for the global system],
-        )
-        LineComment(
-          Assign([$U_e$], [$AA_e^(-1) (-CC_e cal(R) Lambda + SS_e)$]),
-          [Solve the local systems],
-        )
-      },
-    )
-  },
-) <forward-problem>
+#block(breakable: false)[
+  #algorithm-figure(
+    "Forward Acoustic Problem",
+    vstroke: .5pt + luma(200),
+    inset: .5em,
+    {
+      import algorithmic: *
+      Procedure(
+        "ForwardAcousticProblem",
+        ($sigma$, $rho$, $bold(v)$, $f$),
+        {
+          For($K_e in cal(T)$, {
+            Assign(
+              [$AA_e^(-1), LL_e, BB_e, CC_e$],
+              CallInline[BuildTensors][$K_e$, $sigma$, $rho$, $bold(v)$, $f$],
+            )
+          })
+          LineBreak
+          LineComment(
+            Assign(
+              [$cal(A)$],
+              [$sum_e cal(R)_e^TT (LL_e - BB_e AA_e^(-1) CC_e) RR_e$],
+            ),
+            [Compute the global matrix],
+          )
+          LineComment(
+            Assign[$cal(B)$][$-sum_e cal(R)_e^TT BB_e AA_e^(-1) SS_e$],
+            [Compute the forward right hand side],
+          )
+          LineComment(
+            Assign([$Lambda$], CallInline[Solve][$cal(A) Lambda = cal(B)$]),
+            [Use a sparse solver for the global system],
+          )
+          LineComment(
+            Assign([$U_e$], [$AA_e^(-1) (-CC_e cal(R) Lambda + SS_e)$]),
+            [Solve the local systems],
+          )
+        },
+      )
+    },
+  ) <forward-problem>]
 
 We won't discuss the @HDG method in any more detail as that would be out of scope for this work. Further reading and references can be found in the bibliography. As a final remark, the key to an efficient @HDG implementation is a performant construction of the various matrices necessary to build the final system.

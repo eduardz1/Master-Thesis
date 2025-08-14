@@ -12,11 +12,40 @@ XKBlas:
       title: "28th Euromicro International Conference on Parallel, Distributed and Network-Based Processing (PDP)"
       date: 2020-03
 
+GaussQuad:
+  type: Book
+  title: METHODUS NOVA INTEGRALIUM VALORES PER APPROXIMATIONEM INVENIENDI
+  author: ["Carl Friedrich Gauss"]
+  date: 1814
+
+LegendrePoly:
+  type: Article
+  title: "Recherches sur l'attraction des sphéroïdes homogènes"
+  author: ["Adrien Marie Legendre"]
+  language: "fr"
+  date: 1785
+  location: "Paris"
+  page-range: 411-434
+  parent:
+    - type: Periodical
+      title: "Mémoires de Mathématiques et de Physique: présentés à l'Acadèmie Royale des Sciences, par divers savans, et lûs dans ses Assemblées"
+      volume: 1785
+  
 HAWENWebsite:
   type: Web
   title: time-HArmonic Wave modEling and INversion using Hybridizable Discontinuous Galerkin Discretization
   author: ["Florian Faucher"]
   url: https://ffaucher.gitlab.io/hawen-website/
+
+PlaFRIM:
+  type: Web
+  title: "PlaFRIM: Plateforme Fédérative pour la Recherche en Informatique et Mathématiques"
+  url: https://www.plafrim.fr/
+
+CALI:
+  type: Web
+  title: "Cluster DOREMI CALI v3"
+  url: https://redmine.mcia.fr/projects/cluster-cali3
 
 DOD:
   type: Book

@@ -1,139 +1,16 @@
 #import "@preview/lilaq:0.4.0" as lq
 #import "@preview/zero:0.4.0": num, set-round
+#import "../resources/graphs/cudss_v_mumps.typ": (
+  cudss-v-mumps, cudss_stats, mpi-configs, mumps_stats,
+)
+#import "../resources/graphs/anotinv_loop_order.typ": anotinv_diagrams
+#import "@preview/algorithmic:1.0.3"
+#import algorithmic: algorithm-figure
 
 #set-round(mode: "uncertainty")
 
-#let avg(arr) = arr.sum() / arr.len()
-#let var(arr) = {
-  let len = arr.len()
-  let mean = arr.sum() / len
-  arr.map(x => calc.pow(x - mean, 2)).sum() / (len - 1)
-}
-#let std(arr) = calc.sqrt(var(arr))
-#let sem(arr) = std(arr) / calc.sqrt(arr.len())
-#let stats(arr) = (
-  "avg": avg(arr),
-  "var": var(arr),
-  "std": std(arr),
-  "sem": sem(arr),
-)
-
-// Sums the contributions for analysis, factorization and solve
-#let total_solve_time(dict) = {
-  dict.map(x => {
-    (
-      x.analysis_time_seconds
-        + x.factorization_time_seconds
-        + x.solve_time_seconds
-    )
-  })
-}
-
-#let mpi-configs(
-  data: json("../resources/benches/3d_acoustic_homogenous.json"),
-  mesh: "mesh100k",
-  solver: "default",
-) = data.at(mesh).at(solver).keys()
-
-#let runs(
-  data: json("../resources/benches/3d_acoustic_homogenous.json"),
-  mesh: "mesh100k",
-  solver: "default",
-  mpi_config: "1P/32T",
-  polynomial: "p3",
-) = {
-  data.at(mesh).at(solver).at(mpi_config).at(polynomial).successful_runs
-}
-
-#let cudss_stats(mesh: "mesh100k") = {
-  let r = runs(mesh: mesh, solver: "cudss")
-  (
-    "analysis": stats(r.map(x => x.analysis_time_seconds)),
-    "factorization": stats(r.map(x => x.factorization_time_seconds)),
-    "solve": stats(r.map(x => x.solve_time_seconds)),
-    "total": stats(total_solve_time(r)),
-  )
-}
-
-#let mumps_stats(mesh: "mesh100k") = for c in mpi-configs() {
-  let r = runs(mesh: mesh, mpi_config: c)
-  (
-    (c): (
-      "analysis": stats(r.map(x => x.analysis_time_seconds)),
-      "factorization": stats(r.map(x => x.factorization_time_seconds)),
-      "solve": stats(r.map(x => x.solve_time_seconds)),
-      "total": stats(total_solve_time(r)),
-    ),
-  )
-}
-
-#let avg_with_err_cudss = num[#cudss_stats().total.avg+-#cudss_stats().total.sem]
-#let avg_with_err_mumps(
-  conf: "1P/32T",
-) = num[#mumps_stats().at(conf).total.avg+-#mumps_stats().at(conf).total.sem]
-
 #let flo(term, color: red) = {
   text(color, box[Flo: #term])
-}
-
-#let anotinv_diagrams(
-  mesh: "mesh100k",
-  additional_plots: none,
-  data: json("../resources/benches/2d_elastic_marmousi.json"),
-) = for (
-  mesh_name,
-  mesh_data,
-) in data {
-  let branches = mesh_data.keys()
-  let different_orders = mesh_data.at(branches.first()).keys().enumerate()
-
-  if mesh_name == mesh {
-    show: lq.set-label(pad: 1em)
-    show lq.selector(lq.label): set align(top + right)
-
-    lq.diagram(
-      ylabel: [Time in seconds],
-      width: 12.6cm,
-      height: 19.5cm,
-      ylim: (0, auto),
-      legend: lq.legend(position: top + left, ..for (
-        branch_idx,
-        branch_name,
-      ) in branches.enumerate() {
-        (
-          line(stroke: 1pt + lq.color.map.petroff10.at(branch_idx)),
-          branch_name,
-        )
-      }),
-      // title: mesh_name,
-      xaxis: (ticks: different_orders, subticks: 0),
-      ..for (p_order_idx, p_order) in mesh_data
-        .at(branches.first())
-        .keys()
-        .enumerate() {
-        for (branch_idx, branch_name) in branches.enumerate() {
-          (
-            lq.boxplot(
-              x: p_order_idx,
-              label: branch_name,
-              stroke: lq.color.map.petroff10.at(branch_idx),
-              fill: lq.color.map.petroff10.at(branch_idx).transparentize(90%),
-              median: lq.color.map.petroff10.at(branch_idx),
-              outlier-stroke: lq.color.map.petroff10.at(branch_idx),
-              mesh_data
-                .at(branch_name)
-                .at(p_order)
-                .successful_runs
-                .map(run => {
-                  run.matrix_creation_time_seconds
-                }),
-            ),
-          )
-        }
-      },
-      ..additional_plots, // I want to zoom in on P9
-    )
-  }
 }
 
 // #let subplots(
@@ -202,9 +79,9 @@ For the experiments that only compare different @CPU only implementation, the co
 )
 
 
-== Quadrature Integrals First Benchmarks <quad-bench>
+== First Benchmarks with NVFortran <quad-bench>
 
-As previously mentioned in @computing-quad-int, the @GPU code for the quadrature integrals is not yet ready for production so a synthetic benchmark was prepared. A summary of the configuration used can be seen in @config-bench, the size of the arrays used in this configuration are similar to the ones we find in real use cases but the values are generated randomly.
+As previously mentioned in @computing-quad-int, the @GPU code to accelerate the routines that build the matrices necessary for the @HDG linear system are not yet ready for production so evaluation was done using synthetic data. In particular we will analyze the routine responsible for building the values of matrix $AA_e$, here we found that computing $-angle.l sigma kappa^(-1) phi_i | phi_j angle.r_K_e$, $-angle.l sigma rho phi_i | phi_j angle.r_K_e$, and $angle.l partial_bold(x) phi_i | phi_j angle.r_K_e$  are especially expensive. The summary of the algorithm in pseudocode is presented in @hdg-build-quadrature-pseudo (note that the Fortran code includes more steps) where we use the quadrature rules (see @gauss-leg) to compute the inner products. Here we can see that, by isolating three explicit reductions, denoted by the symbol $plus.circle$, we can map them to an optimized parallel CUDA reduction automatically with NVIDIA's compiler. Furthermore, localizing the loop over all cells enables us to offload this entire computation to a CUDA kernel efficiently. A summary of the configuration used can be seen in @config-bench, the size of the arrays used in this configuration are similar to the ones we find in real use cases with the values generated randomly.
 
 #figure(
   table(
@@ -212,15 +89,62 @@ As previously mentioned in @computing-quad-int, the @GPU code for the quadrature
     table.header(
       [Model Representation],
       [$N_e$],
-      [$N_#[quad points]$],
+      [$N_q$],
       [$N_"dof"$],
-      [$N_"face points"$],
+      [$N_(q tau)$],
       [$N_"orders"$],
     ),
     [Piecewise constant], [50000], [300], [150], [100], [6],
   ),
-  caption: [Configuration for the `hdg_build_quadrature` benchmarks. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_"quad points"$ is the number of quadrature points used for the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials) and $N_"orders"$ represents the number of different orders ($frak(p)$-adaptivity).],
+  caption: [Configuration for the `hdg_build_quadrature` routine. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_q$ is the number of quadrature points used to approximate the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials), $N_(q tau)$ is the number of quadrature points to approximate the face integrals, and $N_"orders"$ represents the number of different orders ($frak(p)$-adaptivity).],
 ) <config-bench>
+
+#block(breakable: false)[
+  #algorithm-figure(
+    [Build Values for $AA_e$],
+    vstroke: .5pt + luma(200),
+    inset: .5em,
+    {
+      import algorithmic: *
+      Procedure(
+        "BuildVolumeIntegrals",
+        ($cal(T)$, $sigma$, $rho$, $w$, $w'$),
+        {
+          Comment[The tensors $w$ and $w'$ represent the weights of the quadrature approximations for the integrals computed in the first and second loop]
+          Comment[Being this loop more localized, it can be offloaded to the device]
+          For([$K_e in cal(T)$ *in parallel*], {
+            For($j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$, {
+              LineComment(
+                Assign(
+                  [$- angle.l sigma rho phi_i | phi_j angle.r_K_e$],
+                  [$plus.circle.big_(q = 1)^N_q w_(i j q) rho_(K_e q)$],
+                ),
+                [Reduce $plus.circle$ in parallel],
+              )
+              LineComment(
+                Assign(
+                  [$- angle.l sigma kappa^(-1) phi_i | phi_j angle.r_K_e$],
+                  [$plus.circle.big_(q = 1)^N_q w_(i j q) kappa^(-1)_(K_e q)$],
+                ),
+                [Reduce $plus.circle$ in parallel],
+              )
+            })
+            Comment[In 3D $bold(x) = {x, y, z}$]
+            For(
+              $d in bold(x), j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$,
+              LineComment(
+                Assign(
+                  [$angle.l partial_d phi_i | phi_j angle.r_K_e$],
+                  [$plus.circle.big_(q = 1)^N_q (w')_(i j q d) kappa^(-1)_(K_e q)$],
+                ),
+                [Reduce $plus.circle$ in parallel],
+              ),
+            )
+          })
+        },
+      )
+    },
+  ) <hdg-build-quadrature-pseudo>]
 
 #let cpu_64 = 68.575575138999994
 #let cpu_32 = 42.075588857299998
@@ -253,7 +177,7 @@ Interestingly, we notice that the configuration `pI01`, which has degrees of fre
     table.header([], ..configurations),
     [*Size of matrix $AA_e$*], ..configurations.map(sizes),
   ),
-  caption: [Size of the matrix $AA_e$ that we avoid inverting with the latest changes],
+  caption: [Size of the matrix $AA_e$ for the 2D acoustic test case that we avoid inverting with the latest changes],
 )
 
 #figure(
@@ -300,143 +224,6 @@ Comparing the times with ones from a smaller benchmark with 48 thousand cells, t
 Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, this could be due to a number of factors, NVIDIA's solver pulls ahead particularly in the factorization step, which in our use case coincides with the most expensive step of the sparse system resolution. The final solve step also benefits from @GPU acceleration but, being already very inexpensive before (accounting for only #{ num(mumps_stats().at("1P/32T").analysis.avg * 100 / mumps_stats().at("1P/32T").total.avg, digits: 1) }% of runtime), this result is not particularly interesting for our problems. It could offer a significant benefit in simulations with more or denser right hand sides.
 
 #figure(
-  {
-    show: lq.set-label(pad: 1em)
-    show lq.selector(lq.label): set align(top + right)
-    let small_width = 1.5 / mpi-configs().len()
-    let normal_width = small_width
-    let offsets = (
-      0,
-      small_width * 3 - small_width / 2,
-      small_width * 2 - small_width / 2,
-      small_width / 2,
-      -small_width / 2,
-      -small_width * 2 + small_width / 2,
-      -small_width * 3 + small_width / 2,
-    )
-
-    let col-map(n) = {
-      let color = lq.color.map.petroff6.at(n)
-      (
-        color.transparentize(30%),
-        color.transparentize(80%),
-        color.transparentize(80%),
-        color.transparentize(80%),
-        color.transparentize(30%),
-        color.transparentize(80%),
-        color.transparentize(80%),
-      )
-    }
-
-    lq.diagram(
-      xlabel: [Time in seconds],
-      margin: (right: 25%, rest: 6%),
-      width: 13.4cm,
-      height: 6.1cm,
-      xaxis: (position: top, mirror: true),
-      yaxis: (
-        subticks: none,
-        ticks: ([MUMPS], [cuDSS])
-          .map(rotate.with(-90deg, reflow: true))
-          .enumerate(),
-      ),
-
-      ..for (i, c) in mpi-configs().enumerate() {
-        (
-          lq.place(
-            7,
-            offsets.at(i + 1),
-          )[#text(fill: white, weight: "black")[#c]],
-        )
-      },
-
-      lq.place(
-        7,
-        1,
-      )[*#text(fill: white)[#mpi-configs().at(0)]*],
-
-      lq.hbar(
-        label: [Analysis],
-        fill: col-map(1),
-        (
-          cudss_stats().analysis.avg,
-          ..for c in mpi-configs() { (mumps_stats().at(c).analysis.avg,) },
-        ),
-        lq.vec.add((1, ..(0,) * mpi-configs().len()), offsets),
-        width: (normal_width, ..(small_width,) * mpi-configs().len()),
-      ),
-
-      lq.hbar(
-        label: [Factorization],
-        fill: col-map(2),
-        (
-          cudss_stats().analysis.avg + cudss_stats().factorization.avg,
-          ..for c in mpi-configs() {
-            (
-              mumps_stats().at(c).analysis.avg
-                + mumps_stats().at(c).factorization.avg,
-            )
-          },
-        ),
-        base: (
-          cudss_stats().analysis.avg,
-          ..for c in mpi-configs() {
-            (
-              mumps_stats().at(c).analysis.avg,
-            )
-          },
-        ),
-        lq.vec.add((1, ..(0,) * mpi-configs().len()), offsets),
-        width: (normal_width, ..(small_width,) * mpi-configs().len()),
-      ),
-
-      lq.hbar(
-        label: [Solve],
-        fill: col-map(0),
-        (
-          cudss_stats().total.avg,
-          ..for c in mpi-configs() {
-            (
-              mumps_stats().at(c).total.avg,
-            )
-          },
-        ),
-        base: (
-          cudss_stats().analysis.avg + cudss_stats().factorization.avg,
-          ..for c in mpi-configs() {
-            (
-              mumps_stats().at(c).analysis.avg
-                + mumps_stats().at(c).factorization.avg,
-            )
-          },
-        ),
-        lq.vec.add((1, ..(0,) * mpi-configs().len()), offsets),
-        width: (normal_width, ..(small_width,) * mpi-configs().len()),
-      ),
-
-      lq.place(
-        cudss_stats().total.avg,
-        1,
-        pad(.5em, avg_with_err_cudss),
-        align: left,
-      ),
-      ..for (i, c) in mpi-configs().enumerate() {
-        (
-          lq.place(
-            mumps_stats().at(c).total.avg,
-            align: left,
-            offsets.at(i + 1),
-            pad(
-              .5em,
-              text(
-                fill: if c == "8P/4T" { black } else { gray },
-                avg_with_err_mumps(conf: c),
-              ),
-            ),
-          ),
-        )
-      },
-    )
-  },
+  cudss-v-mumps(),
   caption: [Comparison between cuDSS and MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different MPI Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.],
 ) <solver-times>
