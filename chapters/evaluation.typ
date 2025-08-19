@@ -1,5 +1,5 @@
 #import "@preview/lilaq:0.4.0" as lq
-#import "@preview/zero:0.4.0": num, set-round
+#import "@preview/zero:0.4.0": format-table, num, set-round
 #import "../resources/graphs/cudss_v_mumps.typ": (
   cudss-v-mumps, cudss_stats, mpi-configs, mumps_stats,
 )
@@ -10,7 +10,7 @@
 #set-round(mode: "uncertainty")
 
 #let flo(term, color: red) = {
-  text(color, box[Flo: #term])
+  text(color, [Flo: #term])
 }
 
 // #let subplots(
@@ -27,9 +27,9 @@
 //     margin: 5%,
 //     fill: white,
 //     lq.hboxplot(
-//       stroke: lq.color.map.petroff10.at(0),
-//       median: 2pt + lq.color.map.petroff10.at(0),
-//       outlier-stroke: lq.color.map.petroff10.at(0),
+//       stroke: lq.color.map.petroff6.at(0),
+//       median: 2pt + lq.color.map.petroff6.at(0),
+//       outlier-stroke: lq.color.map.petroff6.at(0),
 //       y: 0,
 //       data
 //         .at(mesh)
@@ -39,9 +39,9 @@
 //         .map(run => run.elapsed_time_seconds),
 //     ),
 //     lq.hboxplot(
-//       stroke: lq.color.map.petroff10.at(1),
-//       median: 2pt + lq.color.map.petroff10.at(1),
-//       outlier-stroke: lq.color.map.petroff10.at(1),
+//       stroke: lq.color.map.petroff6.at(1),
+//       median: 2pt + lq.color.map.petroff6.at(1),
+//       outlier-stroke: lq.color.map.petroff6.at(1),
 //       y: 0,
 //       data
 //         .at(mesh)
@@ -81,7 +81,7 @@ For the experiments that only compare different @CPU only implementation, the co
 
 == First Benchmarks with NVFortran <quad-bench>
 
-As previously mentioned in @computing-quad-int, the @GPU code to accelerate the routines that build the matrices necessary for the @HDG linear system are not yet ready for production so evaluation was done using synthetic data. In particular we will analyze the routine responsible for building the values of matrix $AA_e$, here we found that computing $-angle.l sigma kappa^(-1) phi_i | phi_j angle.r_K_e$, $-angle.l sigma rho phi_i | phi_j angle.r_K_e$, and $angle.l partial_(bold(x)) phi_i | phi_j angle.r_K_e$  are especially expensive. The summary of the algorithm in pseudocode is presented in @hdg-build-quadrature-pseudo (note that the Fortran code includes more steps) where we use the quadrature rules (see @gauss-leg) to compute the inner products. Here we can see that, by isolating three explicit reductions, denoted by the symbol $plus.circle$, we can map them to an optimized parallel CUDA reduction automatically with NVIDIA's compiler. Furthermore, localizing the loop over all cells enables us to offload this entire computation to a CUDA kernel efficiently. A summary of the configuration used can be seen in @config-bench, the size of the arrays used in this configuration are similar to the ones we find in real use cases with the values generated randomly.
+As previously mentioned in @computing-quad-int, the @GPU code to accelerate the routines that build the matrices necessary for the @HDG linear system are not yet ready for production so evaluation was done using synthetic data. In particular we will analyze the routine responsible for building the values of matrix $AA_e$, here we found that computing $-angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$, $-angle.l i omega rho phi_i | phi_j angle.r_K_e$, and $angle.l partial_(bold(x)) phi_i | phi_j angle.r_K_e$  are especially expensive. The summary of the algorithm in pseudocode is presented in @hdg-build-quadrature-pseudo (note that the Fortran code includes more steps) where we use the quadrature rules (see @gauss-leg) to compute the inner products. Here we see how the loop over all cells $cal(T)$ we saw in @forward-problem is moved inside what we called the #smallcaps[BuildTensors] routine. Here we can see that, by isolating three explicit reductions, denoted by the symbol $plus.circle$, we can map them to an optimized parallel CUDA reduction automatically with NVIDIA's compiler. Furthermore, localizing the loop over all cells enables us to offload this entire computation to a CUDA kernel efficiently. A summary of the configuration used can be seen in @config-bench, the size of the arrays used in this configuration are similar to the ones we find in real use cases with the values generated randomly.
 
 #figure(
   table(
@@ -108,7 +108,7 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
       import algorithmic: *
       Procedure(
         "BuildVolumeIntegrals",
-        ($cal(T)$, $sigma$, $rho$, $w$, $w'$),
+        ($cal(T)$, $omega$, $rho$, $w$, $w'$),
         {
           Comment[The tensors $w$ and $w'$ represent the weights of the quadrature approximations for the integrals computed in the first and second loop]
           Comment[Being this loop more localized, it can be offloaded to the device]
@@ -116,20 +116,21 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
             For($j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$, {
               LineComment(
                 Assign(
-                  [$- angle.l sigma rho phi_i | phi_j angle.r_K_e$],
+                  [$- angle.l i omega rho phi_i | phi_j angle.r_K_e$],
                   [$plus.circle.big_(q = 1)^N_q w_(i j q) rho_(K_e q)$],
                 ),
                 [Reduce $plus.circle$ in parallel],
               )
               LineComment(
                 Assign(
-                  [$- angle.l sigma kappa^(-1) phi_i | phi_j angle.r_K_e$],
+                  [$- angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$],
                   [$plus.circle.big_(q = 1)^N_q w_(i j q) kappa^(-1)_(K_e q)$],
                 ),
                 [Reduce $plus.circle$ in parallel],
               )
             })
-            Comment[In 3D $bold(x) = {x, y, z}$]
+            LineBreak
+            // Comment[In 3D $bold(x) = {x, y, z}$]
             For(
               $d in bold(x), j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$,
               LineComment(
@@ -151,21 +152,13 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
 #let gpu_64 = 11.11494379790000
 #let gpu_32 = 2.521715399800000
 
-The numbers are computed on an average of 10 runs for each configuration. The result is a #{ num(cpu_64 / gpu_64, digits: 2) }#sym.times speedup compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{ num(100 - (cpu_32 * 100) / cpu_64, digits: 2) }% and by #{ num(100 - (gpu_32 * 100) / gpu_64, digits: 2) }% for the @GPU FP32 version. The A100 @GPU that we're using for our benchmark has 9.7 TFLOPS of peak FP64 performance and 19.5 TFLOPS of FP32 yet we don't see just a #{ num(19.5 / 9.7, digits: 0) }#sym.times improvement but a #{ num(gpu_64 / gpu_32, digits: 1) }#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
+The numbers are computed on an average of 10 runs for each configuration. The result is a #{ num(cpu_64 / gpu_64, digits: 2) }#sym.times speedup in runtime compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{ num(100 - (cpu_32 * 100) / cpu_64, digits: 2) }% and by #{ num(100 - (gpu_32 * 100) / gpu_64, digits: 2) }% for the @GPU FP32 version. The A100 @GPU that we're using for our benchmark has 9.7 TFLOPS of peak FP64 performance and 19.5 TFLOPS of FP32 yet we don't see just a #{ num(19.5 / 9.7, digits: 0) }#sym.times improvement but a #{ num(gpu_64 / gpu_32, digits: 1) }#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
 
 == Removing Matrix Inversions and Optimizing Cache Locality <inv-cache-bench>
 
-#figure(
-  placement: top,
-  image("../resources/imgs/2D_Marmousi2_benchmark.svg"),
-  caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.],
-) <marmousi-img>
-
 To benchmark the impact of the removal of matrix inversions and the changes related to better cache locality, we use the Marmousi2 @x-Marmousi2 model to simulate the propagation of elastic waves over a mesh of 100 thousands cells and compare the difference across a set of different polynomial orders. The Marmousi2 model covers a surface of 3.5 #sym.times 17 kilometers. This benchmark is generated with 169 sources (i.e. right-hand sides $cal(B)$ of the global linear system). In @marmousi-img we see the resulting wave field corresponding to the source number 111 at a frequency of 7Hz.
 
-In @loop-order-bench we can see how the changes made in @acc-mat-creation greatly reduce the matrix creation time for the 2D elastic case. The two changes also perfectly add onto one another, given that they target two different sections of the matrix creation algorithm. In particular we notice that eliminating matrix inversions never results in worse runtime when compared to directly solving the systems, even for very small matrices, where we could expect the inversion to perform at least on par with the direct solving, due to its simpler nature.
-
-Interestingly, we notice that the configuration `pI01`, which has degrees of freedom that vary throughout the mesh from 1 to 9, is the one that sees the greatest benefit from the changes. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `pI01` configuration which ends up faster than the original `p9` one. The loops responsible for the different orders are the ones in @reorder-loops. Rewriting these loops using optimized @BLAS dot products or as GEMM operation did not result in a performance improvement, suggesting that the computations are already done in the most optimal way and only an higher level of parallelism can help reduce the time.
+In @loop-order-bench we can see how the changes made in @acc-mat-creation greatly reduce the matrix creation time for the 2D elastic case. The two changes also perfectly add onto one another, given that they target two different sections of the matrix creation algorithm. In particular we notice that eliminating matrix inversions never results in worse runtime when compared to directly solving the systems, even for very small matrices, where we could expect the inversion to perform at least on par with the direct solving, due to its simpler nature. For reference in @sizeof-a we present the size of the matrix $AA_e$.
 
 #let configurations = ("p3", "p4", "p5", "p6", "p7", "p8", "p9")
 #let sizes(config) = {
@@ -178,7 +171,52 @@ Interestingly, we notice that the configuration `pI01`, which has degrees of fre
     [*Size of matrix $AA_e$*], ..configurations.map(sizes),
   ),
   caption: [Size of the matrix $AA_e$ for the 2D acoustic test case that we avoid inverting with the latest changes],
-)
+) <sizeof-a>
+
+Interestingly, we notice that the configuration `pI01`, which has degrees of freedom that vary throughout the mesh from 1 to 9, is the one that sees the greatest benefit from the changes to cache locality. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `pI01` configuration which ends up faster than the original `p9` one, given that the matrix creation time alone accounts for $approx 85%$ of the program runtime. The loops responsible for the different orders are the ones in @reorder-loops. Rewriting these loops using optimized @BLAS dot products or as GEMM operation did not result in a performance improvement, suggesting that the computations are already done in the most optimal way and only a higher level of parallelism can help reduce the time. To further justify these speedups we can analyze the number of cache misses and branch mis-predictions in the `pI01` benchmark. With `gprofng` we query the hardware counters on the @CPU (a list of available ones on your system can retrieved with the command `gprogng collect app -h`) and see in @cache-branch-misses-table that the reduction in cache and branch misses is, indeed, very significant, which confirms our hypothesis.
+
+#figure(
+  {
+    show table: format-table(none, auto, auto)
+    let cache-misses-original = 308132120800
+    let branch-mispredictions-original = 11756862356
+    let cache-misses-new = 6383095138
+    let branch-mispredictions-new = 5847115661
+
+    let cache-improvement = (
+      100 * (cache-misses-original - cache-misses-new) / cache-misses-original
+    )
+    let branch-improvement = (
+      100
+        * (branch-mispredictions-original - branch-mispredictions-new)
+        / branch-mispredictions-original
+    )
+
+    table(
+      align: (left, right, right),
+      columns: 3,
+      table.header([Metric], [Original], [Improved version]),
+      [Cache Misses],
+      [#num(cache-misses-original, fixed: 11, digits: 2)],
+      [#num(cache-misses-new, fixed: 9, digits: 2) #text(
+          fill: green.darken(40%),
+        )[$arrow.b #num(cache-improvement, digits: 2) %$]],
+
+      [Branch Mis-predictions],
+      [#num(branch-mispredictions-original, fixed: 10, digits: 2)],
+      [#num(branch-mispredictions-new, fixed: 9, digits: 2) #text(
+          fill: green.darken(40%),
+        )[$arrow.b #num(branch-improvement, digits: 2) %$]],
+    )
+  },
+  caption: [Exclusive cache and branch misses for the `hdg_build_quadrature_int_2d` routine in the `pI01` benchmark for the 2D acoustic case. We compare the original version with the new one that incorporates the improvements to cache locality, we see that indeed there is a very important reduction in cache misses.],
+) <cache-branch-misses-table>
+
+#figure(
+  placement: top,
+  image("../resources/imgs/2D_Marmousi2_benchmark.svg"),
+  caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.],
+) <marmousi-img>
 
 #figure(
   kind: image,
@@ -194,7 +232,7 @@ Interestingly, we notice that the configuration `pI01`, which has degrees of fre
   caption: [3D wave field results for a cube of 2 #sym.times 2 #sym.times 2 meters with homogenous wave speed and frequency of 2 mHz],
 ) <homogeneous-wavefield>
 
-We now compare the two sparse solvers, cuDSS and @MUMPS (respectively, version `0.6.0` and `5.7.3`), using a cube of 2 #sym.times 2 #sym.times 2 meters with an homogenous acoustic plane wave. The resulting wave field can be seen in @homogeneous-wavefield. We will focus on a mesh comprised of 100 thousands cells and polynomials of order 3. In this benchmarks we are comparing a @CPU only implementation to a @GPU accelerated solver. @MUMPS does have an experimental @GPU accelerated version but due to various issues that would be out of scope here, it is not currently possible to have it work correctly in @HAWEN on the PlaFRIM cluster. It would be interesting in the future compare the two again, once it is officially released. The benchmarks where run in double precision float, testing in single precision would hinder the atomicity of this new added feature in the software and would require more investigation on the quality of the final results. Based on the results from @quad-bench, we can expect a significant improvement in working at lower precisions, but this is left for future works.
+We now compare the two sparse solvers, cuDSS and @MUMPS (respectively, version `0.6.0` and `5.7.3`), using a cube of 2 #sym.times 2 #sym.times 2 meters with an homogenous acoustic plane wave. The resulting wave field can be seen in @homogeneous-wavefield. We will focus on a mesh comprised of 100 thousands cells and polynomials of order 3. In this benchmarks we are comparing a @CPU only implementation to a @GPU accelerated solver. @MUMPS does have an experimental @GPU accelerated version but due to various issues that would be out of scope here, it is not currently possible to have it work correctly in @HAWEN on the PlaFRIM cluster. It would be interesting in the future compare the two again, once it is officially released. The benchmarks where run in double precision float, testing in single precision would hinder the atomicity of this new added feature in the software and would require more investigation on the quality of the final results. Based on the results from @quad-bench, we can expect a significant improvement in working at lower precisions, but this is left for future works. Notice that we do not compare the accuracy of the two solutions.
 
 When using cuDSS, each @GPU is usually associated to a single @MPI process. Oversubscription with @MPI in the cuDSS version of the code requires more changes. While conceptually @MPI processes should be used to communicate between processors, with on-socket parallelism being better suited for thread primitives, like OpenMP, both @MUMPS and @HAWEN prioritized @MPI parallelism in their development from the start. These choices lead to programs that perform optimally when the balance of @MPI processes and OpenMP threads favors the first. In this benchmark we will test different configurations for the standard @CPU case but only the one for the @GPU case.
 

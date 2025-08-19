@@ -1,5 +1,6 @@
 #import "@preview/physica:0.9.5": *
 #import "@preview/codly:1.3.0": *
+#import "@preview/lilaq:0.4.0" as lq
 
 #let flo(term, color: red) = {
   text(color, box[FLO: #term])
@@ -44,7 +45,7 @@ Ensuring that the precision kinds used are the ones we expect was very important
 
 === Making use of C bindings for enums
 
-Being the code very broad in scope, a lot of options are available for the user. In most cases, these options were handled as strings (or better, list of characters, given that Fortran doesn't have a string type). Operations such as `trim` and `adjustl` (respectively, to remove empty characters and to align a string to the left), are essential to guarantee the correctness of a switch case in Fortran that operates on arrays of characters. These operations, however, are incompatible with GPU programming. Most of these options can be instead replaced by taking advantage of Fortran's C interoperability with the `enum` data structure @x-ModernFortran[p.~408]).
+Being the code very broad in scope, a lot of options are available for the user. In most cases, these options were handled as strings (or better, arrays of characters, given that Fortran doesn't have a string type). Operations such as `trim` and `adjustl` (respectively, to remove empty characters and to align a string to the left), are essential to guarantee the correctness of a switch case in Fortran that operates on arrays of characters. These operations, however, are incompatible with GPU programming. Most of these options can be instead replaced by taking advantage of Fortran's C interoperability with the `enum` data structure @x-ModernFortran[p.~408]).
 
 The Fortran standard, unfortunately, introduced enumerator types only very recently @x-ModernFortran[p.~461] and is a feature that is still not supported by the major compilers, in part due to the lackluster standardization of the feature, which offers very little benefits compared to the aforementioned `enum, bind(C)` feature. The new enumerator type in Fortran is just defined again as a collection of integers instead of the more powerful sum types present in languages such as Haskell and Rust @x-LLVMFortran202X.
 
@@ -52,76 +53,79 @@ The Fortran standard, unfortunately, introduced enumerator types only very recen
 
 A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by adding the choice to use the @GPU native cuDSS library (see @cudss-section) instead of the @MUMPS sparse solver (see @mumps-section). The implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in C++, a Fortran wrapper was written around it to allow interfacing the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations.
 
-A limitation of cuDSS, at the time of our work, is being able to operate only on dense right-hand sides, which is not ideal in cases such as the ones @HAWEN is set to target where we want to solve for multiple very sparse right hand sides, making a dense representation very costly. 
+A limitation of cuDSS, at the time of our work, is being able to operate only on dense right-hand sides, which is not ideal in cases such as the ones @HAWEN is set to target where we want to solve for multiple very sparse right hand sides, making a dense representation very costly.
 Another limitation is the fact that the only format supported for the sparse matrix are @CSR or dense. In HAWEN, for our test cases, the sparse matrix is stored in @COO format, unordered and with duplicates. The duplicate values are commonly reduced to a single value with a sum in most solvers.
 
 Therefore, part of the C++ interface consisted in converting the data to a format that was suitable for NVIDIA's sparse solver. As a first preprocessing step, to sum the duplicate values and sort the indices, the algorithms used in the SciPy library @x-SciPy where taken as inspiration and modified for our needs. While their code is efficient, it is also strictly sequential, which will for sure be a bottleneck given the size of the matrices we are dealing with. #cite(<x-EfficientCOOtoCSR>, form: "prose") demonstrate a parallel and efficient algorithm to convert @COO matrices to @CSR. This could be interesting to explore in the future, but it's not necessary to compare just the factorization and solve steps. Alternatively, the matrix could be constructed directly in @CSR format with some modifications to the logic.
 
 To convert the sparse @CSR right-hand sides to dense, I instead used the `cuSparse` library provided by NVIDIA, as we can see in @csr-to-dense (here, `CUDA_ERROR_CHECK` is a macro that handles checks for errors of multiple CUDA libraries by checking the return type of the function at compile time and printing the corresponding error message if the function returns an error code). Performing the conversion directly on the @GPU, reduces the amount of data movement from device to host.
 
-#figure(
-  kind: raw,
-  context {
-    // workaround for https://github.com/Dherse/codly/issues/95
-    set text(size: text.size / (.8 * .8))
-    ```cuda
-    template <typename T, typename E, cusparseIndexBase_t index_base>
-    void sparse_to_dense(cusparseHandle_t handle, const int n,
-                         const std::span<T> csr_offset,
-                         const std::span<T> csr_columns,
-                         const std::span<E> csr_values, E **dense_out) {
-      T *csr_offset_d = nullptr;
-      T *csr_columns_d = nullptr;
-      E *csr_values_d = nullptr;
+#[
+  #show figure: set block(breakable: true)
+  #figure(
+    kind: raw,
+    context {
+      // workaround for https://github.com/Dherse/codly/issues/95
+      set text(size: text.size / (.8 * .8))
+      ```cuda
+      template <typename T, typename E, cusparseIndexBase_t index_base>
+      void sparse_to_dense(cusparseHandle_t handle, const int n,
+                           const std::span<T> csr_offset,
+                           const std::span<T> csr_columns,
+                           const std::span<E> csr_values, E **dense_out) {
+        T *csr_offset_d = nullptr;
+        T *csr_columns_d = nullptr;
+        E *csr_values_d = nullptr;
 
-      auto rows = csr_offset.size() - 1;
-      auto nnz = csr_values.size();
-      auto ld = static_cast<size_t>(n) > rows ? n : rows;
+        auto rows = csr_offset.size() - 1;
+        auto nnz = csr_values.size();
+        auto ld = static_cast<size_t>(n) > rows ? n : rows;
 
-      CUDA_ERROR_CHECK(cudaMalloc(&csr_offset_d, csr_offset.size_bytes()));
-      CUDA_ERROR_CHECK(cudaMalloc(&csr_columns_d, csr_columns.size_bytes()));
-      CUDA_ERROR_CHECK(cudaMalloc(&csr_values_d, csr_values.size_bytes()));
-      CUDA_ERROR_CHECK(cudaMemcpy(csr_offset_d, csr_offset.data(),
-                                  csr_offset.size_bytes(), cudaMemcpyHostToDevice));
-      CUDA_ERROR_CHECK(cudaMemcpy(csr_columns_d, csr_columns.data(),
-                                  csr_columns.size_bytes(),
-                                  cudaMemcpyHostToDevice));
-      CUDA_ERROR_CHECK(cudaMemcpy(csr_values_d, csr_values.data(),
-                                  csr_values.size_bytes(), cudaMemcpyHostToDevice));
-      CUDA_ERROR_CHECK(cudaMalloc(dense_out, ld * rows * sizeof(E)));
+        CUDA_ERROR_CHECK(cudaMalloc(&csr_offset_d, csr_offset.size_bytes()));
+        CUDA_ERROR_CHECK(cudaMalloc(&csr_columns_d, csr_columns.size_bytes()));
+        CUDA_ERROR_CHECK(cudaMalloc(&csr_values_d, csr_values.size_bytes()));
+        CUDA_ERROR_CHECK(cudaMemcpy(csr_offset_d, csr_offset.data(),
+                                    csr_offset.size_bytes(), cudaMemcpyHostToDevice));
+        CUDA_ERROR_CHECK(cudaMemcpy(csr_columns_d, csr_columns.data(),
+                                    csr_columns.size_bytes(),
+                                    cudaMemcpyHostToDevice));
+        CUDA_ERROR_CHECK(cudaMemcpy(csr_values_d, csr_values.data(),
+                                    csr_values.size_bytes(), cudaMemcpyHostToDevice));
+        CUDA_ERROR_CHECK(cudaMalloc(dense_out, ld * rows * sizeof(E)));
 
-      cusparseSpMatDescr_t A;
-      cusparseDnMatDescr_t B;
-      size_t buffer_size;
-      void *buffer = nullptr;
+        cusparseSpMatDescr_t A;
+        cusparseDnMatDescr_t B;
+        size_t buffer_size;
+        void *buffer = nullptr;
 
-      const auto index_type = CudaTypeTraits<T>::cusparse_type;
+        const auto index_type = CudaTypeTraits<T>::cusparse_type;
 
-      CUDA_ERROR_CHECK(cusparseCreateCsr(
-          &A, rows, n, nnz, csr_offset_d, csr_columns_d, csr_values_d, index_type,
-          index_type, index_base, solver->data_type));
+        CUDA_ERROR_CHECK(cusparseCreateCsr(
+            &A, rows, n, nnz, csr_offset_d, csr_columns_d, csr_values_d, index_type,
+            index_type, index_base, solver->data_type));
 
-      CUDA_ERROR_CHECK(cusparseCreateDnMat(&B, rows, n, ld, *dense_out,
-                                           solver->data_type, CUSPARSE_ORDER_ROW));
+        CUDA_ERROR_CHECK(cusparseCreateDnMat(&B, rows, n, ld, *dense_out,
+                                             solver->data_type, CUSPARSE_ORDER_ROW));
 
-      CUDA_ERROR_CHECK(cusparseSparseToDense_bufferSize(
-          handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, &buffer_size));
-      CUDA_ERROR_CHECK(cudaMalloc(&buffer, buffer_size));
+        CUDA_ERROR_CHECK(cusparseSparseToDense_bufferSize(
+            handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, &buffer_size));
+        CUDA_ERROR_CHECK(cudaMalloc(&buffer, buffer_size));
 
-      CUDA_ERROR_CHECK(cusparseSparseToDense(
-          handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, buffer));
+        CUDA_ERROR_CHECK(cusparseSparseToDense(
+            handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, buffer));
 
-      CUDA_ERROR_CHECK(cusparseDestroySpMat(A));
-      CUDA_ERROR_CHECK(cusparseDestroyDnMat(B));
-      CUDA_ERROR_CHECK(cudaFree(buffer));
-      CUDA_ERROR_CHECK(cudaFree(csr_offset_d));
-      CUDA_ERROR_CHECK(cudaFree(csr_columns_d));
-      CUDA_ERROR_CHECK(cudaFree(csr_values_d));
-    }
-    ```
-  },
-  caption: [C++ code to convert a sparse CSR matrix to a dense matrix using `cuSparse`.],
-) <csr-to-dense>
+        CUDA_ERROR_CHECK(cusparseDestroySpMat(A));
+        CUDA_ERROR_CHECK(cusparseDestroyDnMat(B));
+        CUDA_ERROR_CHECK(cudaFree(buffer));
+        CUDA_ERROR_CHECK(cudaFree(csr_offset_d));
+        CUDA_ERROR_CHECK(cudaFree(csr_columns_d));
+        CUDA_ERROR_CHECK(cudaFree(csr_values_d));
+      }
+      ```
+    },
+    caption: [C++ code to convert a sparse CSR matrix to a dense matrix using NVIDIA's cuSPARSE library.],
+  ) <csr-to-dense>
+]
 
 == Accelerating the Matrix Creation <acc-mat-creation>
 
@@ -269,9 +273,9 @@ Some of the miscellaneous changes required for writing code that could be compil
 
 - Use preprocessor directives to conditionally compile code with or without a @GPU target, something that can be seen in @host-device-array.
 
-- Utilize `device` and `managed` attributes when appropriate to ensure correct behavior. The example in @host-device-array is not only necessary for device arrays-of-arrays (a pattern that is very common in the codebase), but also for traditional host allocated arrays that we want to use on @GPU. Here, the NVIDIA compiler by default treats all variables as `managed` by default (though it can be changed, for example in platforms where unified memory is available). Managed memory is tracked automatically and moved from host to device on demand, depending on its usage in the code. For `allocatable` fields, like the ones we see in the example, this attribute is not propagated and we need to explicitly treat them as `device` arrays, meaning data explicitly allocated on the @GPU global memory.
+- Utilize `device` and `managed` attributes when appropriate to ensure correct behavior. The example in @host-device-array is not only necessary to create device arrays-of-arrays (a pattern that is very common in the codebase), but also for traditional host allocated arrays that we want to use on @GPU. Here, the NVIDIA compiler by default treats all variables as `managed` by default (though it can be changed, for example in platforms where unified memory is available). Managed memory is tracked automatically and moved from host to device on demand, depending on its usage in the code. For `allocatable` fields, like the ones we see in the example, this attribute is not propagated and we need to explicitly treat them as `device` arrays, meaning data explicitly allocated on the @GPU global memory.
 
-- From the previous point follows that when such data structures are used throughout the codebase, we should ensure that we do not end up with too much data movement. When possible, these values should always be computed on @GPU and particular care has to be given to cases where @MPI operations are performed on the data (such as `MPI_Reduce`). In this case, fortunately the NVHPC Toolkit already bundles a CUDA-aware version of OpenMPI, but we need to treat also the accumulators as `device` arrays. Reducing data movement does not only imply a reduction of the number of data transfers but also on the size of them. Reducing the size of types to take advantage of better memory alignment and storing as little information as possible (for example avoiding storing the dimensions of a tensor when it can be inferred from the n-dimensional array's shape) have (perhaps) surprisingly effects on the program. These principles are part of what is known as "Data Oriented Design", which are very well presented in the book of #cite(<x-DOD>, form: "prose"). 
+- From the previous point follows that when such data structures are used throughout the codebase, we should ensure that we do not end up with too much data movement. When possible, these values should always be computed on @GPU and particular care has to be given to cases where @MPI operations are performed on the data (such as `MPI_Reduce`). In this case, fortunately the NVHPC Toolkit already bundles a CUDA-aware version of OpenMPI, but we need to treat also the accumulators as `device` arrays. Reducing data movement does not only imply a reduction of the number of data transfers but also on the size of them. Reducing the size of types to take advantage of better memory alignment and storing as little information as possible (for example avoiding storing the dimensions of a tensor when it can be inferred from the n-dimensional array's shape) have surprisingly large effects on the program. These principles are part of what is known as "Data Oriented Design", which are very well presented in the book of #cite(<x-DOD>, form: "prose").
 
 - Recognizing and declaring as such `pure` routines. When writing CUDA kernels only `pure` routines can be compiled to `device` routines and therefore executed inside a kernel. Most non-trivial kernels require additional functions to be called. An example of that can be seen in @elemental-poly.
 
@@ -330,27 +334,30 @@ We can identify both $C$ and $V$ as block diagonal matrices, calculating the inv
     i => i.map(math.display)
   }))
 
-$
-  C_"2D"^(-1) = dmat(
-    column-gap: #(-0.5em),
-    space space space mat(
-      lambda + 2 mu, lambda;
-      lambda, lambda + 2 mu
-    )^(-1),
-    mat(delim: #none, 0; 0);
-    mat(delim: #none, column-gap: #3.5em, 0, 0), space space space mat(mu)^(-1)
-  ),\ C_"3D"^(-1) = dmat(
-    column-gap: #(-0.5em),
-    space space space mat(
-      lambda + 2 mu, lambda, lambda;
-      lambda, lambda + 2 mu, lambda;
-      lambda, lambda, lambda + 2 mu
-    )^(-1),
-    mat(column-gap: #2.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0);
-    mat(column-gap: #3.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0),
-    space space space mat(column-gap: #2.5em, mu, 0, 0; 0, mu, 0; 0, 0, mu)^(-1)
-  ).
-$
+#[
+  #show math.equation: set block(breakable: true)
+  $
+    C_"2D"^(-1) = dmat(
+      column-gap: #(-0.5em),
+      space space space mat(
+        lambda + 2 mu, lambda;
+        lambda, lambda + 2 mu
+      )^(-1),
+      mat(delim: #none, 0; 0);
+      mat(delim: #none, column-gap: #3.5em, 0, 0), space space space mat(mu)^(-1)
+    ),\ C_"3D"^(-1) = dmat(
+      column-gap: #(-0.5em),
+      space space space mat(
+        lambda + 2 mu, lambda, lambda;
+        lambda, lambda + 2 mu, lambda;
+        lambda, lambda, lambda + 2 mu
+      )^(-1),
+      mat(column-gap: #2.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0);
+      mat(column-gap: #3.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0),
+      space space space mat(column-gap: #2.5em, mu, 0, 0; 0, mu, 0; 0, 0, mu)^(-1)
+    ).
+  $
+]
 
 For the 2D case, we can simply solve the upper left $2 times 2$ block by computing the determinant, while $mu$ just becomes $1 slash mu$
 
@@ -409,75 +416,88 @@ In the anisotropic case, $C$ is full so finding the analytical expression for ma
 
 Being Fortran column major, in contrast to most other languages, such as C, it is important to ensure that the loops are arranged starting from the outermost dimension to the innermost dimension. This ensures that the data is accessed in a contiguous manner.
 
-By simply reordering the loops and the matrices, a measurable performance improvement can be observed. A bigger impact is then achieved by recognizing patterns that can be rewritten as the Fortran-native `sum` and `dot_product` intrinsics. An example of this is shown in @reorder-loops. This, seemingly small, change not only improves readability, but also enables the compiler to take advantage of @SIMD vectorization more aggressively. From the assembly output of the function, we notice a decrease in instruction count, with, specifically, a decrease in equal measure of `mov` and `add` type instructions.
+By simply reordering the loops and the matrices, a measurable performance improvement can be observed. A bigger impact is then achieved by recognizing patterns that can be rewritten as the Fortran-native `sum` and `dot_product` intrinsics. An example of this is shown in @reorder-loops. This, seemingly small, change not only improves readability, but also enables the compiler to take advantage of @SIMD vectorization more aggressively. From the assembly output of the function, we notice a roughly $approx 30%$ decrease in instruction count (which can be inferred from the line count of the assembly output after isolating the lines corresponding to this function), with, specifically, a decrease in equal measure of `MOV` and `ADD` type instructions, probably responsible for moving and loading data to and from memory.
 
 This kind of refactoring also helps to better recognize which lines of code are responsible for the most expensive operations, as can be seen in @reorder-loops in the refactored code, the highlighted lines, for the 2D elastic variable degrees of freedom (`I01`) case, account together for *73.22%* of the total program runtime. We can notice now that the first, `face_phi_xi`, matrix of matrices does not depend on the cell and can therefore be computed only once. Similar reasoning can be applied to some of the volume integrals. The final result is a code where the second operation on `face_phi_xi_nCntau` is now the single most expensive operation, accounting alone for *76.49%* of the runtime.
 
-#figure(
-  kind: raw,
-  grid(
-    columns: 1,
-    row-gutter: 1em,
-    ```f90
-    do k = 1, ctx_dg%n_different_order
-      n_dof_k = ctx_dg%n_dof_per_order(k)
+#[
+  #show figure: set block(breakable: true)
+  #figure(
+    kind: raw,
+    grid(
+      columns: 1,
+      row-gutter: 1em,
+      ```f90
+      do k = 1, ctx_dg%n_different_order
+        n_dof_k = ctx_dg%n_dof_per_order(k)
 
-      do l = 1, ctx_dg%n_different_order
-        n_dof_l = ctx_dg%n_dof_per_order(l)
+        do l = 1, ctx_dg%n_different_order
+          n_dof_l = ctx_dg%n_dof_per_order(l)
 
-        face_phi_xi(k,l)%array = 0.d0
-        face_phi_xi_nCntau(k,l)%array = 0.d0
+          face_phi_xi(k,l)%array = 0.d0
+          face_phi_xi_nCntau(k,l)%array = 0.d0
 
-        do i=1, n_dof_k
-          do j=1, n_dof_l
-            intface_Re = 0.d0
-            intface_Cx = 0.d0
+          do i=1, n_dof_k
+            do j=1, n_dof_l
+              intface_Re = 0.d0
+              intface_Cx = 0.d0
 
-            do iquad=1,ctx_dg%quadGL_face_npts
-              do iface=1,ctx_mesh%n_neigh_per_cell ! three triangle faces
-                intface_Re(iface) = intface_Re(iface) &
-                  + ctx_dg%quadGL_face_phi_phi_w(k,l)%array(i,j,iquad,iface)
+              do iquad=1,ctx_dg%quadGL_face_npts
+                do iface=1,ctx_mesh%n_neigh_per_cell ! three triangle faces
+                  intface_Re(iface) = intface_Re(iface) &
+                    + ctx_dg%quadGL_face_phi_phi_w(k,l)%array(i,j,iquad,iface)
 
-                do kdim=1,ctx_mesh%dim_domain ! working in 2D
-                  do jdim=1,ctx_mesh%dim_domain
-                    intface_Cx(iface,kdim,jdim) = intface_Cx(iface,kdim,jdim) &
-                      + face_coeff_Cx(iface,iquad,kdim,jdim) &
-                      * ctx_dg%quadGL_face_phi_phi_w(k,l)%array(i,j,iquad,iface)
+                  do kdim=1,ctx_mesh%dim_domain ! working in 2D
+                    do jdim=1,ctx_mesh%dim_domain
+                      intface_Cx(iface,kdim,jdim) = intface_Cx(iface,kdim,jdim) &
+                        + face_coeff_Cx(iface,iquad,kdim,jdim) &
+                        * ctx_dg%quadGL_face_phi_phi_w(k,l)%array(i,j,iquad,iface)
+                    end do
                   end do
                 end do
               end do
-            end do
 
-            face_phi_xi(k,l)%array(i,j,:)= intface_Re(:)
-            do kdim=1,ctx_mesh%dim_domain
-              do jdim=1,ctx_mesh%dim_domain
-                face_phi_xi_nCntau(k,l)%array(i,j,:,kdim,jdim) = intface_Cx(:,kdim,jdim)
+              face_phi_xi(k,l)%array(i,j,:)= intface_Re(:)
+              do kdim=1,ctx_mesh%dim_domain
+                do jdim=1,ctx_mesh%dim_domain
+                  face_phi_xi_nCntau(k,l)%array(i,j,:,kdim,jdim) = intface_Cx(:,kdim,jdim)
+                end do
               end do
             end do
           end do
         end do
       end do
-    end do
-    ```,
-    {
-      codly(highlights: (
-        (line: 5, start: 3, fill: yellow, label: <sum-face-phi-xi>),
-        // TODO: Either fix the below with https://github.com/Dherse/codly/issues/96 or change something
-        (line: 8, start: 5, fill: orange, label: <dot-face-phi-xi-nCntau>),
-      ))
-      ```f90
-      do concurrent(l=1:ctx_dg%n_different_order, k=1:ctx_dg%n_different_order)
-        n_dof_k = ctx_dg%n_dof_per_order(k)
-        n_dof_l = ctx_dg%n_dof_per_order(l)
+      ```,
+      {
+        codly(highlights: (
+          (
+            line: 5,
+            start: 3,
+            fill: lq.color.map.petroff6.at(1).transparentize(50%),
+            label: <sum-face-phi-xi>,
+          ),
+          // TODO: can be split on multiple lines if https://github.com/Dherse/codly/issues/96 is solved
+          (
+            line: 8,
+            start: 5,
+            fill: lq.color.map.petroff6.at(2).transparentize(50%),
+            label: <dot-face-phi-xi-nCntau>,
+          ),
+        ))
+        ```f90
+        do concurrent(l=1:ctx_dg%n_different_order, k=1:ctx_dg%n_different_order)
+          n_dof_k = ctx_dg%n_dof_per_order(k)
+          n_dof_l = ctx_dg%n_dof_per_order(l)
 
-        face_phi_xi(k,l)%array = sum(ctx_dg%quadGL_face_phi_phi_w(k,l)%array, dim=4)
+          face_phi_xi(k,l)%array = sum(ctx_dg%quadGL_face_phi_phi_w(k,l)%array, dim=4)
 
-        do concurrent(j=1:n_dof_l, i=1:n_dof_k, iface=1:3, jdim=1:2, kdim=1:2)
-          face_phi_xi_nCntau(k,l)%array(kdim,jdim,iface,i,j) = dot_product(face_coeff_Cx(kdim,jdim,iface,:), ctx_dg%quadGL_face_phi_phi_w(k,l)%array(iface,i,j,:))
+          do concurrent(j=1:n_dof_l, i=1:n_dof_k, iface=1:3, jdim=1:2, kdim=1:2)
+            face_phi_xi_nCntau(k,l)%array(kdim,jdim,iface,i,j) = dot_product(face_coeff_Cx(kdim,jdim,iface,:), ctx_dg%quadGL_face_phi_phi_w(k,l)%array(iface,i,j,:))
+          end do
         end do
-      end do
-      ```
-    },
-  ),
-  caption: [Reordering loops to improve cache locality and replacing sums and vector products with Fortran intrinsics],
-) <reorder-loops>
+        ```
+      },
+    ),
+    caption: [Reordering loops to improve cache locality and replacing sums and vector products with Fortran intrinsics],
+  ) <reorder-loops>
+]

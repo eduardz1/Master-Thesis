@@ -1,3 +1,17 @@
+HAWENRepo:
+  type: Repository
+  title: "hawen: time-HArmonic Wave modEling and INversion using Hybridizable Discontinuous Galerkin Discretization"
+  author: ["Florian Faucher"]
+  url: https://gitlab.com/ffaucher/hawen
+
+CMakeIssueFortranStd:
+  type: Web
+  author: ["wolfman21"]
+  title: "Feature Request: fortran language standard support"
+  serial-number: "#25006"
+  date: 2023-06-19
+  url: https://gitlab.kitware.com/cmake/cmake/-/issues/25006
+
 XKBlas:
   type: Proceedings
   title: "XKBlas: a High Performance Implementation of BLAS-3 Kernels on Multi-GPU Server"

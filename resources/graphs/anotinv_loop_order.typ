@@ -27,7 +27,7 @@
         branch_name,
       ) in branches.enumerate() {
         (
-          line(stroke: 1pt + lq.color.map.petroff10.at(branch_idx)),
+          line(stroke: 1pt + lq.color.map.petroff6.at(branch_idx)),
           branch_name,
         )
       }),
@@ -42,10 +42,10 @@
             lq.boxplot(
               x: p_order_idx,
               label: branch_name,
-              stroke: lq.color.map.petroff10.at(branch_idx),
-              fill: lq.color.map.petroff10.at(branch_idx).transparentize(90%),
-              median: lq.color.map.petroff10.at(branch_idx),
-              outlier-stroke: lq.color.map.petroff10.at(branch_idx),
+              stroke: lq.color.map.petroff6.at(branch_idx),
+              fill: lq.color.map.petroff6.at(branch_idx).transparentize(90%),
+              median: lq.color.map.petroff6.at(branch_idx),
+              outlier-stroke: lq.color.map.petroff6.at(branch_idx),
               mesh_data
                 .at(branch_name)
                 .at(p_order)

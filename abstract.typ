@@ -1,7 +1,12 @@
 #import "@preview/wordometer:0.1.4": word-count
 
+#let flo(term, color: red) = {
+  text(color, [Flo: #term])
+}
+
 #let abstract-en = [
   In this report, we present the open source library HAWEN. The software is used to solve the wave problem in the frequency domain and can be used to both model the propagation of waves and solve the inverse problem. The inverse problem consists in the reconstruction of the characteristics of the media in which the waves propagated. We will discuss the approach used for the discretization of the wave equation, with a technique known as "Hybridizable Discontinuous Galerkin" discretization method. Dense matrix operations are the building blocks of this method, efficiency in these operations must be ensured.   This work will concern the approaches employed to improve the performance of the discretization step, with a focus on GPU acceleration.
+  #flo[the abstract is not great, it is mostly about hawen and hdg and not about your work.] #text(fill: green)[but how much should I say in an abstract without overlapping with the Introduction?]
 ]
 
 #let abstract-fr = [

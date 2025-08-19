@@ -57,6 +57,7 @@
 ) = num[#mumps_stats().at(conf).total.avg+-#mumps_stats().at(conf).total.sem]
 
 #let cudss-v-mumps(height: 6.1cm, width: 13.4cm, highlighted: true) = {
+  set-round(mode: "uncertainty")
   show: lq.set-label(pad: 1em)
   show lq.selector(lq.label): set align(top + right)
   let small_width = 1.5 / mpi-configs().len()
@@ -102,14 +103,16 @@
     ..for (i, c) in mpi-configs().enumerate() {
       (
         lq.place(
-          7,
+          align: right,
+          10,
           offsets.at(i + 1),
         )[#text(fill: white, weight: "black")[#c]],
       )
     },
 
     lq.place(
-      7,
+      align: right,
+      10,
       1,
     )[*#text(fill: white)[#mpi-configs().at(0)]*],
 
