@@ -96,7 +96,10 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
     ),
     [Piecewise constant], [50000], [300], [150], [100], [6],
   ),
-  caption: [Configuration for the `hdg_build_quadrature` routine. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_q$ is the number of quadrature points used to approximate the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials), $N_(q tau)$ is the number of quadrature points to approximate the face integrals, and $N_"orders"$ represents the number of different orders ($frak(p)$-adaptivity).],
+  caption: [Configuration for the `hdg_build_quadrature` routine. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_q$ is the number of quadrature points used to approximate the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials), $N_(q tau)$ is the number of quadrature points to approximate the face integrals, and $N_"orders"$ represents the number of different orders ($frak(p)$-adaptivity).]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <config-bench>
 
 #block(breakable: false)[
@@ -136,7 +139,7 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
               LineComment(
                 Assign(
                   [$angle.l partial_d phi_i | phi_j angle.r_K_e$],
-                  [$plus.circle.big_(q = 1)^N_q (w')_(i j q d) kappa^(-1)_(K_e q)$],
+                  [$plus.circle.big_(q = 1)^N_q w'_(i j q d) kappa^(-1)_(K_e q)$],
                 ),
                 [Reduce $plus.circle$ in parallel],
               ),
@@ -170,7 +173,10 @@ In @loop-order-bench we can see how the changes made in @acc-mat-creation greatl
     table.header([], ..configurations),
     [*Size of matrix $AA_e$*], ..configurations.map(sizes),
   ),
-  caption: [Size of the matrix $AA_e$ for the 2D acoustic test case that we avoid inverting with the latest changes],
+  caption: [Size of the matrix $AA_e$ for the 2D acoustic test case that we avoid inverting with the latest changes]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <sizeof-a>
 
 Interestingly, we notice that the configuration `pI01`, which has degrees of freedom that vary throughout the mesh from 1 to 9, is the one that sees the greatest benefit from the changes to cache locality. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `pI01` configuration which ends up faster than the original `p9` one, given that the matrix creation time alone accounts for $approx 85%$ of the program runtime. The loops responsible for the different orders are the ones in @reorder-loops. Rewriting these loops using optimized @BLAS dot products or as GEMM operation did not result in a performance improvement, suggesting that the computations are already done in the most optimal way and only a higher level of parallelism can help reduce the time. To further justify these speedups we can analyze the number of cache misses and branch mis-predictions in the `pI01` benchmark. With `gprofng` we query the hardware counters on the @CPU (a list of available ones on your system can retrieved with the command `gprogng collect app -h`) and see in @cache-branch-misses-table that the reduction in cache and branch misses is, indeed, very significant, which confirms our hypothesis.
@@ -215,13 +221,19 @@ Interestingly, we notice that the configuration `pI01`, which has degrees of fre
 #figure(
   placement: top,
   image("../resources/imgs/2D_Marmousi2_benchmark.svg"),
-  caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.],
+  caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <marmousi-img>
 
 #figure(
   kind: image,
   anotinv_diagrams(mesh: "mesh100k", additional_plots: none),
-  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 MPI processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.],
+  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 MPI processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <loop-order-bench>
 
 == Using a GPU Accelerated Sparse Solver <cudss-vs-mumps>
@@ -229,7 +241,10 @@ Interestingly, we notice that the configuration `pI01`, which has degrees of fre
 #figure(
   placement: top,
   image("../resources/imgs/3D_homogeneous_benchmark.svg"),
-  caption: [3D wave field results for a cube of 2 #sym.times 2 #sym.times 2 meters with homogenous wave speed and frequency of 2 mHz],
+  caption: [3D wave field results for a cube of 2 #sym.times 2 #sym.times 2 meters with homogenous wave speed and frequency of 2 mHz]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <homogeneous-wavefield>
 
 We now compare the two sparse solvers, cuDSS and @MUMPS (respectively, version `0.6.0` and `5.7.3`), using a cube of 2 #sym.times 2 #sym.times 2 meters with an homogenous acoustic plane wave. The resulting wave field can be seen in @homogeneous-wavefield. We will focus on a mesh comprised of 100 thousands cells and polynomials of order 3. In this benchmarks we are comparing a @CPU only implementation to a @GPU accelerated solver. @MUMPS does have an experimental @GPU accelerated version but due to various issues that would be out of scope here, it is not currently possible to have it work correctly in @HAWEN on the PlaFRIM cluster. It would be interesting in the future compare the two again, once it is officially released. The benchmarks where run in double precision float, testing in single precision would hinder the atomicity of this new added feature in the software and would require more investigation on the quality of the final results. Based on the results from @quad-bench, we can expect a significant improvement in working at lower precisions, but this is left for future works. Notice that we do not compare the accuracy of the two solutions.
@@ -252,7 +267,10 @@ When using cuDSS, each @GPU is usually associated to a single @MPI process. Over
       )
     },
   ),
-  caption: [Speedup of the cuDSS 1 MPI Process 32 OpenMP Threads configuration on the average sum of the sparse solver routines, compared to tested the configurations],
+  caption: [Speedup of the cuDSS 1 MPI Process 32 OpenMP Threads configuration on the average sum of the sparse solver routines, compared to tested the configurations]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 )
 
 As we can see in @solver-times, the total time spent in sparse solver routines for the cuDSS configuration was just #{ num((cudss_stats().total.avg / mumps_stats().at("1P/32T").total.avg) * 100, digits: 2) }% of that spent with the @MUMPS solver. Nonetheless, we can notice that this is not the most efficient configuration for @MUMPS, comparing to the one with 8 MPI processes with 4 OpenMP Threads each we have a solver that takes just #{ num((cudss_stats().total.avg / mumps_stats().at("8P/4T").total.avg) * 100, digits: 2) }% of the time of @MUMPS. The results are still favorable toward the cuDSS solver.
@@ -263,5 +281,8 @@ Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, 
 
 #figure(
   cudss-v-mumps(),
-  caption: [Comparison between cuDSS and MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different MPI Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.],
+  caption: [Comparison between cuDSS and MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different MPI Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <solver-times>

@@ -37,10 +37,10 @@ In the inverse problem, waves are measured at the receiver and are used to chara
   placement: top,
   hawen-schema(),
   kind: image,
-  caption: [Schematic representation of the HAWEN pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the *inverse problem*. Note that one use case of the software is solving the *forward problem* only. #context {
-      if counter(page).get().at(0) > 0 { linebreak(justify: true) }
-    }
-  ],
+  caption: [Schematic representation of the HAWEN pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the *inverse problem*. Note that one use case of the software is solving the *forward problem* only.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <hawen-scheme>
 
 @HAWEN is designed specifically with large scale problems in mind and it is currently deployed on supercomputers. It leverages a combination of @MPI and OpenMP to achieve a high level of parallelism on @CPU:short. An example of the problems the software is designed for can be seen in @earth-hawen @x-HAWENWebsite, where the @PREM @x-PREM model of our planet is used to simulate the propagation of elastic waves through the Earth.
@@ -61,10 +61,10 @@ This work focuses mainly on improving the efficiency of the first two steps. For
 #figure(
   placement: top,
   image("../resources/imgs/global-earth_simu.png"),
-  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the PREM Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 MPI processes and 14 threads for each MPI process). Courtesy of Florian Faucher. #context {
-      if counter(page).get().at(0) > 0 { linebreak(justify: true) }
-    }
-  ],
+  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the PREM Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 MPI processes and 14 threads for each MPI process). Courtesy of Florian Faucher.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <earth-hawen>
 
 == Hybridizable Discontinuous Galerkin Methods Applied to the Acoustic Wave Problem <hdg-section>
@@ -179,10 +179,10 @@ $
     circle((5.35, 1.1), radius: .05, fill: red, stroke: stroke-red)
     content((4.5, -0.5), [HDG])
   }),
-  caption: [Comparison of degrees of freedom in a mesh with the FEM method, DG and HDG using the Lagrange basis function of order 1 for interpolation. In this case, given the low order, HDG introduces too many additional degrees of freedom to be advantageous. #context {
-      if state("image-outline") == none { linebreak(justify: true) }
-    }
-  ],
+  caption: [Comparison of degrees of freedom in a mesh with the FEM method, DG and HDG using the Lagrange basis function of order 1 for interpolation. In this case, given the low order, HDG introduces too many additional degrees of freedom to be advantageous.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <fem-dg-hdg>
 
 The @HDG method works with the first-order formulation, therefore, in the context of acoustic wave propagation, considering a domain $Omega in RR^2$ with boundary $Gamma$, @acoustic-wave-equation is rewritten in terms of the scalar pressure field $p : Omega -> CC$ and the vectorial velocity $bold(v) : Omega -> CC^"dim"$. Following #cite(<x-AdjointHDG>, form: "prose", supplement: [p.~3-4]), we obtain a system with the following equations:

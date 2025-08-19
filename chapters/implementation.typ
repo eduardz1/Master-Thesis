@@ -123,7 +123,10 @@ To convert the sparse @CSR right-hand sides to dense, I instead used the `cuSpar
       }
       ```
     },
-    caption: [C++ code to convert a sparse CSR matrix to a dense matrix using NVIDIA's cuSPARSE library.],
+    caption: [C++ code to convert a sparse CSR matrix to a dense matrix using NVIDIA's cuSPARSE library.]
+      + context {
+        if state("image-outline").get() == none { linebreak(justify: true) }
+      },
   ) <csr-to-dense>
 ]
 
@@ -165,7 +168,10 @@ This result can be proven empirically, although it has been argued that for well
   #endif
   end type t_array5d_complex_kindmat_h_d
   ```,
-  caption: [Example of the wrapper around a 5D array of complex type of precision `RKIND_MAT` which, when compiled with NVFortran (which introduces the `_CUDA` definition), initializes the inner array as a _device_ allocated one.],
+  caption: [Example of the wrapper around a 5D array of complex type of precision `RKIND_MAT` which, when compiled with NVFortran (which introduces the `_CUDA` definition), initializes the inner array as a _device_ allocated one.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <host-device-array>
 
 #figure(
@@ -206,7 +212,10 @@ This result can be proven empirically, although it has been argued that for well
     end do
   end subroutine polynomial_eval_3d
   ```,
-  caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over a collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.],
+  caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over a collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <elemental-poly>
 
 #figure(
@@ -231,7 +240,10 @@ This result can be proven empirically, although it has been argued that for well
       PUBLIC $<$<BOOL:${HAWEN_USE_CUDA}>:-static-nvidia;-cuda>
   )
   ```,
-  caption: [Handling of the CUDA library in HAWEN's build system.],
+  caption: [Handling of the CUDA library in HAWEN's build system.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <cmake-cuf>
 
 #figure(
@@ -260,7 +272,10 @@ This result can be proven empirically, although it has been argued that for well
   #endif
   ...
   ```,
-  caption: [Fragment of the build step for matrix $CC$, in this case we can see that the values don't depend on the cells directly and can be constructed in one shot outside the loop over all cells. We see that, by taking advantage of the preprocessor, we can have both a version parallelized on OpenMP threads and one that can be compiled to a CUDA kernel: the `do concurrent` construct is first translated to OpenACC directives and then translated to an attribute `global` function.],
+  caption: [Fragment of the build step for matrix $CC$, in this case we can see that the values don't depend on the cells directly and can be constructed in one shot outside the loop over all cells. We see that, by taking advantage of the preprocessor, we can have both a version parallelized on OpenMP threads and one that can be compiled to a CUDA kernel: the `do concurrent` construct is first translated to OpenACC directives and then translated to an attribute `global` function.]
+    + context {
+      if state("image-outline").get() == none { linebreak(justify: true) }
+    },
 ) <building-c>
 
 The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with MPI and OpenMP. The mesh is first divided in sub-meshes for each @MPI process and then each thread is assigned a cell. In particular, this last loop is the one we see in @forward-problem. This characteristic might suggest that a solution could be to directly rewrite it as a @GPU kernel. While we cannot exclude that this intuition might end up being the best way to generate the matrix, currently as it stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but we noticed that the abundance of parameters resulted in excessive branching. Combined with the high amount of data movement, this results in abysmal performance.
@@ -498,6 +513,9 @@ This kind of refactoring also helps to better recognize which lines of code are 
         ```
       },
     ),
-    caption: [Reordering loops to improve cache locality and replacing sums and vector products with Fortran intrinsics],
+    caption: [Reordering loops to improve cache locality and replacing sums and vector products with Fortran intrinsics]
+      + context {
+        if state("image-outline").get() == none { linebreak(justify: true) }
+      },
   ) <reorder-loops>
 ]
