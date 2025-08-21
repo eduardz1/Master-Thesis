@@ -3,7 +3,7 @@
 #import "@preview/lilaq:0.4.0" as lq
 
 #let flo(term, color: red) = {
-  text(color, box[FLO: #term])
+  text(color, [FLO: #term])
 }
 
 
@@ -51,18 +51,71 @@ The Fortran standard, unfortunately, introduced enumerator types only very recen
 
 == Exploring Alternative Sparse Solvers <replacing-mumps>
 
-A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by adding the choice to use the @GPU native cuDSS library (see @cudss-section) instead of the @MUMPS sparse solver (see @mumps-section). The implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in C++, a Fortran wrapper was written around it to allow interfacing the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations.
-
-A limitation of cuDSS, at the time of our work, is being able to operate only on dense right-hand sides, which is not ideal in cases such as the ones @HAWEN is set to target where we want to solve for multiple very sparse right hand sides, making a dense representation very costly.
-Another limitation is the fact that the only format supported for the sparse matrix are @CSR or dense. In HAWEN, for our test cases, the sparse matrix is stored in @COO format, unordered and with duplicates. The duplicate values are commonly reduced to a single value with a sum in most solvers.
-
-Therefore, part of the C++ interface consisted in converting the data to a format that was suitable for NVIDIA's sparse solver. As a first preprocessing step, to sum the duplicate values and sort the indices, the algorithms used in the SciPy library @x-SciPy where taken as inspiration and modified for our needs. While their code is efficient, it is also strictly sequential, which will for sure be a bottleneck given the size of the matrices we are dealing with. #cite(<x-EfficientCOOtoCSR>, form: "prose") demonstrate a parallel and efficient algorithm to convert @COO matrices to @CSR. This could be interesting to explore in the future, but it's not necessary to compare just the factorization and solve steps. Alternatively, the matrix could be constructed directly in @CSR format with some modifications to the logic.
-
-To convert the sparse @CSR right-hand sides to dense, I instead used the `cuSparse` library provided by NVIDIA, as we can see in @csr-to-dense (here, `CUDA_ERROR_CHECK` is a macro that handles checks for errors of multiple CUDA libraries by checking the return type of the function at compile time and printing the corresponding error message if the function returns an error code). Performing the conversion directly on the @GPU, reduces the amount of data movement from device to host.
+A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by adding the choice to use the @GPU native cuDSS library (see @cudss-section) instead of the @MUMPS sparse solver (see @mumps-section). The implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in C++, a Fortran wrapper was written around it to allow interfacing the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations, as we see in @extern-c.
 
 #[
   #show figure: set block(breakable: true)
   #figure(
+    kind: raw,
+    context {
+      // workaround for https://github.com/Dherse/codly/issues/95
+      set text(size: text.size / (.8 * .8))
+      ```cuda
+      extern "C" {
+      void init_(const int rank, const bool symmetric, const bool analysis) {
+        // ... Initialization (including mapping of MPI processes to GPU devices)
+
+        // The communication libraries for MPI and OpenMP have to be built with the same
+        // compiler as the rest of the code so we integrate this step in CMake
+
+      #ifdef HAWEN_CUDSS_COMM_LIB_PATH
+        cudssSetCommLayer(solver->cudss_handle, HAWEN_CUDSS_COMM_LIB_PATH);
+      #endif
+
+        // Set communicator to be used by Multi-GPU Multi-Node (MGMN) mode of cuDSS
+        CUDA_ERROR_CHECK(cudssDataSet(solver->cudss_handle, solver->data,
+                                      CUDSS_DATA_COMM, solver->mpi_comm,
+                                      sizeof(MPI_Comm *)));
+
+      #ifdef HAWEN_CUDSS_THREADING_LIB_PATH
+        CUDA_ERROR_CHECK(cudssSetThreadingLayer(solver->cudss_handle,
+                                                HAWEN_CUDSS_THREADING_LIB_PATH))
+      #endif
+      }
+
+      // Solve interfaces
+      void solve_int_complex_double_(const bool master, const int n, const int nrhs,
+                               const int b_size, int *csr_offsets,
+                               int *csr_cols, double _Complex *b,
+                               double _Complex *x) {
+        solve(master, n, std::span<int>(csr_offsets, nrhs + 1),
+              std::span<int>(csr_cols, b_size),
+              std::span<double _Complex>(b, b_size),
+              std::span<double _Complex>(x, nrhs * n));
+      }
+      // ... for every combination of types (int/complex_float, long/complex_double, ...)
+
+      // ... Analysis and Factorization C interfaces
+      }
+      ```
+    },
+    caption: [To interface with Fortran, we have to rely on C bindings from both Fortran and C++, we see that we cannot use C++'s STL directly and instead have to declare the type explicitly. Ellipsis indicate omitted code.]
+      + context {
+        if state("image-outline").get() { linebreak(justify: true) }
+      },
+  ) <extern-c>
+]
+
+A limitation of cuDSS, at the time of our work, is being able to operate only on dense right-hand sides, which is not ideal in cases such as the ones @HAWEN is set to target where we want to solve for multiple very sparse right hand sides, making a dense representation very costly. Another limitation is the fact that the only format supported for the sparse matrix are @CSR or dense. In HAWEN, for our test cases, the sparse matrix is stored in @COO format, unordered and with duplicates. The duplicate values are commonly reduced to a single value with a sum in most solvers.
+
+Therefore, part of the C++ interface consisted in converting the data to a format that was suitable for NVIDIA's sparse solver. As a first preprocessing step, to sum the duplicate values and sort the indices, the algorithms used in the SciPy library @x-SciPy where taken as inspiration and modified for our needs. While their code is efficient, it is also strictly sequential, which will for sure be a bottleneck given the size of the matrices we are dealing with. #cite(<x-EfficientCOOtoCSR>, form: "prose") demonstrate a parallel and efficient algorithm to convert @COO matrices to @CSR. This could be interesting to explore in the future, but it's not necessary to compare just the factorization and solve steps. Alternatively, the matrix could be constructed directly in @CSR format with some modifications to the logic.
+
+To convert the sparse @CSR right-hand sides to dense, we instead used the `cuSPARSE` library provided by NVIDIA, as we can see summarized in @csr-to-dense (here, `CUDA_ERROR_CHECK` is a macro that handles checks for errors of multiple CUDA libraries by checking the return type of the function at compile time and printing the corresponding error message if the function returns an error code). Performing the conversion directly on the @GPU reduces the amount of data movement from device to host.
+
+#[
+  #show figure: set block(breakable: true)
+  #figure(
+    // placement: top,
     kind: raw,
     context {
       // workaround for https://github.com/Dherse/codly/issues/95
@@ -73,61 +126,124 @@ To convert the sparse @CSR right-hand sides to dense, I instead used the `cuSpar
                            const std::span<T> csr_offset,
                            const std::span<T> csr_columns,
                            const std::span<E> csr_values, E **dense_out) {
-        T *csr_offset_d = nullptr;
-        T *csr_columns_d = nullptr;
-        E *csr_values_d = nullptr;
+          // ... Allocate and copy CSR data to device memory (cudaMalloc / cudaMemcpy)
 
-        auto rows = csr_offset.size() - 1;
-        auto nnz = csr_values.size();
-        auto ld = static_cast<size_t>(n) > rows ? n : rows;
+          // ... Allocate dense output on device (cudaMalloc(dense_out))
 
-        CUDA_ERROR_CHECK(cudaMalloc(&csr_offset_d, csr_offset.size_bytes()));
-        CUDA_ERROR_CHECK(cudaMalloc(&csr_columns_d, csr_columns.size_bytes()));
-        CUDA_ERROR_CHECK(cudaMalloc(&csr_values_d, csr_values.size_bytes()));
-        CUDA_ERROR_CHECK(cudaMemcpy(csr_offset_d, csr_offset.data(),
-                                    csr_offset.size_bytes(), cudaMemcpyHostToDevice));
-        CUDA_ERROR_CHECK(cudaMemcpy(csr_columns_d, csr_columns.data(),
-                                    csr_columns.size_bytes(),
-                                    cudaMemcpyHostToDevice));
-        CUDA_ERROR_CHECK(cudaMemcpy(csr_values_d, csr_values.data(),
-                                    csr_values.size_bytes(), cudaMemcpyHostToDevice));
-        CUDA_ERROR_CHECK(cudaMalloc(dense_out, ld * rows * sizeof(E)));
+          // Create cuSPARSE descriptors for CSR (sparse) and dense matrices, we use a
+          // template struct to statically and at compile time (constexpr) assign the
+          // correct index_type (CUDA_C_64F, ...) based on the typename T
+          cusparseSpMatDescr_t A;
+          cusparseDnMatDescr_t B;
+          const auto index_type = CudaTypeTraits<T>::cusparse_type;
 
-        cusparseSpMatDescr_t A;
-        cusparseDnMatDescr_t B;
-        size_t buffer_size;
-        void *buffer = nullptr;
-
-        const auto index_type = CudaTypeTraits<T>::cusparse_type;
-
-        CUDA_ERROR_CHECK(cusparseCreateCsr(
+          CUDA_ERROR_CHECK(cusparseCreateCsr(
             &A, rows, n, nnz, csr_offset_d, csr_columns_d, csr_values_d, index_type,
             index_type, index_base, solver->data_type));
 
-        CUDA_ERROR_CHECK(cusparseCreateDnMat(&B, rows, n, ld, *dense_out,
-                                             solver->data_type, CUSPARSE_ORDER_ROW));
+          CUDA_ERROR_CHECK(cusparseCreateDnMat(&B, rows, n, ld, *dense_out,
+                                               solver->data_type, CUSPARSE_ORDER_ROW));
 
-        CUDA_ERROR_CHECK(cusparseSparseToDense_bufferSize(
+          // Query buffer size and allocate temporary buffer
+          CUDA_ERROR_CHECK(cusparseSparseToDense_bufferSize(
             handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, &buffer_size));
-        CUDA_ERROR_CHECK(cudaMalloc(&buffer, buffer_size));
+          CUDA_ERROR_CHECK(cudaMalloc(&buffer, buffer_size));
 
-        CUDA_ERROR_CHECK(cusparseSparseToDense(
+          // Convert on device from CSR to Dense
+          CUDA_ERROR_CHECK(cusparseSparseToDense(
             handle, A, B, CUSPARSE_SPARSETODENSE_ALG_DEFAULT, buffer));
 
-        CUDA_ERROR_CHECK(cusparseDestroySpMat(A));
-        CUDA_ERROR_CHECK(cusparseDestroyDnMat(B));
-        CUDA_ERROR_CHECK(cudaFree(buffer));
-        CUDA_ERROR_CHECK(cudaFree(csr_offset_d));
-        CUDA_ERROR_CHECK(cudaFree(csr_columns_d));
-        CUDA_ERROR_CHECK(cudaFree(csr_values_d));
+          // ... Cleanup (destroy descriptors, free buffers and temp memory)
       }
       ```
     },
-    caption: [C++ code to convert a sparse CSR matrix to a dense matrix using NVIDIA's cuSPARSE library.]
+    caption: [C++ code to convert a sparse CSR matrix to a dense matrix using NVIDIA's cuSPARSE library. Ellipsis indicate code omissions.]
       + context {
-        if state("image-outline").get() == none { linebreak(justify: true) }
+        if state("image-outline").get() { linebreak(justify: true) }
       },
   ) <csr-to-dense>
+]
+
+// An example of the sparse solver wrappers can be seen in @solver-cudss. Here, after the necessary conversions needed to use the arrays inside of the cuDSS library, we execute the solve phase. To interface with this function we cannot use the @STL directly but instead use explicit C types.
+
+An example of the wrappers around the cuDSS library for the various phases of the sparse solver can be seen in @solver-cudss. Here we use `constexpr` operations to convert at compile time between C complex types and CUDA ones. The data, in @CSR format, is then normalized to remove duplicates and then converted to dense format, using the function we saw in @csr-to-dense. The correct handling of data is especially important, considering that the matrices are stored in column major format and one-based indexed in Fortran while C++ is row major and zero-indexed. Another possible issue that should be taken care of at this stage is correctly executing code such as the sparse to dense conversion or the final `cudaMemCpy` only on the master @MPI process while the cuDSS functions should, instead, be executed in parallel to fully take advantage of our Multiple-Node Multiple-GPU configuration.
+
+#[
+  #show figure: set block(breakable: true)
+  #figure(
+    kind: raw,
+    context {
+      // workaround for https://github.com/Dherse/codly/issues/95
+      set text(size: text.size / (.8 * .8))
+      ```cuda
+      template <typename T, typename E>
+      void solve(const bool master, const int n, std::span<T> csr_offsets,
+                 std::span<T> csr_columns, std::span<E> b, std::span<E> x) {
+        // ... Guard clauses
+
+        using val_type =
+            std::conditional_t<std::is_same_v<E, float _Complex>, cuComplex,
+                               std::conditional_t<std::is_same_v<E, double _Complex>,
+                                                  cuDoubleComplex, E>>;
+
+        const int nrhs = csr_offsets.size() - 1;
+        const int nnz = csr_offsets[nrhs];
+
+        cudssMatrix_t B, X;
+        val_type *b_d = nullptr, *x_d = nullptr;
+
+        // Only the main MPI process should start the Solve step, the work will be split
+        // between the processes by the cuDSS library
+        if (master) {
+          // b
+          CUDA_ERROR_CHECK(cudaMalloc(&b_d, x.size() * sizeof(val_type)));
+          std::vector<T> csr_offsets_b_vec(csr_offsets.begin(), csr_offsets.end());
+          std::vector<T> columns_b_vec(csr_columns.begin(), csr_columns.end());
+          std::vector<val_type> b_copy(nnz);
+
+          // ... Convert to 0 based ordering (remember Fortran is 1-indexed)
+
+          // C -> CUDA complex types, which are not guaranteed to be byte compatible
+          if constexpr (std::is_same_v<E, float _Complex>) {
+            for (int i = 0; i < nnz; i++)
+              b_copy[i] = to_cuComplex(b[i]);
+          } else if constexpr (std::is_same_v<E, double _Complex>) {
+            for (int i = 0; i < nnz; i++)
+              b_copy[i] = to_cuDoubleComplex(b[i]);
+          } else {
+            std::copy(b.begin(), b.end(), b_copy.begin());
+          }
+
+          // ... Sum the duplicates in the CSR and validate it
+
+          sparse_to_dense<T, val_type, CUSPARSE_INDEX_BASE_ZERO>(
+              solver->cusparse_handle, n, std::span{csr_offsets_b_vec},
+              std::span{columns_b_vec}, std::span{b_copy}, &b_d);
+
+          // x
+          CUDA_ERROR_CHECK(cudaMalloc(&x_d, x.size() * sizeof(val_type)));
+        }
+
+        CUDA_ERROR_CHECK(cudssMatrixCreateDn(&B, n, nrhs, n, b_d, solver->data_type,
+                                             CUDSS_LAYOUT_COL_MAJOR));
+        CUDA_ERROR_CHECK(cudssMatrixCreateDn(&X, n, nrhs, n, x_d, solver->data_type,
+                                             CUDSS_LAYOUT_COL_MAJOR));
+        CUDA_ERROR_CHECK(cudssExecute(solver->cudss_handle, CUDSS_PHASE_SOLVE,
+                                      solver->config, solver->data, solver->A, X, B));
+
+        if (master) {
+          CUDA_ERROR_CHECK(cudaMemcpy(x.data(), x_d, x.size_bytes(), cudaMemcpyDeviceToHost));
+        }
+
+        // ... Cleanup (cudaFree / cudssMatrixDestroy)
+      }
+      ```
+    },
+    caption: [Example of wrapper around cuDSS's solve phase. Solving the system consists of three main phases: 1) analysis, 2) factorization, and 3) solve. Complex numbers in C++ can be declared using different conventions, the one we used is the one that is specified in the GCC documentation for interoperability between Fortran and C. We can convert to CUDA complex types at compile type using `constexpr` code. Ellipsis indicate omitted code.]
+      + context {
+        if state("image-outline").get() { linebreak(justify: true) }
+      },
+  ) <solver-cudss>
 ]
 
 == Accelerating the Matrix Creation <acc-mat-creation>
@@ -170,7 +286,7 @@ This result can be proven empirically, although it has been argued that for well
   ```,
   caption: [Example of the wrapper around a 5D array of complex type of precision `RKIND_MAT` which, when compiled with NVFortran (which introduces the `_CUDA` definition), initializes the inner array as a _device_ allocated one.]
     + context {
-      if state("image-outline").get() == none { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <host-device-array>
 
@@ -214,7 +330,7 @@ This result can be proven empirically, although it has been argued that for well
   ```,
   caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over a collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.]
     + context {
-      if state("image-outline").get() == none { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <elemental-poly>
 
@@ -242,7 +358,7 @@ This result can be proven empirically, although it has been argued that for well
   ```,
   caption: [Handling of the CUDA library in HAWEN's build system.]
     + context {
-      if state("image-outline").get() == none { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <cmake-cuf>
 
@@ -274,7 +390,7 @@ This result can be proven empirically, although it has been argued that for well
   ```,
   caption: [Fragment of the build step for matrix $CC$, in this case we can see that the values don't depend on the cells directly and can be constructed in one shot outside the loop over all cells. We see that, by taking advantage of the preprocessor, we can have both a version parallelized on OpenMP threads and one that can be compiled to a CUDA kernel: the `do concurrent` construct is first translated to OpenACC directives and then translated to an attribute `global` function.]
     + context {
-      if state("image-outline").get() == none { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <building-c>
 
@@ -427,7 +543,7 @@ $
 
 In the anisotropic case, $C$ is full so finding the analytical expression for matrix $S$ is a bit more complicated. At the moment we only treat isotropic cases.
 
-=== Improving Cache Locality & Fortran intrinsics <improv-cache-locality>
+=== Improving Cache Locality and Fortran intrinsics <improv-cache-locality>
 
 Being Fortran column major, in contrast to most other languages, such as C, it is important to ensure that the loops are arranged starting from the outermost dimension to the innermost dimension. This ensures that the data is accessed in a contiguous manner.
 
@@ -436,7 +552,7 @@ By simply reordering the loops and the matrices, a measurable performance improv
 This kind of refactoring also helps to better recognize which lines of code are responsible for the most expensive operations, as can be seen in @reorder-loops in the refactored code, the highlighted lines, for the 2D elastic variable degrees of freedom (`I01`) case, account together for *73.22%* of the total program runtime. We can notice now that the first, `face_phi_xi`, matrix of matrices does not depend on the cell and can therefore be computed only once. Similar reasoning can be applied to some of the volume integrals. The final result is a code where the second operation on `face_phi_xi_nCntau` is now the single most expensive operation, accounting alone for *76.49%* of the runtime.
 
 #[
-  #show figure: set block(breakable: true)
+  #show figure: set block(breakable: false)
   #figure(
     kind: raw,
     grid(
@@ -513,9 +629,9 @@ This kind of refactoring also helps to better recognize which lines of code are 
         ```
       },
     ),
-    caption: [Reordering loops to improve cache locality and replacing sums and vector products with Fortran intrinsics]
+    caption: [Reordering loops to improve cache locality and replacing sums and vector products with Fortran intrinsics. Highlighted in the bottom fragment of code are the two single most expensive operations in the program with, in particular, the `dot_product` accounting for more than 70% of the total program runtime.]
       + context {
-        if state("image-outline").get() == none { linebreak(justify: true) }
+        if state("image-outline").get() { linebreak(justify: true) }
       },
   ) <reorder-loops>
 ]

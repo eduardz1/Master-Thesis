@@ -4,6 +4,11 @@ DG:
   plural: DGs
   longplural: Discontinuous Galerkin methods
 
+STL:
+  short: STL
+  long: Standard Template Library
+  description: A collection of template classes and functions that provide common data structures and algorithms. It allows to write in C++ using flexible and generic programming tehcniques
+
 HDG:
   short: HDG
   long: Hybridizable Discontinuous Galerkin

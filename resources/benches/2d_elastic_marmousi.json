@@ -785,7 +785,7 @@
         "total_runs": 10,
         "success_rate": 1.0
       },
-      "pI01": {
+      "p2-9": {
         "matrix_global_size": 2003422,
         "matrix_nnz": 85430307,
         "mesh_size": "100k",
@@ -1661,7 +1661,7 @@
         "total_runs": 10,
         "success_rate": 1.0
       },
-      "pI01": {
+      "p2-9": {
         "mesh_size": "100k",
         "polynomial_order": "I01",
         "successful_runs": [
@@ -2535,7 +2535,7 @@
         "total_runs": 10,
         "success_rate": 1.0
       },
-      "pI01": {
+      "p2-9": {
         "mesh_size": "100k",
         "polynomial_order": "I01",
         "successful_runs": [
@@ -3409,7 +3409,7 @@
         "total_runs": 10,
         "success_rate": 1.0
       },
-      "pI01": {
+      "p2-9": {
         "mesh_size": "100k",
         "polynomial_order": "I01",
         "successful_runs": [

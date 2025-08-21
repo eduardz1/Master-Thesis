@@ -1,3 +1,7 @@
+#import "@preview/zero:0.4.0": zi
+
+#let mHz = zi.declare("mHz")
+
 #let avg(arr) = arr.sum() / arr.len()
 #let var(arr) = {
   let len = arr.len()

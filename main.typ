@@ -8,10 +8,10 @@
   defense-date: datetime(year: 2025, month: 9, day: 1),
   name: "Eduard Antonovic Occhipinti",
   lab: "INRIA",
-  supervisor: [Christophe Picard as _supervisor_ \ Florian Faucher as _expert_],
+  supervisor: [Christophe Picard as _supervisor_ \ Florian Faucher as _expert_ \ Marc Fuentes as _co-supervisor_],
   jury: (
     president: "Sergi Pujades",
-    members: ("<Jury Member 1>", "<Jury Member 2>", "<Jury Member 3>"),
+    members: ("Christophe Picard", "Florian Faucher"),
   ),
   abstract: (en: abstract-en, fr: abstract-fr),
   acknowledgements: acknowledgements,
@@ -34,7 +34,5 @@
 #include "chapters/implementation.typ"
 
 #include "chapters/evaluation.typ"
-
-// #include "chapters/results.typ"
 
 #include "chapters/conclusion.typ"

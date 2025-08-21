@@ -1,15 +1,50 @@
 #import "@preview/touying:0.6.1": *
 #import themes.dewdrop: *
+#import "resources/graphs/fem_dg_hdg.typ": fem-dg-hdg-graph
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.8": *
 #import "@preview/numbly:0.1.0": numbly
 #import "@preview/lilaq:0.4.0" as lq
-#import "@preview/zero:0.4.0": set-round
+#import "@preview/zero:0.4.0": set-round, zi
+#import "resources/tables/clusters.typ": clusters
 #import "resources/graphs/cudss_v_mumps.typ": cudss-v-mumps
 #import "resources/graphs/anotinv_loop_order.typ": anotinv_diagrams
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 #import "@preview/pinit:0.2.2": *
+#import "resources/tables/cache_branch_misses.typ": (
+  cache-branch-misses-table-figure,
+)
 #import "resources/graphs/hawen_schema.typ": hawen-schema
+#import "resources/algorithms/forward_acoustic_problem.typ": (
+  forward-acoustic-problem-alg,
+)
+#import "resources/utils.typ": mHz
+#import "@preview/algorithmic:1.0.3": style-algorithm
+
+#let primary = rgb("#0c4842")
+
+
+#show figure.where(kind: table): set figure.caption(position: top)
+#show table.cell.where(y: 0): strong
+#show table.cell.where(y: 0): smallcaps
+#show table: it => {
+  set par(justify: false)
+  it
+}
+#set table(
+  stroke: (_, y) => (
+    top: if y == 0 { 2pt } else if y == 1 { none } else { 0pt } + primary,
+    bottom: 1pt + primary,
+  ),
+  align: center + horizon,
+)
+
+#show: style-algorithm.with(hlines: (
+  grid.hline(stroke: 2pt + primary),
+  grid.hline(stroke: 1pt + primary),
+  grid.hline(stroke: 2pt + primary),
+))
+#show figure.caption: emph
 
 #let colors = lq.color.map.petroff6
 #let highlights = colors.map(x => x.transparentize(80%))
@@ -63,6 +98,7 @@
     institution: [Université Grenoble Alpes],
   ),
 )
+
 // #set heading(numbering: numbly("{1}.", default: "1.1"))
 
 #title-slide()
@@ -84,7 +120,7 @@
   - Ultrasound imaging for medical purposes #pause
 
   #align(center + horizon)[$
-      - nabla dot 1/(rho(bold(x))) nabla p(bold(x)) - omega^2 / (kappa(bold(x))) p(bold(x)) = f(bold(x))
+      - nabla dot 1/(rho(bold(x))) nabla p(bold(x)) - omega^2 / (kappa(bold(x))) p(bold(x)) = g(bold(x))
     $]
 
   #speaker-note[
@@ -134,7 +170,7 @@
 
 #slide[
   #align(center + horizon)[$
-      - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)f(bold(x))#pin(8)
+      - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
     $
 
     #pinit-highlight(1, 2, fill: highlights.at(0))
@@ -197,31 +233,130 @@
   / Galerkin Methods: approximate the solution itself by expressing it as a combination of basis functions and ensuring that the equation holds on average across the whole domain.
 ]
 
-= Tools & Technologies
+#slide[
+  #align(center + horizon)[
+    #figure(
+      fem-dg-hdg-graph(len: 4.5cm, stroke-width: 2pt, presentation: true),
+    )
+  ]
+]
 
-= Implementation
+// #slide[
+//   === First-order Formulation
 
-= Results
+//   For HDG we need the first-order formulation @AdjointHDG, considering a domain $Omega in RR^2$ with boundary $Gamma$, we have scalar pressure field as $p : Omega -> CC$ and vectorial velocity as $bold(v) : Omega -> CC^"dim"$
+
+//   $
+//     cases(
+//       - i omega rho(bold(x)) bold(v)(bold(x)) + gradient p(bold(x)) & = 0 & "in" &Omega,
+//       - i omega p (bold(x)) kappa(bold(x))^(-1) + gradient dot bold(v)(bold(x)) &= g(bold(x)) &"in" &Omega,
+//       - (rho(bold(x)) sqrt(kappa(bold(x)) rho(bold(x))^(-1)))^(-1) p(bold(x)) + bold(v)(bold(x)) dot bold(nu) &= 0 &"on" &Gamma,
+//     ).
+//   $ <first-order-system>
+// ]
+
+#slide(repeat: 2, self => [
+  #set text(size: .8em)
+
+  #alternatives[#forward-acoustic-problem-alg(
+      highlight-tensors: false,
+    )][#forward-acoustic-problem-alg(highlight-tensors: true)]
+])
+
+= Tools for Parallelism
+
+== CUDA
+
+== MPI
+
+== OpenMP
+
+== OpenACC
+
+== Clusters
+
+We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters
+
+#[
+  #set text(size: .78em)
+  #figure(
+    clusters(),
+  )
+]
+
+= Contributions
+
+== Preliminary Contributions
+
+== Exploring Alternative Sparse Solvers
+
+== Accelerating the Matrix Creation
+
+=== Replacing Matrix Inversions
+
+=== Improving Cache Locality
+
+=== Compiling HAWEN with NVFortran and Taking Advantage of GPU Offloading
+
+= Contributions
+
+== Preliminary Work
+
+
 
 == Removing Matrix Inversions and Optimizing Cache Locality
 
-#lorem(150)
+#slide[
+  Benchmarked with
+  - Marmousi2 2D model @Marmousi2 #pause
+  - 100 thousand cells #pause
+  - 169 sources (right-hand sides $cal(B)$ of global liner system) #pause
+  - frequency of #zi.Hz[7] #pause
+  - 8 different configuration, polynomial in $[2, 9]$ + $frak(p)$-adaptability
+]
 
-#anotinv_diagrams(width: 24cm, height: 11.5cm)
+#slide[
+  #figure(
+    image("resources/imgs/model_plot.svg"),
+  )
+]
+// #slide[
+//   #figure(
+//     image("resources/imgs/magnitude_plot.svg"),
+//     caption: [Magnitude of displacement field],
+//   )
+// ]
+#slide[
+  #figure(
+    image("resources/imgs/real_part_plot.svg"),
+  )
+]
 
-#anotinv_diagrams(width: 24cm, height: 11.5cm)
-#place(
-  top + left,
-  dx: -5pt,
-  dy: -5pt,
-  rect(width: 75%, height: 103%, fill: white.transparentize(30%)),
-)
-#place(
-  top + right,
-  dx: -5pt,
-  dy: -5pt,
-  rect(width: 15%, height: 103%, fill: white.transparentize(30%)),
-)
+#slide[
+  #anotinv_diagrams(width: 24cm, height: 10.2cm)
+]
+
+#slide[
+  #anotinv_diagrams(width: 24cm, height: 10.2cm)
+  #place(
+    top + left,
+    dx: -5pt,
+    dy: -5pt,
+    rect(width: 75%, height: 103%, fill: white.transparentize(30%)),
+  )
+  #place(
+    top + right,
+    dx: -5pt,
+    dy: -5pt,
+    rect(width: 15%, height: 103%, fill: white.transparentize(30%)),
+  )
+  #place(
+    top,
+    dy: -10pt,
+    dx: 567pt,
+    rect(width: 10%, height: 10%, fill: white.transparentize(30%)),
+  )
+]
 
 #let horizontal-anotinv-loop(config) = {
   let data = json("resources/benches/2d_elastic_marmousi.json").mesh100k
@@ -232,7 +367,7 @@
   lq.diagram(
     width: 25.5cm,
     xlabel: [Time in seconds],
-    height: 10.5cm,
+    height: 9cm,
     yaxis: (ticks: ((0.5, [#config]),), subticks: 0),
     ..for (branch_idx, branch_name) in branches.enumerate() {
       (
@@ -256,30 +391,71 @@
   )
 }
 
-#horizontal-anotinv-loop("p9")
+#slide[
+  #horizontal-anotinv-loop("p9")
+]
 
-#anotinv_diagrams(width: 24cm, height: 11.5cm)
-#place(
-  top + left,
-  dx: -5pt,
-  dy: -5pt,
-  rect(width: 85%, height: 103%, fill: white.transparentize(30%)),
-)
-#place(
-  top + right,
-  dx: -5pt,
-  dy: -5pt,
-  rect(width: 5%, height: 103%, fill: white.transparentize(30%)),
-)
+#slide[
+  #anotinv_diagrams(width: 24cm, height: 10.2cm)
+  #place(
+    top + left,
+    dx: -5pt,
+    dy: -5pt,
+    rect(width: 85%, height: 103%, fill: white.transparentize(30%)),
+  )
+  #place(
+    top + right,
+    dx: -5pt,
+    dy: -5pt,
+    rect(width: 5%, height: 103%, fill: white.transparentize(30%)),
+  )
+  #place(
+    top,
+    dy: -10pt,
+    dx: 640pt,
+    rect(width: 10%, height: 10%, fill: white.transparentize(30%)),
+  )]
 
-#horizontal-anotinv-loop("pI01")
+#slide[
+  #horizontal-anotinv-loop("p2-9")
+]
+
+#slide[
+  #set table(inset: .6em)
+
+  Looking at the generated assembly code
+  - $approx 30%$ reduction in instruction count with `MOV` and `ADD` type instructions decreasing in equal measure: *less data movement* #pause
+  - dot product for face integrals accounting for $approx 80%$ of the *total program runtime* #pause
+  - no improvements with BLAS or GEMM operations: a higher level of parallelism is necessary #pause
+  #figure(cache-branch-misses-table-figure())
+]
 
 == Using a GPU Accelerated Sparse Solver
 
-#lorem(150)
+#slide[
+  Benchmarked with
+  - Homogeneous planar waves in a $2 times 2 times 2$ meters cube (sources in one of the corners)  #pause
+  - 100 thousand cells #pause
+  - 4 sources (right-hand sides $cal(B)$ of the global linear system) #pause
+  - frequency of #mHz[2] #pause
+  - polynomial order 3 #pause
+  - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster
+  - 1 combination of MPI/OpenMP for cuDSS, several for MUMPS
+]
 
-#cudss-v-mumps(width: 26cm, height: 10cm, highlighted: false)
-#cudss-v-mumps(width: 26cm, height: 10cm, highlighted: true)
+#slide[
+  #align(center + horizon)[
+    #figure(image(height: 88%, "resources/imgs/3D_homogeneous_benchmark.svg"))
+  ]
+]
+
+#slide[
+  #cudss-v-mumps(width: 26cm, height: 9cm, highlighted: false)
+]
+
+#slide[
+  #cudss-v-mumps(width: 26cm, height: 9cm, highlighted: true)
+]
 
 = Conclusions
 
