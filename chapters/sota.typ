@@ -53,7 +53,7 @@ A specificity of @HAWEN is the usage of the @HDG method @x-HDG for the discretiz
 
 - The *discretization* step, where the global matrix is built with the @HDG method from each cell of the mesh. In particular this step involves an embarrassingly parallel loop over all cells with local-to-the-cell dense matrix operations for the solution of the @HDG problem.
 
-- The *factorization* step: the linear system that is computed in @hdg-section is solved using a sparse solver, @MUMPS (see @mumps-section for more details), the most expensive operation is really the factorization of the matrix, given that the code relies on a direct solver, rather than an iterative one. Once factorized, the actual solve step is relatively fast. This choice allows solving for multiple right-hand sides relatively cheaply (factorization only has to be performed once).
+- The *factorization* step: the linear system that is computed in @hdg-section is solved using a sparse solver, @MUMPS:short (see @mumps-section for more details), the most expensive operation is really the factorization of the matrix, given that the code relies on a direct solver, rather than an iterative one. Once factorized, the actual solve step is relatively fast. This choice allows solving for multiple right-hand sides relatively cheaply (factorization only has to be performed once).
 
 - The *save* step, where the results of the simulation are saved to disk.
 

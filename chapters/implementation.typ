@@ -547,12 +547,10 @@ In the anisotropic case, $C$ is full so finding the analytical expression for ma
 
 Being Fortran column major, in contrast to most other languages, such as C, it is important to ensure that the loops are arranged starting from the outermost dimension to the innermost dimension. This ensures that the data is accessed in a contiguous manner.
 
-By simply reordering the loops and the matrices, a measurable performance improvement can be observed. A bigger impact is then achieved by recognizing patterns that can be rewritten as the Fortran-native `sum` and `dot_product` intrinsics. An example of this is shown in @reorder-loops. This, seemingly small, change not only improves readability, but also enables the compiler to take advantage of @SIMD vectorization more aggressively. From the assembly output of the function, we notice a roughly $approx 30%$ decrease in instruction count (which can be inferred from the line count of the assembly output after isolating the lines corresponding to this function), with, specifically, a decrease in equal measure of `MOV` and `ADD` type instructions, probably responsible for moving and loading data to and from memory.
-
-This kind of refactoring also helps to better recognize which lines of code are responsible for the most expensive operations, as can be seen in @reorder-loops in the refactored code, the highlighted lines, for the 2D elastic variable degrees of freedom (`I01`) case, account together for *73.22%* of the total program runtime. We can notice now that the first, `face_phi_xi`, matrix of matrices does not depend on the cell and can therefore be computed only once. Similar reasoning can be applied to some of the volume integrals. The final result is a code where the second operation on `face_phi_xi_nCntau` is now the single most expensive operation, accounting alone for *76.49%* of the runtime.
+By simply reordering the loops and the matrices, a measurable performance improvement can be observed. A bigger impact is then achieved by recognizing patterns that can be rewritten as the Fortran-native `sum` and `dot_product` intrinsics. An example of this is shown in @reorder-loops. This, seemingly small, change not only improves readability, but also enables the compiler to take advantage of @SIMD vectorization more aggressively. From the assembly output of the function, we notice a roughly $approx 30%$ decrease in instruction count (which can be inferred from the line count of the assembly output after isolating the lines corresponding to this function), with, specifically, a decrease in equal measure of `MOV` and `ADD` type instructions, probably responsible for moving and loading data to and from memory. This kind of refactoring also helps to better recognize which lines of code are responsible for the most expensive operations, as can be seen in @reorder-loops.
 
 #[
-  #show figure: set block(breakable: false)
+  #show figure: set block(breakable: true)
   #figure(
     kind: raw,
     grid(
@@ -635,3 +633,5 @@ This kind of refactoring also helps to better recognize which lines of code are 
       },
   ) <reorder-loops>
 ]
+
+In the refactored code, the highlighted lines, for the 2D elastic variable degrees of freedom (`I01`) case, account together for *73.22%* of the total program runtime. We can notice now that the first, `face_phi_xi`, matrix of matrices does not depend on the cell and can, therefore, be computed only once. Similar reasoning can be applied to some of the volume integrals. The final result is a code where the second operation on `face_phi_xi_nCntau` is now the single most expensive operation, accounting alone for *76.49%* of the runtime.
