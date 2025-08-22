@@ -169,7 +169,8 @@ $
     angle.l xi_k | phi_j nu_x angle.r_(cal(f)_1), angle.l xi_k | phi_j nu_x angle.r_(cal(f)_2), angle.l xi_k | phi_j nu_x angle.r_(cal(f)_3);
     angle.l xi_k | phi_j nu_y angle.r_(cal(f)_1), angle.l xi_k | phi_j nu_y angle.r_(cal(f)_2), angle.l xi_k | phi_j nu_y angle.r_(cal(f)_3)
   ), \
-  U_e & = mat("p"_1^((e)), "p"_2^((e)), ..., "p"_(N_"dof")^((e))^((e)), "v"_(x, 1)^((e)), ..., "v"_(y, N_"dof"^((e)))^((e)))^TT.
+  U_e & = mat("p"_1^((e)), "p"_2^((e)), ..., "p"_(N_"dof")^((e))^((e)), "v"_(x, 1)^((e)), ..., "v"_(y, N_"dof"^((e)))^((e)))^TT, \
+  Lambda & = mat(lambda_1^((cal(f_1))), lambda_2^((cal(f_1))), ..., lambda^(cal(f)_N_Sigma)_(hat(N)_"dof"^((cal(f)_k))))^TT = mat(lambda_1, lambda_2, ..., lambda_(hat(N)_"dof"^Sigma))^TT.
 $ <matrices-hdg>
 
 Here the symbol $angle.l dot | dot angle.r$ denotes the inner product $angle.l phi_1 | phi_2 angle.r_K_e = integral_K_e phi_1 macron(phi_2) d K_e$. The index $i$ represents the rows while the index $j$ the columns and their values range from $1$ to $N_"dof"^((e))$. These integrals in particular will be computed using Gaussian quadrature rules @x-GaussQuad, where integrals are approximated as
