@@ -1,4 +1,5 @@
 #import "@preview/algorithmic:1.0.3"
+#import "../resources/graphs/cpu_v_gpu_arch.typ": cpu-v-gpu-arch
 #import algorithmic: algorithm-figure
 
 #let flo(term, color: red) = {
@@ -17,11 +18,19 @@ More recently, extending similar paradigms to specialized accelerators has gaine
 
 === CUDA
 
-When developing code targeting NVIDIA @GPU:pl, the CUDA Toolkit provides compilers, libraries and tools for developing accelerated applications. These compilers enable the developer to write code that is either compiled with a traditional host compiler, like @GCC, for the specified architecture or compiled to an intermediate representation, similar to that of @LLVM, called @PTX. This approach enables each program to both include an optimized binary for a specific  @GPU architecture and at the same time take advantage of the @VM @ISA to @JIT compile the code for different architectures @x-PTX. The parallel model of the @GPU is abstracted as a set of parallel and independent _streaming multiprocessors_. Each multiprocessor is responsible for scheduling a large number of threads simultaneously.
+When developing code targeting NVIDIA @GPU:pl, the CUDA Toolkit provides compilers, libraries and tools for developing accelerated applications. These compilers enable the developer to write code that is either compiled with a traditional host compiler, like @GCC, for the specified architecture or compiled to an intermediate representation, similar to that of @LLVM, called @PTX. This approach enables each program to both include an optimized binary for a specific  @GPU architecture and at the same time take advantage of the @VM @ISA to @JIT compile the code for different architectures @x-PTX. The parallel model of the @GPU is abstracted as a set of parallel and independent _streaming multiprocessors_. Each multiprocessor is responsible for scheduling a large number of threads simultaneously. @GPU:pl employ the @SIMT execution model where multiple threads operate in groups on multiple @SIMD instruction streams. In @cpu-v-gpu-arch-fig we can see a schematic representation of the differences between the @CPU and @GPU architectures.
+
+#figure(
+  cpu-v-gpu-arch(scale-axis: 88%),
+  caption: [Schematic representation of the differences between @CPU and @GPU architecture. @CPU:pl reserve more die space for sophisticated circuitry while @GPU:pl trade off core complexity for a large number of cores to maximize parallelism.]
+    + context {
+      if state("image-outline").get() { linebreak(justify: true) }
+    },
+) <cpu-v-gpu-arch-fig>
 
 Without going into too much details about the way the threads are scheduled and the memory is managed in a @GPU architecture, we can isolate some key take aways:
 
-- The way threads are scheduled in _warps_ makes branching #footnote[What in code is represented as an `if-then-else` construct.] more costly when compared to standard @CPU:short architecture, especially when the code leads to branch divergence. Furthermore the absence of a sophisticated branch predictor #footnote[Branch predictors on the CPU architecture are digital circuits that are dedicated to predicting the outcome of an `if-then-else` construct. This takes part of the optimization technique known as _speculative execution_, where the processor executes some instructions speculatively to prevent delays in the instruction pipeline. In the case of branch prediction, this allows for the execution of what is the most probable outcome without the delay of the conditional check. When the guess proves incorrect the instruction are discarded in what is known as a _branch misprediction_.] accentuates this disadvantage.
+- The way threads are scheduled in _warps_ makes branching #footnote[What in code is represented as an `if-then-else` construct.] more costly when compared to standard @CPU:short architecture, especially when the code leads to branch divergence. Furthermore the absence of a sophisticated branch predictor #footnote[Branch predictors on the @CPU architecture are digital circuits that are dedicated to predicting the outcome of an `if-then-else` construct. This takes part of the optimization technique known as _speculative execution_, where the processor executes some instructions speculatively to prevent delays in the instruction pipeline. In the case of branch prediction, this allows for the execution of what is the most probable outcome without the delay of the conditional check. When the guess proves incorrect the instruction are discarded in what is known as a _branch misprediction_.] accentuates this disadvantage.
 
 - Memory bandwidth between the chip and memory is extremely important in @GPU algorithm design and keeping each core "fed" with data is one of, if not the most important parts of the design. The target should be "the highest occupancy".
 - The @ISA of @GPU:pl, especially when compared to x86_64, is generally much smaller than conventional processor. Being aware of native operations is important when designing algorithms or writing _kernels_. One of these native operations is the _floating point multiply add_, sometimes abbreviated with FMA.
@@ -68,9 +77,9 @@ Compared to OpenMP, it is designed with distributed memory parallelism in mind. 
      Hello from process:            3 of            4
     ```,
   ),
-  caption: [Example of a simple "Hello World" type MPI program and its output. The code has been executed with 4 processes (corresponding to the flag `-np 4`).]
+  caption: [Example of a simple "Hello World" type @MPI program and its output. The code has been executed with 4 processes (corresponding to the flag `-np 4`).]
     + context {
-      if state("image-outline").get()     { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <example-mpi>
 
@@ -100,7 +109,7 @@ Compared to other languages such as C++, the various standards are usually not f
 
 An extension of the `do` construct, known in other languages as a `for` loop, the `do concurrent` construct allows for the parallel execution of iterations of the loop.
 
-As #cite(<x-ModernFortran>, form: "prose", supplement: "p.~138") and #cite(<x-FlangDC>, form: "prose") mention, the `do concurrent` construct only guarantees that each iteration of the loop can be executed independently, in arbitrary order. While we may expect that this implies parallel execution, this is not guaranteed by the standard and there are even instances where a standard-conforming `do concurrent` loop cannot be safely parallelized by the compiler. The Fortran 2018 standard introduces locality specifiers for the loop which mitigate but do not eliminate this problem. Furthermore, one of the most popular open source Fortran compilers, GFortran (@gfortran), only added support for locality specifiers in its latest release, `15.1`.
+As #cite(<x-ModernFortran>, form: "prose", supplement: [p.~138]) and #cite(<x-FlangDC>, form: "prose") mention, the `do concurrent` construct only guarantees that each iteration of the loop can be executed independently, in arbitrary order. While we may expect that this implies parallel execution, this is not guaranteed by the standard and there are even instances where a standard-conforming `do concurrent` loop cannot be safely parallelized by the compiler. The Fortran 2018 standard introduces locality specifiers for the loop which mitigate but do not eliminate this problem. Furthermore, one of the most popular open source Fortran compilers, GFortran (@gfortran), only added support for locality specifiers in its latest release, `15.1`.
 
 Inspired by the work of #cite(<x-DCvsDirectives>, form: "prose") and aware of these limitations, I have decided to focus on accelerating sections of the code on @GPU using mostly standard Fortran constructs. In their work, they found that the `do concurrent` construct performs on par, if not better, than equivalent OpenMP (see @openmp) or OpenACC (see @openacc) directives with the NVIDIA compiler and often performs on par with hand written CUDA kernels.
 In the NVIDIA compiler, `do concurrent`, when offloaded on @GPU:short, is translated implicitly to OpenACC.
@@ -130,7 +139,7 @@ In the NVIDIA compiler, `do concurrent`, when offloaded on @GPU:short, is transl
   ),
   caption: [Comparison of the `do concurrent` construct with OpenMP and OpenACC directives.]
     + context {
-      if state("image-outline").get()     { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <directives-vs-dc>
 
@@ -195,9 +204,9 @@ In the category of sparse solvers, two approaches stand out:
 #figure(
   placement: top,
   image("../resources/imgs/A_spy_plot.svg"),
-  caption: [Example of a small matrix generated by HDG in HAWEN. This matrix was generated with a mesh of 25 thousand cells and polynomial basis of order 1. Only the upper triangle is saved in the COO representation, given that the matrix is symmetric.]
+  caption: [Example of a small matrix generated by @HDG in HAWEN. This matrix was generated with a mesh of 25 thousand cells and polynomial basis of order 1. Only the upper triangle is saved in the @COO representation, given that the matrix is symmetric.]
     + context {
-      if state("image-outline").get()     { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <a-spy>
 
@@ -270,38 +279,40 @@ Once the data are collected, it can be visualized using the `paraprof` tool, whi
 
 In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 @CPU:short:pl. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it's usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. Originally, the reasoning for computing the inverse was that it was reused in other computations later on in the program. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
 
-#figure(
-  image("../resources/imgs/paraview_summary.svg"),
-  placement: top,
-  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by LAPACK to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
-    + context {
-      if state("image-outline").get()     { linebreak(justify: true) }
-    },
-) <paraprof-summary>
+In @paraprof-3D-visualization, we can see how, with ParaProf, it is easy to visualize the behavior of a parallel and distributed program over time, thanks to the 3D visualization capabilities. In @paraprof-function-table we can see the function table, which helps with interactively navigating the call graph, a very valuable feature for understanding the performance characteristics of unfamiliar code, whilst providing performance metrics such as number of calls and inclusive/exclusive time per call.
+
+While the 2D elastic case was the one we were mostly focused on in the parallelization, each configurations differs greatly from one another. For 3D configurations, we noticed that initializing the Cartesian mapping in `dg_init_cartesian_map` was one of the slowest routines, depending on the mesh size, that could have more impact than the MUMPS factorization step. A peculiarity of using a direct solver instead of an iterative one, is that the factorization step for the sparse matrix is done only once before solving for many right-hand sides, but this operation is order of magnitudes slower than the solving step. Other configurations, with varying polynomial orders, are bottlenecked by file I/O and would benefit from distributing the file I/O across the @MPI processes or the usage of distributed storage solutions.
+
+The complicated configuration and the need to recompile the code each time with different compiler wrappers made it cumbersome to use in the long run, for the later benchmarks we instead used the `gprofng` tool, which enabled faster iterations and broader compatibility in the clusters.
 
 #figure(
   image("../resources/imgs/paraprof_3D_visualization.png"),
   placement: top,
   caption: [ParaProf's 3D visualization of the profiling data for a 2D elastic wave propagation simulation. Highlighted is the `hdg_build_quadrature_int_2D` routine]
     + context {
-      if state("image-outline").get()     { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <paraprof-3D-visualization>
 
+
 #figure(
-  image("../resources/imgs/paraprof_function_table.png"),
+  image(height: 40%, "../resources/imgs/paraview_summary.svg"),
+  placement: top,
+  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by @LAPACK to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
+    + context {
+      if state("image-outline").get() { linebreak(justify: true) }
+    },
+) <paraprof-summary>
+
+
+#figure(
+  image(height: 28%, "../resources/imgs/paraprof_function_table.png"),
   placement: top,
   caption: [ParaProf's function table for a 2D elastic wave propagation simulation, sorted by inclusive time.]
     + context {
-      if state("image-outline").get()     { linebreak(justify: true) }
+      if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <paraprof-function-table>
-
-In @paraprof-3D-visualization, we can see how, with ParaProf, it is easy to visualize the behavior of a parallel and distributed program over time, thanks to the 3D visualization capabilities. In @paraprof-function-table we can see the function table, which helps with interactively navigating the call graph, a very valuable feature for understanding the performance characteristics of unfamiliar code, whilst providing performance metrics such as number of calls and inclusive/exclusive time per call.
-
-While the 2D elastic case was the one we were mostly focused on in the parallelization, each configurations differs greatly from one another. For 3D configurations, we noticed that initializing the Cartesian mapping in `dg_init_cartesian_map` was one of the slowest routines, depending on the mesh size, that could have more impact than the MUMPS factorization step. A peculiarity of using a direct solver instead of an iterative one, is that the factorization step for the sparse matrix is done only once before solving for many right-hand sides, but this operation is order of magnitudes slower than the solving step. Other configurations, with varying polynomial orders, are bottlenecked by file I/O and would benefit from distributing the file I/O across the @MPI processes or the usage of distributed storage solutions.
-
-The complicated configuration and the need to recompile the code each time with different compiler wrappers made it cumbersome to use in the long run, for the later benchmarks we instead used the `gprofng` tool, which enabled faster iterations and broader compatibility in the clusters.
 
 == Clusters Used in this Work <clusters>
 

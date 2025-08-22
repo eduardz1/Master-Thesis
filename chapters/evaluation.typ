@@ -116,7 +116,7 @@ The numbers are computed on an average of 10 runs for each configuration and a s
     [#num(cpu_64 / gpu_32, digits: 2) #sym.times],
   ),
   caption: [
-    Speedup of creation of volume integrals for the HDG matrices on the Suroit cluster.
+    Speedup of creation of volume integrals for the @HDG matrices on the Suroit cluster.
   ]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
@@ -168,7 +168,7 @@ Interestingly, we notice that the configuration `p2-9`, which has degrees of fre
 #figure(
   kind: image,
   anotinv_diagrams(mesh: "mesh100k", additional_plots: none, height: 14.1cm),
-  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 MPI processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.]
+  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 @MPI processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -193,7 +193,7 @@ As we can see in @solver-times, the total time spent in sparse solver routines f
 
 #figure(
   speedup-cudss-table,
-  caption: [Speedup of the cuDSS solver (configuration with 1 MPI Process 32 OpenMP Threads) relative to different MUMPS baselines, measured as the average over the sum of the sparse solver routines.]
+  caption: [Speedup of the cuDSS solver (configuration with 1 @MPI Process 32 OpenMP Threads) relative to different @MUMPS baselines, measured as the average over the sum of the sparse solver routines.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -205,7 +205,7 @@ Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, 
 
 #figure(
   cudss-v-mumps(height: 6cm),
-  caption: [Comparison between cuDSS and MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different MPI Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.]
+  caption: [Comparison between cuDSS and @MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different @MPI Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },

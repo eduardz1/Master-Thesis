@@ -99,7 +99,7 @@ A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by addi
       }
       ```
     },
-    caption: [To interface with Fortran, we have to rely on C bindings from both Fortran and C++, we see that we cannot use C++'s STL directly and instead have to declare the type explicitly. Ellipsis indicate omitted code.]
+    caption: [To interface with Fortran, we have to rely on C bindings from both Fortran and C++, we see that we cannot use C++'s @STL directly and instead have to declare the type explicitly. Ellipsis indicate omitted code.]
       + context {
         if state("image-outline").get() { linebreak(justify: true) }
       },
@@ -157,7 +157,7 @@ To convert the sparse @CSR right-hand sides to dense, we instead used the `cuSPA
       }
       ```
     },
-    caption: [C++ code to convert a sparse CSR matrix to a dense matrix using NVIDIA's cuSPARSE library. Ellipsis indicate code omissions.]
+    caption: [C++ code to convert a sparse @CSR matrix to a dense matrix using NVIDIA's cuSPARSE library. Ellipsis indicate code omissions.]
       + context {
         if state("image-outline").get() { linebreak(justify: true) }
       },
@@ -239,7 +239,7 @@ An example of the wrappers around the cuDSS library for the various phases of th
       }
       ```
     },
-    caption: [Example of wrapper around cuDSS's solve phase. Solving the system consists of three main phases: 1) analysis, 2) factorization, and 3) solve. Complex numbers in C++ can be declared using different conventions, the one we used is the one that is specified in the GCC documentation for interoperability between Fortran and C. We can convert to CUDA complex types at compile type using `constexpr` code. Ellipsis indicate omitted code.]
+    caption: [Example of wrapper around cuDSS's solve phase. Solving the system consists of three main phases: 1) analysis, 2) factorization, and 3) solve. Complex numbers in C++ can be declared using different conventions, the one we used is the one that is specified in the @GCC documentation for interoperability between Fortran and C. We can convert to CUDA complex types at compile type using `constexpr` code. Ellipsis indicate omitted code.]
       + context {
         if state("image-outline").get() { linebreak(justify: true) }
       },
@@ -356,7 +356,7 @@ This result can be proven empirically, although it has been argued that for well
       PUBLIC $<$<BOOL:${HAWEN_USE_CUDA}>:-static-nvidia;-cuda>
   )
   ```,
-  caption: [Handling of the CUDA library in HAWEN's build system.]
+  caption: [Handling of the CUDA library in @HAWEN's build system.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },

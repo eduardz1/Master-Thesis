@@ -41,7 +41,7 @@ In the inverse problem, waves are measured at the receiver and are used to chara
   placement: top,
   hawen-schema(),
   kind: image,
-  caption: [Schematic representation of the HAWEN pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the optimizations steps necessary for the *inverse problem*. Note that one use case of the software is solving the *forward problem* only.]
+  caption: [Schematic representation of the @HAWEN pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the optimizations steps necessary for the *inverse problem*. Note that one use case of the software is solving the *forward problem* only.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -64,7 +64,7 @@ Some specific configurations also highlight other inefficiencies in the code. Fo
 #figure(
   placement: top,
   image("../resources/imgs/global-earth_simu.png"),
-  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the PREM Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 MPI processes and 14 threads for each MPI process). Courtesy of Florian Faucher.]
+  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the @PREM Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 @MPI processes and 14 threads for each process). Courtesy of Florian Faucher.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -108,7 +108,7 @@ $
 #figure(
   placement: top,
   fem-dg-hdg-graph(),
-  caption: [Comparison of degrees of freedom in a mesh with the FEM method, DG and HDG using the Lagrange basis function of order 1 for interpolation. In this case, given the low order, HDG introduces too many additional degrees of freedom to be advantageous.]
+  caption: [Comparison of degrees of freedom in a mesh with the @FEM method, @DG and @HDG using the Lagrange basis function of order 1 for interpolation. In this case, given the low order, @HDG introduces too many additional degrees of freedom to be advantageous.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
