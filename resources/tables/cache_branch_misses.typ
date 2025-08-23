@@ -25,7 +25,7 @@
     [Cache Misses],
     [#num(cache-misses-original, fixed: 11, digits: 2) #text(
         fill: red.darken(40%),
-      )[(#sym.times#num(cache-misses-original / cache-misses-new, digits: 2))]],
+      )[(#num(cache-misses-original / cache-misses-new, digits: 2)#sym.times)]],
     [#num(cache-misses-new, fixed: 9, digits: 2) #text(
         fill: green.darken(40%),
       )[$arrow.b #num(cache-improvement, digits: 2) %$]],
@@ -37,9 +37,11 @@
         digits: 2,
       ) #sym.space.thin #text(
         fill: red.darken(40%),
-      )[(#sym.times#num(branch-mispredictions-original / branch-mispredictions-new, digits: 2))]],
+      )[(#num(branch-mispredictions-original / branch-mispredictions-new, digits: 2)#sym.times)]],
     [#num(branch-mispredictions-new, fixed: 9, digits: 2) #text(
         fill: green.darken(40%),
       )[$arrow.b #num(branch-improvement, digits: 2) %$]],
+    table.hline(y: 3, start: 0, end: 7, stroke: 1pt),
+      
   )
 }

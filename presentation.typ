@@ -14,6 +14,7 @@
 #import "resources/tables/cache_branch_misses.typ": (
   cache-branch-misses-table-figure,
 )
+#import "resources/graphs/cpu_v_gpu_arch.typ": cpu-v-gpu-arch
 #import "resources/graphs/hawen_schema.typ": hawen-schema
 #import "resources/algorithms/forward_acoustic_problem.typ": (
   forward-acoustic-problem-alg,
@@ -79,7 +80,10 @@
   navigation: "mini-slides",
   alpha: 30%,
   config-common(
-    show-bibliography-as-footnote: bibliography(title: none, "works.yaml"),
+    show-bibliography-as-footnote: {
+      set text(.5em)
+      bibliography(title: none, "works.yaml")
+    },
     preamble: {
       codly(
         languages: codly-languages,
@@ -136,6 +140,13 @@
 // In this context, the HAWEN software was developed. HAWEN is a tool used to solve wave equations in the frequency domain and compute the solution of both the forward problem, meaning the simulation of the propagation of waves through a medium, and the inverse problem, meaning the reconstruction of the properties of a non-directly accessible medium.
 
 #slide[
+  #figure(
+    image(height: 74%, "resources/imgs/global-earth_simu.png"),
+    caption: [30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 threads each)],
+  )
+]
+
+#slide[
   Open source software developed by Florian Faucher @HAWEN @FloPhD.
 
   - Used to solve both the _forward_ and _inverse_ problem #pause
@@ -155,13 +166,6 @@
 
 #slide[
   #align(center + horizon, hawen-schema(presentation: true))
-]
-
-#slide[
-  #figure(
-    image(height: 74%, "resources/imgs/global-earth_simu.png"),
-    caption: [30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 threads each)],
-  )
 ]
 
 == HDG Methods Applied to the Acoustic Wave Problem
@@ -225,13 +229,13 @@
   ]
 ]
 
-#slide[
-  To solve numerically the wave equation we need to discretize the equation and solve the Partial Differential Equation (PDE).
+// #slide[
+//   To solve numerically the wave equation we need to discretize the equation and solve the Partial Differential Equation (PDE).
 
-  / Finite Difference Methods (FDMs): approximate differential equations through finite differences, for example $f'(x)$ can be approximated as $ f'(x) approx (f(x + Delta x) - f(x - Delta x)) / (2 Delta x). $
+//   / Finite Difference Methods (FDMs): approximate differential equations through finite differences, for example $f'(x)$ can be approximated as $ f'(x) approx (f(x + Delta x) - f(x - Delta x)) / (2 Delta x). $
 
-  / Galerkin Methods: approximate the solution itself by expressing it as a combination of basis functions and ensuring that the equation holds on average across the whole domain.
-]
+//   / Galerkin Methods: approximate the solution itself by expressing it as a combination of basis functions and ensuring that the equation holds on average across the whole domain.
+// ]
 
 #slide[
   #align(center + horizon)[
@@ -267,6 +271,13 @@
 
 == CUDA
 
+#slide[
+  #set text(size: .7em)
+  #figure(
+    cpu-v-gpu-arch(scale-axis: 170%),
+  )
+]
+
 == MPI
 
 == OpenMP
@@ -282,27 +293,30 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters
   #figure(
     clusters(),
   )
+
+  #speaker-note[
+    - tradeoff between core count and core complexity
+    - 
+  ]
 ]
 
-= Contributions
+// = Contributions
 
-== Preliminary Contributions
+// == Preliminary Contributions
 
-== Exploring Alternative Sparse Solvers
+// == Exploring Alternative Sparse Solvers
 
-== Accelerating the Matrix Creation
+// == Accelerating the Matrix Creation
 
-=== Replacing Matrix Inversions
+// === Replacing Matrix Inversions
 
-=== Improving Cache Locality
+// === Improving Cache Locality
 
-=== Compiling HAWEN with NVFortran and Taking Advantage of GPU Offloading
+// === Compiling HAWEN with NVFortran and Taking Advantage of GPU Offloading
 
 = Contributions
 
 == Preliminary Work
-
-
 
 == Removing Matrix Inversions and Optimizing Cache Locality
 

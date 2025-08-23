@@ -67,11 +67,11 @@
             rect(
               (1 + cx, 4 + cy),
               (3.5 + cx, 6 + cy),
-              stroke: fuchsia,
+              stroke: 2pt + colors.at(3),
               fill: none,
             )
             content((2.2 + cx, 6.3 + cy), text(
-              fill: fuchsia.darken(30%),
+              fill: colors.at(3),
             )[SIMD Unit])
           }
         }
@@ -161,13 +161,23 @@
         content((5.5 + dx, 5.25 + dy), [#sym.dots.v])
         content((5.5 + dx, 6.75 + dy), [#sym.dots.v])
 
-        rect((1 + dx, 7 + dy), (10 + dx, 8 + dy), fill: none, stroke: fuchsia)
+        rect(
+          (1 + dx, 7 + dy),
+          (10 + dx, 8 + dy),
+          fill: none,
+          stroke: 2pt + colors.at(3),
+        )
         content((5.5 + dx, 8.3 + dy), text(
-          fill: fuchsia.darken(30%),
+          fill: colors.at(3),
         )[SIMT Unit (Streaming multiprocessor)])
-        rect((2 + dx, 4 + dy), (3 + dx, 5 + dy), fill: none, stroke: fuchsia)
+        rect(
+          (2 + dx, 4 + dy),
+          (3 + dx, 5 + dy),
+          fill: none,
+          stroke: 2pt + colors.at(3),
+        )
         content((2.5 + dx, 5.3 + dy), text(
-          fill: fuchsia.darken(30%),
+          fill: colors.at(3),
         )[SIMD Unit (Warp)])
       }
 

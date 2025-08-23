@@ -45,7 +45,7 @@ Ensuring that the precision kinds used are the ones we expect was very important
 
 === Making use of C bindings for enums
 
-Being the code very broad in scope, a lot of options are available for the user. In most cases, these options were handled as strings (or better, arrays of characters, given that Fortran doesn't have a string type). Operations such as `trim` and `adjustl` (respectively, to remove empty characters and to align a string to the left), are essential to guarantee the correctness of a switch case in Fortran that operates on arrays of characters. These operations, however, are incompatible with GPU programming. Most of these options can be instead replaced by taking advantage of Fortran's C interoperability with the `enum` data structure @x-ModernFortran[p.~408]).
+Being the code very broad in scope, a lot of options are available for the user. In most cases, these options were handled as strings (or better, arrays of characters, given that Fortran doesn't have a string type). Operations such as `trim` and `adjustl` (respectively, to remove empty characters and to align a string to the left), are essential to guarantee the correctness of a switch case in Fortran that operates on arrays of characters. These operations, however, are incompatible with @GPU programming. Most of these options can be instead replaced by taking advantage of Fortran's C interoperability with the `enum` data structure @x-ModernFortran[p.~408]).
 
 The Fortran standard, unfortunately, introduced enumerator types only very recently @x-ModernFortran[p.~461] and is a feature that is still not supported by the major compilers, in part due to the lackluster standardization of the feature, which offers very little benefits compared to the aforementioned `enum, bind(C)` feature. The new enumerator type in Fortran is just defined again as a collection of integers instead of the more powerful sum types present in languages such as Haskell and Rust @x-LLVMFortran202X.
 
@@ -99,7 +99,7 @@ A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by addi
       }
       ```
     },
-    caption: [To interface with Fortran, we have to rely on C bindings from both Fortran and C++, we see that we cannot use C++'s @STL directly and instead have to declare the type explicitly. Ellipsis indicate omitted code.]
+    caption: [To interface with Fortran, we have to rely on C bindings from both Fortran and C++, we see that we cannot use C++'s @STL:short directly and instead have to declare the type explicitly. Ellipsis indicate omitted code.]
       + context {
         if state("image-outline").get() { linebreak(justify: true) }
       },
@@ -157,7 +157,7 @@ To convert the sparse @CSR right-hand sides to dense, we instead used the `cuSPA
       }
       ```
     },
-    caption: [C++ code to convert a sparse @CSR matrix to a dense matrix using NVIDIA's cuSPARSE library. Ellipsis indicate code omissions.]
+    caption: [C++ code to convert a sparse @CSR:short matrix to a dense matrix using NVIDIA's cuSPARSE library. Ellipsis indicate code omissions.]
       + context {
         if state("image-outline").get() { linebreak(justify: true) }
       },
@@ -239,7 +239,7 @@ An example of the wrappers around the cuDSS library for the various phases of th
       }
       ```
     },
-    caption: [Example of wrapper around cuDSS's solve phase. Solving the system consists of three main phases: 1) analysis, 2) factorization, and 3) solve. Complex numbers in C++ can be declared using different conventions, the one we used is the one that is specified in the @GCC documentation for interoperability between Fortran and C. We can convert to CUDA complex types at compile type using `constexpr` code. Ellipsis indicate omitted code.]
+    caption: [Example of wrapper around cuDSS's solve phase. Solving the system consists of three main phases: 1) analysis, 2) factorization, and 3) solve. Complex numbers in C++ can be declared using different conventions, the one we used is the one that is specified in the @GCC:short documentation for interoperability between Fortran and C. We can convert to CUDA complex types at compile type using `constexpr` code. Ellipsis indicate omitted code.]
       + context {
         if state("image-outline").get() { linebreak(justify: true) }
       },
@@ -254,9 +254,13 @@ Generating the sparse matrix that is fed to the sparse solver can be one of the 
 
 === Replacing the Inversion of Dense Matrices <red-mat-inv>
 
-When looking at the profiles of the benchmarks (see @profiling), it can be noticed that a significant amount of time was spent in @LAPACK matrix inversion routines. As we saw in @forward-problem, the inverse of matrix $AA_e$ in the @HDG system is reused multiple times. Originally, the code computed the inverse of this matrix and stored the result for the following computations. Through some rearrangement, the systems can be rewritten in a standard linear system form, making it possible to use the standard form of $AA_e$ and the standard @LAPACK routines `*GETRF` @x-GETRF and `*GETRS` @x-GETRS for, respectively, computing the LU factors and solving the linear systems with them.
+When looking at the profiles of the benchmarks (see @profiling), it can be noticed that a significant amount of time was spent in @LAPACK matrix inversion routines. As we saw in @forward-problem, the inverse of matrix $AA_e$ in the @HDG system is reused multiple times. Originally, the code computed the inverse of this matrix and stored the result for the following computations. Through some rearrangement, the systems can be rewritten in a standard linear system form, making it possible to use the standard form of $AA_e$ and the standard @LAPACK routines `*GETRF` @x-GETRF and `*GETRS` @x-GETRS for, respectively, computing the $L U$ factors of $AA_e$ and solving the linear systems with them. LU decomposition consists in the factorization of a square matrix $A$ in two factors, a lower triangular matrix $L$ and an upper triangular matrix $U$:
 
-More generally, when solving a linear system $A x = b$, calculating the inverse $A^(-1)$ to solve $x = A^(-1) b$ is always less efficient than using direct methods @x-DontInvertThatMatrix. Even when solving for multiple right-hand sides, it is more efficient to use the LU decomposition of the matrix $A$ and solve the system $L U x = b$ directly #footnote[Solving a linear system for $m$ right-hand sides $A X = B$ where $A$ has been factorized in the matrices $L$ and $U$ and has shape $n times n$ requires two steps: 1) forward substitution, which has complexity $O(n^2m)$ 2) backward substitution with same complexity $O(n^2m)$. Solving the same system with $A^(-1)$ also requires $O(2n^2m)$ operations.]. While both LU decomposition and matrix inversion are $O(n^3)$ operations, when analyzing the number of @FLOP:pl required, the latter comes out as three times more expensive than the former @x-WhyNotInvertMatrix @x-WhyLUbetterThanInverse.
+$
+  A = mat(a_11, a_12, a_13; a_21, a_22, a_23; a_31, a_32, a_33) = L U = mat(1, 0, 0; l_21, 1, 0; l_31, l_32, 1) mat(u_11, u_12, u_13; 0, u_22, u_23; 0, 0, u_33).
+$
+
+More generally, when solving a linear system $A x = b$, calculating the inverse $A^(-1)$ to solve $x = A^(-1) b$ is always less efficient than using direct methods @x-DontInvertThatMatrix. Even when solving for multiple right-hand sides, it is more efficient to use the LU decomposition of the matrix $A$ and solve the system $L U x = b$ directly #footnote[Solving a linear system for $m$ right-hand sides $A X = B$ where $A$ has been factorized in the matrices $L$ and $U$ and has shape $n times n$ requires two steps: 1) forward substitution, which has complexity $cal(O)(n^2m)$ 2) backward substitution with same complexity $cal(O)(n^2m)$. Solving the same system with $A^(-1)$ also requires $cal(O)(2n^2m)$ operations.]. While both LU decomposition and matrix inversion are $cal(O)(n^3)$ operations, when analyzing the number of @FLOP:pl required, the latter comes out as three times more expensive than the former @x-WhyNotInvertMatrix @x-WhyLUbetterThanInverse.
 
 Another disadvantage of the matrix inversion approach is that it is less numerically stable when the matrix $A$ is ill-conditioned. #cite(<x-AccuracyAndStability>, form: "prose", supplement: "Section 14.1") discusses the numerical stability in more detail, specifically, they argue that, comparing the best possible residual bound on the backward error, in the case $A^(-1)$ is computed with no rounding errors, of the two methods:
 
@@ -356,7 +360,7 @@ This result can be proven empirically, although it has been argued that for well
       PUBLIC $<$<BOOL:${HAWEN_USE_CUDA}>:-static-nvidia;-cuda>
   )
   ```,
-  caption: [Handling of the CUDA library in @HAWEN's build system.]
+  caption: [Handling of the CUDA library in @HAWEN:short's build system.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -394,7 +398,7 @@ This result can be proven empirically, although it has been argued that for well
     },
 ) <building-c>
 
-The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with MPI and OpenMP. The mesh is first divided in sub-meshes for each @MPI process and then each thread is assigned a cell. In particular, this last loop is the one we see in @forward-problem. This characteristic might suggest that a solution could be to directly rewrite it as a @GPU kernel. While we cannot exclude that this intuition might end up being the best way to generate the matrix, currently as it stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but we noticed that the abundance of parameters resulted in excessive branching. Combined with the high amount of data movement, this results in abysmal performance.
+The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with @MPI and OpenMP. The mesh is first divided in sub-meshes for each @MPI process and then each thread is assigned a cell. In particular, this last loop is the one we see in @forward-problem. This characteristic might suggest that a solution could be to directly rewrite it as a @GPU kernel. While we cannot exclude that this intuition might end up being the best way to generate the matrix, currently as it stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but we noticed that the abundance of parameters resulted in excessive branching. Combined with the high amount of data movement, this results in abysmal performance.
 
 A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the local matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of time the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing with OpenMP threads on @CPU so this change should penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values do not need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation of the model parameters, but the changes had to be applied to other 5 possible representations as well.
 
@@ -414,7 +418,7 @@ Some of the miscellaneous changes required for writing code that could be compil
 
 - Handling normal Fortran code differently from code that contains CUDA Fortran (`cuf`) directives. A simple way is by using the `.cuf` extension, but that is not sufficient, one also needs to add the `-cuda` flag (and in our case `-stdpar` flag to offload `do concurrent` constructs) to the sources and add the same options to the linker. This can be seen in @cmake-cuf.
 
-- The work presented in @replacing-mumps due to NVFortran having issues compiling the @MUMPS codebase. As a reminder, Fortran modules are not cross-compatible across compilers so offloading the @HAWEN code with NVFortran meant compiling also the @MUMPS code with it. Currently this leads to a failure at runtime and in particular an OpenMP bug that was reported in the LLVM project repository as issue #link("https://github.com/llvm/llvm-project/issues/148884")[\#148884] @x-148884.
+- The work presented in @replacing-mumps due to NVFortran having issues compiling the @MUMPS codebase. As a reminder, Fortran modules are not cross-compatible across compilers so offloading the @HAWEN code with NVFortran meant compiling also the @MUMPS code with it. Currently this leads to a failure at runtime and in particular an OpenMP bug that was reported in the @LLVM project repository as issue #link("https://github.com/llvm/llvm-project/issues/148884")[\#148884] @x-148884.
 
 The @GPU code will look like the one picture in @building-c. This part required the most changes and is therefore not yet production ready. Although some of the routines are already tested with representative test-cases, a benchmark with syntectic data was prepared on the routine responsible for building the quadrature integral values for the sub-matrices.
 
@@ -424,33 +428,33 @@ In the context of elastic wave propagation, the software uses a formulation base
 
 Under the consideration of visco-elasticity, $C$ and $S$ are complex-valued. Evaluating the complex-valued compliance tensor $S$ meant solving the system $S = V^(-1) C^(-1) V^(-1)$, where the $C$ and $V$ matrices have the following structure, for the 2D and 3D isotropic cases:
 
+#let zeros = $0$
+
 $
-  V_"2D" = mat(
-    1, 0, 0;
-    0, 1, 0;
-    0, 0, 2
-  ), space space space space C_"2D" = mat(
-    lambda + 2 mu, lambda, 0;
-    lambda, lambda + 2 mu, 0;
-    0, 0, mu
-  ),
-$
-$
-  V_"3D" = mat(
-    1, 0, 0, 0, 0, 0;
-    0, 1, 0, 0, 0, 0;
-    0, 0, 1, 0, 0, 0;
-    0, 0, 0, 2, 0, 0;
-    0, 0, 0, 0, 2, 0;
-    0, 0, 0, 0, 0, 2
-  ),\ C_"3D" = mat(
-    lambda + 2 mu, lambda, lambda, 0, 0, 0;
-    lambda, lambda + 2 mu, lambda, 0, 0, 0;
-    lambda, lambda, lambda + 2 mu, 0, 0, 0;
-    0, 0, 0, mu, 0, 0;
-    0, 0, 0, 0, mu, 0;
-    0, 0, 0, 0, 0, mu
-  ).
+  V_"2D" & = mat(
+             1, zeros, zeros;
+             zeros, 1, zeros;
+             zeros, zeros, 2
+           ), & C_"2D" & = mat(
+                           lambda + 2 mu, lambda, zeros;
+                           lambda, lambda + 2 mu, zeros;
+                           zeros, zeros, mu
+                         ), \
+  V_"3D" & = mat(
+             1, zeros, zeros, zeros, zeros, zeros;
+             zeros, 1, zeros, zeros, zeros, zeros;
+             zeros, zeros, 1, zeros, zeros, zeros;
+             zeros, zeros, zeros, 2, zeros, zeros;
+             zeros, zeros, zeros, zeros, 2, zeros;
+             zeros, zeros, zeros, zeros, zeros, 2
+           ), & C_"3D" & = mat(
+                           lambda + 2 mu, lambda, lambda, zeros, zeros, zeros;
+                           lambda, lambda + 2 mu, lambda, zeros, zeros, zeros;
+                           lambda, lambda, lambda + 2 mu, zeros, zeros, zeros;
+                           zeros, zeros, zeros, mu, zeros, zeros;
+                           zeros, zeros, zeros, zeros, mu, zeros;
+                           zeros, zeros, zeros, zeros, zeros, mu
+                         ).
 $
 
 Given that we know the values already, we can replace the call to the @LAPACK inverse routine with an analytical solution of the systems, doing so also means that we can completely avoid the allocation of the $C$ and $V$ matrices.
@@ -465,28 +469,31 @@ We can identify both $C$ and $V$ as block diagonal matrices, calculating the inv
     i => i.map(math.display)
   }))
 
+#let ns = h(-1em)
+
 #[
   #show math.equation: set block(breakable: true)
   $
-    C_"2D"^(-1) = dmat(
-      column-gap: #(-0.5em),
-      space space space mat(
-        lambda + 2 mu, lambda;
-        lambda, lambda + 2 mu
-      )^(-1),
-      mat(delim: #none, 0; 0);
-      mat(delim: #none, column-gap: #3.5em, 0, 0), space space space mat(mu)^(-1)
-    ),\ C_"3D"^(-1) = dmat(
-      column-gap: #(-0.5em),
-      space space space mat(
-        lambda + 2 mu, lambda, lambda;
-        lambda, lambda + 2 mu, lambda;
-        lambda, lambda, lambda + 2 mu
-      )^(-1),
-      mat(column-gap: #2.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0);
-      mat(column-gap: #3.5em, delim: #none, 0, 0, 0; 0, 0, 0; 0, 0, 0),
-      space space space mat(column-gap: #2.5em, mu, 0, 0; 0, mu, 0; 0, 0, mu)^(-1)
-    ).
+    C_"2D"^(-1) & = dmat(
+                    column-gap: #(-0.5em),
+                    mat(
+                      lambda + 2 mu, lambda;
+                      lambda, lambda + 2 mu
+                    )^(-1),
+                    mat(delim: #none, zeros; zeros);
+                    ns mat(delim: #none, column-gap: #3.5em, zeros, zeros), space space space mat(mu)^(-1)
+                  ), \
+    C_"3D"^(-1) & = dmat(
+                    column-gap: #(-0.5em),
+                    mat(
+                      lambda + 2 mu, lambda, lambda;
+                      lambda, lambda + 2 mu, lambda;
+                      lambda, lambda, lambda + 2 mu
+                    )^(-1),
+                    mat(column-gap: #2.5em, delim: #none, zeros, zeros, zeros; zeros, zeros, zeros; zeros, zeros, zeros);
+                    ns mat(column-gap: #3.5em, delim: #none, zeros, zeros, zeros; zeros, zeros, zeros; zeros, zeros, zeros),
+                    space space space mat(column-gap: #2.5em, mu, zeros, zeros; zeros, mu, zeros; zeros, zeros, mu)^(-1)
+                  ).
   $
 ]
 
@@ -499,7 +506,7 @@ $
 so our matrix $S$ becomes
 
 $
-  S = mat((lambda + 2 mu)/(4 mu (lambda + mu)), -lambda/(4 mu (lambda + mu)), 0; -lambda/(4 mu (lambda + mu)), (lambda + 2 mu)/(4 mu (lambda + mu)), 0; 0, 0, 1 / (4 mu)).
+  S = mat((lambda + 2 mu)/(4 mu (lambda + mu)), -lambda/(4 mu (lambda + mu)), zeros; -lambda/(4 mu (lambda + mu)), (lambda + 2 mu)/(4 mu (lambda + mu)), zeros; zeros, zeros, 1 / (4 mu)).
 $
 
 The 3D case is a bit more complex, but we can still solve it analytically. The upper left $3 times 3$ block can be solved using the _Sherman-Morrison formula_ by rewriting it as
@@ -532,12 +539,12 @@ Our final matrix $S$ for the isotropic case becomes:
 
 $
   S = mat(
-    (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), 0, 0, 0;
-    -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), 0, 0, 0;
-    -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), 0, 0, 0;
-    0, 0, 0, 1 / (4 mu), 0, 0;
-    0, 0, 0, 0, 1 / (4 mu), 0;
-    0, 0, 0, 0, 0, 1 / (4 mu)
+    (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+    -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+    -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), zeros, zeros, zeros;
+    zeros, zeros, zeros, 1 / (4 mu), zeros, zeros;
+    zeros, zeros, zeros, zeros, 1 / (4 mu), zeros;
+    zeros, zeros, zeros, zeros, zeros, 1 / (4 mu)
   ).
 $
 

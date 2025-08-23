@@ -10,10 +10,11 @@
   )
   table(
     columns: 7,
-    // align: (left, ..(right + horizon,)*6),
-    table.header([], table.cell(colspan: 6)[MUMPS baselines]),
+    // align: left,
+    align: (left, ..(right,) * 6),
+    table.header([], table.cell(align: center, colspan: 6)[MUMPS baselines]),
     [], ..mpi-configs().map(strong).map(smallcaps),
-    [*Speedup*],
+    [#smallcaps[*Speedup*]],
     ..for c in mpi-configs() {
       (
         [
@@ -24,5 +25,6 @@
         ],
       )
     },
+    table.hline(y: 3, start: 0, end: 7, stroke: 1pt),
   )
 }

@@ -12,11 +12,10 @@
   [Suroit[01-22]],
   [$2 times 24$ core AMD Zen4 Genoa EPYC 9224 \@ #zi.GHz[2.5]],
   [#GB[256] (#GB-core[5.3]) \@ #MT-s[4800]],
-  [/],
+  table.cell(align: center)[/],
   [Sirocco[22-25]],
   [$2 times 32$ core AMD Zen3 Milan EPYC 7513 \@ #zi.GHz[2.6]],
   [#GB[512] (#GB-core[8]) \@ #MT-s[3200]],
   [$2 times$ NVIDIA A100 (#GB[40])],
-  table.hline(),
-  table.hline(),
+  table.hline(y: 3, start: 0, end: 4, stroke: 1pt),
 )

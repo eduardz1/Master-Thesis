@@ -18,11 +18,11 @@ More recently, extending similar paradigms to specialized accelerators has gaine
 
 === CUDA
 
-When developing code targeting NVIDIA @GPU:pl, the CUDA Toolkit provides compilers, libraries and tools for developing accelerated applications. These compilers enable the developer to write code that is either compiled with a traditional host compiler, like @GCC, for the specified architecture or compiled to an intermediate representation, similar to that of @LLVM, called @PTX. This approach enables each program to both include an optimized binary for a specific  @GPU architecture and at the same time take advantage of the @VM @ISA to @JIT compile the code for different architectures @x-PTX. The parallel model of the @GPU is abstracted as a set of parallel and independent _streaming multiprocessors_. Each multiprocessor is responsible for scheduling a large number of threads simultaneously. @GPU:pl employ the @SIMT execution model where multiple threads operate in groups on multiple @SIMD instruction streams. In @cpu-v-gpu-arch-fig we can see a schematic representation of the differences between the @CPU and @GPU architectures.
+When developing code targeting NVIDIA @GPU:pl, the CUDA Toolkit provides compilers, libraries and tools for developing accelerated applications. These compilers enable the developer to write code that is either compiled with a traditional host compiler, like @GCC, for the specified architecture or compiled to an intermediate representation, similar to that of @LLVM, called @PTX. This approach enables each program to both include an optimized binary for a specific  @GPU architecture and at the same time take advantage of the @VM @ISA to #lower[@JIT] compile the code for different architectures @x-PTX. The parallel model of the @GPU is abstracted as a set of parallel and independent _streaming multiprocessors_. Each multiprocessor is responsible for scheduling a large number of threads simultaneously. @GPU:pl employ the @SIMT execution model where multiple threads operate in groups on multiple @SIMD instruction streams. In @cpu-v-gpu-arch-fig we can see a schematic representation of the differences between the @CPU and @GPU architectures.
 
 #figure(
   cpu-v-gpu-arch(scale-axis: 88%),
-  caption: [Schematic representation of the differences between @CPU and @GPU architecture. @CPU:pl reserve more die space for sophisticated circuitry while @GPU:pl trade off core complexity for a large number of cores to maximize parallelism.]
+  caption: [Schematic representation of the differences between @CPU:short and @GPU:short architecture. @CPU:short:pl reserve more die space for sophisticated circuitry while @GPU:short:pl trade off core complexity for a large number of cores to maximize parallelism.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -42,7 +42,7 @@ Writing cross-platform code is of great interest to the team and so it was prior
 
 The @MPI:both is a specification for parallel computation in distributed memory systems @x-MPITutorial. Various implementation of the standard exists for Fortran, C and C++ and programmers can interact with it as a library. It is fundamental to enable @CPU:short:pl to communicate across nodes in a cluster but also to communicate between each other in situations where a single cluster contains multiple @CPU:short:pl. One of the most commonly used implementations due to its open nature is OpenMPI @x-OpenMPI.
 
-Compared to OpenMP, it is designed with distributed memory parallelism in mind. Where OpenMP uses threads for splitting the work, MPI spawns processes instead. Each thread has its own memory space and executes interdependently and the overhead of process creation, although greater than that of thread creation, occurs only once at initialization. In @example-mpi we can see how a simple MPI program is structured, the code in question initializes the @MPI context and then prints to `stdout` a test message with the rank of the process that is being executed and the total size of the cluster of processes. After the initialization, the subsequent code will be executed independently on each MPI process, communication between processes is then carried with operations such as reduction (`MPI_Reduce`) or broadcasting of messages.
+Compared to OpenMP, it is designed with distributed memory parallelism in mind. Where OpenMP uses threads for splitting the work, @MPI spawns processes instead. Each thread has its own memory space and executes interdependently and the overhead of process creation, although greater than that of thread creation, occurs only once at initialization. In @example-mpi we can see how a simple @MPI program is structured, the code in question initializes the @MPI context and then prints to `stdout` a test message with the rank of the process that is being executed and the total size of the cluster of processes. After the initialization, the subsequent code will be executed independently on each @MPI process, communication between processes is then carried with operations such as reduction (`MPI_Reduce`) or broadcasting of messages.
 
 #figure(
   kind: raw,
@@ -77,7 +77,7 @@ Compared to OpenMP, it is designed with distributed memory parallelism in mind. 
      Hello from process:            3 of            4
     ```,
   ),
-  caption: [Example of a simple "Hello World" type @MPI program and its output. The code has been executed with 4 processes (corresponding to the flag `-np 4`).]
+  caption: [Example of a simple "Hello World" type @MPI:short program and its output. The code has been executed with 4 processes (corresponding to the flag `-np 4`).]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -95,7 +95,7 @@ Later revisions of the standard have also enabled offloading #footnote[Offloadin
 
 Similarly to OpenMP, OpenACC provides an @API for parallel computing through the use of compiler directives. In contrast to OpenMP, it has been designed with accelerators in mind from the start, being co-developed by Cray, CAPS, NVIDIA and PGI, and is therefore usually better suited for development in heterogeneous @GPU:short and @GPU:short systems @x-OpenACC.
 The influence of NVIDIA on its standardization and their stance on open sourcing their software and drivers limited the diffusion of the standard when compared to OpenMP @x-OpenACCControversy.
-Currently, @GCC:short supports OpenACC for device offloading but the performance of GCC is not up to par with NVFortran's implementation @x-DCvsDirectives.
+Currently, @GCC:short supports OpenACC for device offloading but the performance of @GCC is not up to par with NVFortran's implementation @x-DCvsDirectives.
 
 == Fortran <fortran-sec>
 
@@ -161,9 +161,9 @@ NVIDIA's Fortran compiler, formerly known as PGI Fortran, is part of the NVIDIA 
 
 While the support is good for some features, it is still lacking in some areas. During this work, three compiler bugs were encountered and signaled, specifically:
 
-- #link("https://forums.developer.nvidia.com/t/nvfortran-compiler-hangs-when-initializing-transposed-matrices/331820")[TPR \#37335] @x-TPR37335: a deadlock in the compiler during constants initialization
-- #link("https://forums.developer.nvidia.com/t/memory-leak-when-compiling-with-stdpar/335016/9")[TPR \#37469] @x-TPR37469: a memory leak in the kernels generated by the compiler
-- #link("https://forums.developer.nvidia.com/t/why-do-i-keep-getting-managed-attribute-mismatch-in-my-routine-calls/338526/4")[TPR \#37570] @x-TPR37570: a logic conflict between the `do concurrent` device offloading  and OpenMP.
+- #link("https://forums.developer.nvidia.com/t/nvfortran-compiler-hangs-when-initializing-transposed-matrices/331820")[TPR\#37335] @x-TPR37335: a deadlock in the compiler during constants initialization
+- #link("https://forums.developer.nvidia.com/t/memory-leak-when-compiling-with-stdpar/335016/9")[TPR\#37469] @x-TPR37469: a memory leak in the kernels generated by the compiler
+- #link("https://forums.developer.nvidia.com/t/why-do-i-keep-getting-managed-attribute-mismatch-in-my-routine-calls/338526/4")[TPR\#37570] @x-TPR37570: a logic conflict between the `do concurrent` device offloading  and OpenMP.
 
 From what can be gathered from the forums and comments from some of the developers at NVIDIA, the focus currently is on the #link(<flang>)[LLVM Flang] compiler. A new version of `nvfortran` based on Flang is in the works and will replace the current one once offloading to @GPU:short:pl is fully supported and the new compiler reaches feature parity with the current one.
 
@@ -201,53 +201,55 @@ In the category of sparse solvers, two approaches stand out:
 
 / Iterative methods: generally faster for large problems and a single right-hand side, require problem-specific preconditioning of the data. The accuracy is limited to the square root of the machine precision. The memory requirement is much lower.
 
+=== MUMPS <mumps-section>
+
+The @MUMPS:both is a free and open-source direct sparse solver that offers a wide range of features, the innovation is led by research, with 13 PhD theses from its inception in Toulouse in 1996 @x-MUMPS. @MUMPS has become a staple in its field and is used worldwide by industrials and academics. @MUMPS offers great numerical robustness for the factorization even of ill-conditioned matrices, it is high performant (with native @MPI and OpenMP integration) and is highly efficient in handling multiple right-hand sides.
+
+Recent developments include mixed precision algorithms and a focus on @GPU acceleration. Mixed precision algorithms have been around for a long time, an example from #cite(<x-IterativeRefinement>, form: "prose") can be seen in @it-alg. Here, the _factorization_ and _solve_ operations are performed in 32 bit, by repeating the solving step multiple times, the solutions is guaranteed to converge to the original one in 64 bit precision #footnote[When talking about floating point numbers, the IEEE 754 standard is implied. The same reasoning can and is already applied by the team of @MUMPS to other floating point formats.].
+
+#block(breakable: false)[
+  #algorithm-figure(
+    "Iterative Refinement",
+    vstroke: .5pt + luma(200),
+    {
+      import algorithmic: *
+      Procedure(
+        "IterativeRefinement",
+        ($A$, $b$),
+        {
+          LineComment(
+            Assign([$L U$], CallInline[Factorize#sub[FP32]][$A$]),
+            [Factorization in FP32],
+          )
+          LineComment(
+            Assign[$x_1$][$U^(-1) (L^(-1) b)$],
+            [Solve $A x_1 = b$ in FP32],
+          )
+          LineBreak
+          While([not converged], {
+            LineComment(Assign[$r_i$][$b - A x_i$], [Operation in FP64])
+            LineComment(
+              Assign[$d_i$][$U^(-1) (L^(-1) r_i)$],
+              [Solve $A d_i = r_i$ in FP32],
+            )
+            LineComment(Assign[$x_(i + 1)$][$x_i + d$], [Operation in FP64])
+          })
+        },
+      )
+    },
+  ) <it-alg>
+]
+
+In recent years the popularity of machine learning and in particular @LLM:pl, has seen an ever larger focus by @GPU manufacturer in natively supporting low precision arithmetic at the architecture level. It is often the case that performing more operations in lower precision leads to better performance when compared to less operations in higher precision on @GPU. This partially applies also on @CPU:short when taking advantage of @SIMD vectorization.
+
 #figure(
   placement: top,
   image("../resources/imgs/A_spy_plot.svg"),
-  caption: [Example of a small matrix generated by @HDG in HAWEN. This matrix was generated with a mesh of 25 thousand cells and polynomial basis of order 1. Only the upper triangle is saved in the @COO representation, given that the matrix is symmetric.]
+  caption: [Example of a small matrix generated by @HDG:short in HAWEN. This matrix was generated with a mesh of 25 thousand cells and polynomial basis of order 1. Only the upper triangle is saved in the @COO:short representation, given that the matrix is symmetric.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <a-spy>
-
-=== MUMPS <mumps-section>
-
-The @MUMPS is a free and open-source direct sparse solver that offers a wide range of features, the innovation is led by research, with 13 PhD theses from its inception in Toulouse in 1996 @x-MUMPS. @MUMPS has become a staple in its field and is used worldwide by industrials and academics. @MUMPS offers great numerical robustness for the factorization even of ill-conditioned matrices, it is high performant (with native MPI and OpenMP integration) and is highly efficient in handling multiple right-hand sides.
-
-Recent developments include mixed precision algorithms and a focus on GPU acceleration. Mixed precision algorithms have been around for a long time, an example from #cite(<x-IterativeRefinement>, form: "prose") can be seen in @it-alg. Here, the _factorization_ and _solve_ operations are performed in 32 bit, by repeating the solving step multiple times, the solutions is guaranteed to converge to the original one in 64 bit precision #footnote[When talking about floating point numbers, the IEEE 754 standard is implied. The same reasoning can and is already applied by the team of @MUMPS to other floating point formats.].
-
-#algorithm-figure(
-  "Iterative Refinement",
-  vstroke: .5pt + luma(200),
-  {
-    import algorithmic: *
-    Procedure(
-      "IterativeRefinement",
-      ($A$, $b$),
-      {
-        LineComment(
-          Assign([$L U$], CallInline[Factorize#sub[FP32]][$A$]),
-          [Factorization in FP32],
-        )
-        LineComment(
-          Assign[$x_1$][$U^(-1) (L^(-1) b)$],
-          [Solve $A x_1 = b$ in FP32],
-        )
-        LineBreak
-        While([not converged], {
-          LineComment(Assign[$r_i$][$b - A x_i$], [Operation in FP64])
-          LineComment(
-            Assign[$d_i$][$U^(-1) (L^(-1) r_i)$],
-            [Solve $A d_i = r_i$ in FP32],
-          )
-          LineComment(Assign[$x_(i + 1)$][$x_i + d$], [Operation in FP64])
-        })
-      },
-    )
-  },
-) <it-alg>
-
-In recent years the popularity of machine learning and in particular @LLM:pl, has seen an ever larger focus by @GPU manufacturer in natively supporting low precision arithmetic at the architecture level. It is often the case that performing more operations in lower precision leads to better performance when compared to less operations in higher precision on @GPU. This partially applies also on @CPU:short when taking advantage of @SIMD vectorization.
 
 === cuDSS <cudss-section>
 
@@ -263,25 +265,25 @@ Before starting writing code, it was important to understand the performance bot
 
 Various tools have been explored during this work, different ones offer different features. No profiling suite exists currently which covers all possible use cases and offers every possible feature, here we will summarize the ones explored in this work:
 
-/ `gprof` and `gprofng`: `gprof` @x-GProf is a profiling tool that is part of the @GCC:long @x-GCC. Born as an evolution to the `prof` utility, it provides a simple, if limited, way of profiling programs compiled with the @GCC compilers (profiling is enabled with the `-pg` flag). Unlike other profilers, it is not capable of measuring time spent in kernel mode (syscalls, I/O, etc.) @x-GprofGuide, which is a limitation which would prevent us from identifying some of the bottlenecks in the @HAWEN codebase. Its simplicity makes it a good choice for quick benchmarks. Through the usage of the `GMON_OUT_PREFIX` environment variable, and the `-s` option, it is also possible to profile MPI programs effectively and sum the results across all processes. In recent years, an evolution of the tool, called `gprofng` (`gprof` next generation), has been developed by the team behind the GNU Binutils @x-Binutils. It is designed from the ground up to target multi-threaded applications, a @GUI is provided and it doesn't require any special flags in the compilation. The source code analysis and the quick line by line analysis of the assembly, make it a particularly good profiler for our use case.
+/ `gprof` and `gprofng`: `gprof` @x-GProf is a profiling tool that is part of the @GCC:long @x-GCC. Born as an evolution to the `prof` utility, it provides a simple, if limited, way of profiling programs compiled with the @GCC compilers (profiling is enabled with the `-pg` flag). Unlike other profilers, it is not capable of measuring time spent in kernel mode (syscalls, I/O, etc.) @x-GprofGuide, which is a limitation which would prevent us from identifying some of the bottlenecks in the @HAWEN codebase. Its simplicity makes it a good choice for quick benchmarks. Through the usage of the `GMON_OUT_PREFIX` environment variable, and the `-s` option, it is also possible to profile @MPI programs effectively and sum the results across all processes. In recent years, an evolution of the tool, called `gprofng` (`gprof` next generation), has been developed by the team behind the GNU Binutils @x-Binutils. It is designed from the ground up to target multi-threaded applications, a @GUI is provided and it doesn't require any special flags in the compilation. The source code analysis and the quick line by line analysis of the assembly, make it a particularly good profiler for our use case.
 
 / LIKWID: the main goals of this profiling suite is offering a low overhead but complete suite of command line tools for profiling multi threaded applications and, at the same time, reduce as much as possible the barrier of entry @x-LIKWID. Unfortunately, for Fortran, manual instrumentation is required, which is not ideal for a large codebase like @HAWEN, particularly before locating the heaviest functions.
 
 / TAU Performance System: a portable profiling and tracing toolkit for performance analysis of parallel applications. It is a very powerful tool, which supports automatic instrumentation of the code and provides detailed performance analysis. @x-TAU
 
-/ NVIDIA Nsight Systems: a performance analysis tool for applications running on NVIDIA @GPU:short:pl @x-NVIDIANsightSystems. While supporting only profiling of code running on their systems, it is particularly useful for analyzing the call graph and the time allocated to each kernel. While more limited in scope, this analysis extends also to their closed source libraries. The suite offers CUDA API calls statistics, such as memory allocation and movement data, and automatic analysis and suggestions based on the results.
+/ NVIDIA Nsight Systems: a performance analysis tool for applications running on NVIDIA @GPU:short:pl @x-NVIDIANsightSystems. While supporting only profiling of code running on their systems, it is particularly useful for analyzing the call graph and the time allocated to each kernel. While more limited in scope, this analysis extends also to their closed source libraries. The suite offers CUDA @API calls statistics, such as memory allocation and movement data, and automatic analysis and suggestions based on the results.
 
 === The TAU Performance System <tau-sect>
 
-In the first benchmarks we used TAU as a platform to analyze the performance metrics of our program for different use cases. On Linux, TAU needs to be compiled specifically with the options needed to instruct the application we're targeting. The way that automatic TAU instrumentation works, is by wrapping the Fortran compiler and preprocessing the source code with a specific `Makefile`. For example, for my use case, I used the `Makefile.tau-mpi-pdt-openmp` `Makefile`, which enables the instrumentation of @MPI and OpenMP calls, as well as the @PDT for source code analysis. For source code analysis, a new toolkit is being developed, based on @LLVM, called SALT @x-SALT. I did not have the opportunity to test it, because it would require working closer with the @LLVM Flang compiler (see @flang) and currently relies on minor patches to the @LLVM codebase, but it certainly seems like a promising replacement for @PDT.
+In the first benchmarks we used TAU as a platform to analyze the performance metrics of our program for different use cases. On Linux, TAU needs to be compiled specifically with the options needed to instruct the application we are targeting. The way that automatic TAU instrumentation works, is by wrapping the Fortran compiler and preprocessing the source code with a specific `Makefile`. For example, for my use case, I used the `Makefile.tau-mpi-pdt-openmp` `Makefile`, which enables the instrumentation of @MPI and OpenMP calls, as well as the @PDT for source code analysis. For source code analysis, a new toolkit is being developed, based on @LLVM, called SALT @x-SALT. I did not have the opportunity to test it, because it would require working closer with the @LLVM Flang compiler (see @flang) and currently relies on minor patches to the @LLVM codebase, but it certainly seems like a promising replacement for @PDT.
 
 Once the data are collected, it can be visualized using the `paraprof` tool, which is part of the TAU suite. It provides a graphical interface to explore the profiling data, including function call graphs, time spent in each function, and more. It also supports 3D visualization of the profiling data, which can be useful for understanding the performance characteristics of the application.
 
-In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 @CPU:short:pl. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it's usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. Originally, the reasoning for computing the inverse was that it was reused in other computations later on in the program. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
+In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 @CPU:short:pl. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it is usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. Originally, the reasoning for computing the inverse was that it was reused in other computations later on in the program. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
 
 In @paraprof-3D-visualization, we can see how, with ParaProf, it is easy to visualize the behavior of a parallel and distributed program over time, thanks to the 3D visualization capabilities. In @paraprof-function-table we can see the function table, which helps with interactively navigating the call graph, a very valuable feature for understanding the performance characteristics of unfamiliar code, whilst providing performance metrics such as number of calls and inclusive/exclusive time per call.
 
-While the 2D elastic case was the one we were mostly focused on in the parallelization, each configurations differs greatly from one another. For 3D configurations, we noticed that initializing the Cartesian mapping in `dg_init_cartesian_map` was one of the slowest routines, depending on the mesh size, that could have more impact than the MUMPS factorization step. A peculiarity of using a direct solver instead of an iterative one, is that the factorization step for the sparse matrix is done only once before solving for many right-hand sides, but this operation is order of magnitudes slower than the solving step. Other configurations, with varying polynomial orders, are bottlenecked by file I/O and would benefit from distributing the file I/O across the @MPI processes or the usage of distributed storage solutions.
+While the 2D elastic case was the one we were mostly focused on in the parallelization, each configurations differs greatly from one another. For 3D configurations, we noticed that initializing the Cartesian mapping in `dg_init_cartesian_map` was one of the slowest routines, depending on the mesh size, that could have more impact than the @MUMPS factorization step. A peculiarity of using a direct solver instead of an iterative one, is that the factorization step for the sparse matrix is done only once before solving for many right-hand sides, but this operation is order of magnitudes slower than the solving step. Other configurations, with varying polynomial orders, are bottlenecked by file I/O and would benefit from distributing the file I/O across the @MPI processes or the usage of distributed storage solutions.
 
 The complicated configuration and the need to recompile the code each time with different compiler wrappers made it cumbersome to use in the long run, for the later benchmarks we instead used the `gprofng` tool, which enabled faster iterations and broader compatibility in the clusters.
 
@@ -298,7 +300,7 @@ The complicated configuration and the need to recompile the code each time with 
 #figure(
   image(height: 40%, "../resources/imgs/paraview_summary.svg"),
   placement: top,
-  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by @LAPACK to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
+  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by @LAPACK:short to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },

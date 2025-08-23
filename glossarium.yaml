@@ -2,7 +2,7 @@ DG:
   short: DG
   long: Discontinuous Galerkin
   plural: DGs
-  longplural: Discontinuous Galerkin methods
+  description: A finite element method using discontinuous basis functions for solving partial differential equations.
 
 STL:
   short: STL
@@ -13,7 +13,12 @@ HDG:
   short: HDG
   long: Hybridizable Discontinuous Galerkin
   plural: HDGs
-  longplural: Hybridizable Discontinuous Galerkin methods
+  description: A finite element method that improves efficiency by hybridizing discontinuous Galerkin formulations.
+
+GEMM:
+  short: GEMM
+  long: GEneral Matrix Multiplication
+  description: A fundamental linear algebra operation that computes matrix-matrix multiplication, often optimized in scientific computing and machine learning.
 
 HAWEN:
   short: HAWEN
@@ -23,10 +28,12 @@ HAWEN:
 SDK:
   short: SDK
   long: Software Development Kit
+  description: A collection of tools, libraries, and documentation for building applications on a specific platform.
 
 MUMPS:
   short: MUMPS
   long: MUltifrontal Massively Parallel sparse direct Solver
+  description: A free and open-source, high-performance solver for large sparse linear systems using multifrontal methods.
 
 PTX:
   short: PTX
@@ -53,20 +60,24 @@ LLM:
   long: Large Language Model
   shortplural: LLMs
   longplural: Large Language Models
+  description: An AI model trained on vast amounts of text data to understand and generate human-like language.
 
 DOF:
   short: DOF
   long: Degrees of Freedom
+  description: Independent parameters that define the possible motions or states of a system.
 
 GUI:
   short: GUI
   long: Graphical User Interface
+  description: A visual interface that allows users to interact with software through windows, icons, and menus.
 
 PDE:
   short: PDE
   shortplural: PDEs
   long: Partial Differential Equation
   longplural: Partial Differential Equations
+  description: A mathematical equation involving multiple variables and their partial derivatives, often used to model physical systems.
 
 FDM:
   short: FDM
@@ -78,7 +89,7 @@ FDM:
 FEM:
   short: FEM
   long: Finite Element Method
-  description: A popular numerical technique for solving differential equations.
+  description: A popular numerical technique for approximating solution for differential equations.
   plural: FEMs
   longplural: Finite Element Methods
 
@@ -90,6 +101,7 @@ PREM:
 API:
   short: API
   long: Application Programming Interface
+  description: A set of rules and tools that allow different software components to communicate with each other.
 
 SEM:
   short: SEM
@@ -101,6 +113,7 @@ SEM:
 HPC:
   short: HPC
   long: High-Performance Computing
+  description: The use of supercomputers and parallel processing to solve complex, large-scale problems efficiently.
 
 BLAS:
   short: BLAS
@@ -159,7 +172,7 @@ SSA:
 FIR:
   short: FIR
   long: Fortran Intermediate Representation
-  description: A an intermediate representation for Fortran code based on MLIR.
+  description: An intermediate representation for Fortran code based on MLIR.
 
 LAPACK:
   short: LAPACK
@@ -176,13 +189,14 @@ CPU:
   short: CPU
   shortplural: CPUs
   long: Central Processing Unit
-  description: The primary processor in a given computer.
+  description: The primary component of a computer that executes instructions and performs calculations.
 
 FLOP:
   short: FLOP
   long: Floating Point Operation
   shortplural: FLOPs
   longplural: Floating Point Operations
+  description: A single arithmetic calculation (like addition or multiplication) involving floating-point numbers.
 
 CSR:
   short: CSR
@@ -207,3 +221,4 @@ SIMT:
 GCC:
   short: GCC
   long: GNU Compiler Collection
+  desription: An open-source suite of compilers for multiple programming languages, originally developed for C.

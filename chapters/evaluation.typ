@@ -36,17 +36,19 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
 #figure(
   table(
     columns: 7,
+    align: (left, ..(right,) * 6),
     table.header(
       [Model Representation],
       [$N_e$],
       [$N_q$],
       [$N_"dof"$],
       [$N_(q tau)$],
-      [$N_"orders"$],
+      [$N_o$],
     ),
     [Piecewise constant], [50000], [300], [150], [100], [6],
+    table.hline(y: 2, start: 0, end: 7, stroke: 1pt),
   ),
-  caption: [Configuration for the `hdg_build_quadrature` routine. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_q$ is the number of quadrature points used to approximate the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials), $N_(q tau)$ is the number of quadrature points to approximate the face integrals, and $N_"orders"$ represents the number of different orders ($frak(p)$-adaptivity).]
+  caption: [Configuration for the `hdg_build_quadrature` routine. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_q$ is the number of quadrature points used to approximate the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials), $N_(q tau)$ is the number of quadrature points to approximate the face integrals, and $N_o$ represents the number of different orders ($frak(p)$-adaptivity).]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -63,24 +65,27 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
         "BuildVolumeIntegrals",
         ($cal(T)$, $omega$, $rho$, $kappa$, $phi$, $w$, $w'$),
         {
-          Comment[The tensors $w$ and $w'$ represent the weights of the quadrature approximations for the integrals computed in the first and second loop]
-          Comment[Being this loop more localized, it can be offloaded to the device]
+          Comment[The arrays $w$ and $w'$ represent the weights of the quadrature approximations for the integrals computed in the first and second loop]
           Comment[The symbol $plus.circle$ indicates a parallel reduction]
+          Comment[Being the loop over cells more localized, it can be offloaded on device, we take advantage of CUDA's _dynamic parallelism_ to launch nested kernels]
           For([$K_e in cal(T)$ *in parallel*], {
-            For($j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$, {
-              Assign(
-                [$- angle.l i omega rho phi_i | phi_j angle.r_K_e$],
-                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) rho_(K_e q)$],
-              )
-              Assign(
-                [$- angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$],
-                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) kappa^(-1)_(K_e q)$],
-              )
-            })
-            LineBreak
+            For(
+              [$j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$ *in parallel*],
+              {
+                Assign(
+                  [$- angle.l i omega rho phi_i | phi_j angle.r_K_e$],
+                  [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) rho_(K_e q)$],
+                )
+                Assign(
+                  [$- angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$],
+                  [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) kappa^(-1)_(K_e q)$],
+                )
+              },
+            )
+            // LineBreak
             // Comment[In 3D $bold(x) = {x, y, z}$]
             For(
-              $d in bold(x), j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$,
+              [$d in bold(x), j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$ *in parallel*],
               Assign(
                 [$angle.l partial_d phi_i | phi_j angle.r_K_e$],
                 [$plus.circle.big_(q = 1)^N_q w'_q partial_d phi(bold(x)_q)_i phi(bold(x)_q)_j$],
@@ -97,10 +102,11 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
 #let gpu_64 = 11.11494379790000
 #let gpu_32 = 2.521715399800000
 
-The numbers are computed on an average of 10 runs for each configuration and a summary of the speedup compared to the baseline can be seen in @speedup-nvhpc. The result is a #{ num(cpu_64 / gpu_64, digits: 2) }#sym.times speedup in runtime compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{ num(100 - (cpu_32 * 100) / cpu_64, digits: 2) }% and by #{ num(100 - (gpu_32 * 100) / gpu_64, digits: 2) }% for the @GPU FP32 version. The A100 @GPU that we're using for our benchmark has 9.7 TFLOPS of peak FP64 performance and 19.5 TFLOPS of FP32 yet we don't see just a #{ num(19.5 / 9.7, digits: 0) }#sym.times improvement but a #{ num(gpu_64 / gpu_32, digits: 1) }#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
+The numbers are computed on an average of 10 runs for each configuration and a summary of the speedup compared to the baseline can be seen in @speedup-nvhpc. The result is a #{ num(cpu_64 / gpu_64, digits: 2) }#sym.times speedup in runtime compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{ num(100 - (cpu_32 * 100) / cpu_64, digits: 2) }% and by #{ num(100 - (gpu_32 * 100) / gpu_64, digits: 2) }% for the @GPU FP32 version. The A100 @GPU that we are using for our benchmark has 9.7 T@FLOP:pl of peak FP64 performance and 19.5 T@FLOP:pl of FP32 yet we do not only see a #{ num(19.5 / 9.7, digits: 0) }#sym.times improvement but a #{ num(gpu_64 / gpu_32, digits: 1) }#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
 
 #figure(
   table(
+    align: (left, ..(right,) * 4),
     columns: 5,
     table.header(
       [],
@@ -109,14 +115,15 @@ The numbers are computed on an average of 10 runs for each configuration and a s
       [GPU#sub[FP64]],
       [GPU#sub[FP64]],
     ),
-    [*Speedup*],
-    [#num(cpu_64 / cpu_64) #sym.times],
-    [#num(cpu_64 / cpu_32, digits: 2) #sym.times],
-    [#num(cpu_64 / gpu_64, digits: 2) #sym.times],
-    [#num(cpu_64 / gpu_32, digits: 2) #sym.times],
+    [#smallcaps[*Speedup*]],
+    [#num(cpu_64 / cpu_64)#sym.times (#num(cpu_64, digits: 2) seconds)],
+    [#num(cpu_64 / cpu_32, digits: 2)#sym.times],
+    [#num(cpu_64 / gpu_64, digits: 2)#sym.times],
+    [#num(cpu_64 / gpu_32, digits: 2)#sym.times],
+    table.hline(y: 2, start: 0, end: 5, stroke: 1pt),
   ),
   caption: [
-    Speedup of creation of volume integrals for the @HDG matrices on the Suroit cluster.
+    Speedup of creation of volume integrals for the @HDG:short matrices on the Suroit cluster. Higher is better.
   ]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
@@ -136,8 +143,11 @@ In @loop-order-bench we can see how the changes made in @acc-mat-creation greatl
 #figure(
   table(
     columns: 8,
+    align: (left, ..(right,) * 7),
     table.header([], ..configurations),
-    [*Size of matrix $AA_e$*], ..configurations.map(sizes),
+    [#smallcaps[*Size of matrix $AA_e$*]], ..configurations.map(sizes),
+    table.hline(y: 2, start: 0, end: 8, stroke: 1pt),
+    
   ),
   caption: [Size of the matrix $AA_e$ for the 2D acoustic test case that we avoid inverting with the latest changes]
     + context {
@@ -145,7 +155,7 @@ In @loop-order-bench we can see how the changes made in @acc-mat-creation greatl
     },
 ) <sizeof-a>
 
-Interestingly, we notice that the configuration `p2-9`, which has degrees of freedom that vary throughout the mesh from 2 to 9, is the one that sees the greatest benefit from the changes to cache locality. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `p2-9` configuration which ends up faster than the original `p9` one, given that the matrix creation time alone accounts for $approx 85%$ of the program runtime. The loops responsible for the different orders are the ones in @reorder-loops. Rewriting these loops using optimized @BLAS dot products or as GEMM operation did not result in a performance improvement, suggesting that the computations are already done in the most optimal way and only a higher level of parallelism can help reduce the time. To further justify these speedups we can analyze the number of cache misses and branch mis-predictions in the `p2-9` benchmark. With `gprofng` we query the hardware counters on the @CPU (a list of available ones on your system can retrieved with the command `gprogng collect app -h`) and see in @cache-branch-misses-table that the reduction in cache and branch misses is, indeed, very significant, which confirms our hypothesis.
+Interestingly, we notice that the configuration `p2-9`, which has degrees of freedom that vary throughout the mesh from 2 to 9, is the one that sees the greatest benefit from the changes to cache locality. While replacing the matrix inversion with direct solving had only a small impact on the total runtime, optimizing the routines for better cache locality halved the matrix creation time. On the total runtime of the benchmark, this resulted in a `p2-9` configuration which ends up faster than the original `p9` one, given that the matrix creation time alone accounts for $approx 85%$ of the program runtime. The loops responsible for the different orders are the ones in @reorder-loops. Rewriting these loops using optimized @BLAS dot products or as @GEMM operation did not result in a performance improvement, suggesting that the computations are already done in the most optimal way and only a higher level of parallelism can help reduce the time. To further justify these speedups we can analyze the number of cache misses and branch mis-predictions in the `p2-9` benchmark. With `gprofng` we query the hardware counters on the @CPU (a list of available ones on your system can retrieved with the command `gprogng collect app -h`) and see in @cache-branch-misses-table that the reduction in cache and branch misses is, indeed, very significant, which confirms our hypothesis.
 
 #figure(
   placement: top,
@@ -168,7 +178,7 @@ Interestingly, we notice that the configuration `p2-9`, which has degrees of fre
 #figure(
   kind: image,
   anotinv_diagrams(mesh: "mesh100k", additional_plots: none, height: 14.1cm),
-  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 @MPI processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.]
+  caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 @MPI:short processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -189,11 +199,20 @@ We now compare the two sparse solvers, cuDSS and @MUMPS (respectively, version `
 
 When using cuDSS, each @GPU is usually associated to a single @MPI process. Oversubscription with @MPI in the cuDSS version of the code requires more changes. While conceptually @MPI processes should be used to communicate between processors, with on-socket parallelism being better suited for thread primitives, like OpenMP, both @MUMPS and @HAWEN prioritized @MPI parallelism in their development from the start. These choices lead to programs that perform optimally when the balance of @MPI processes and OpenMP threads favors the first. In this benchmark we will test different configurations for the standard @CPU case but only the one for the @GPU case.
 
-As we can see in @solver-times, the total time spent in sparse solver routines for the cuDSS configuration was just #{ num((cudss_stats().total.avg / mumps_stats().at("1P/32T").total.avg) * 100, digits: 2) }% of that spent with the @MUMPS solver. Nonetheless, we can notice that this is not the most efficient configuration for @MUMPS, comparing to the one with 8 MPI processes with 4 OpenMP Threads each we have a solver that takes just #{ num((cudss_stats().total.avg / mumps_stats().at("8P/4T").total.avg) * 100, digits: 2) }% of the time of @MUMPS. The results are still favorable toward the cuDSS solver and a summary is presented in @speedup-cudss.
+As we can see in @solver-times, the total time spent in sparse solver routines for the cuDSS configuration was just #{ num((cudss_stats().total.avg / mumps_stats().at("1P/32T").total.avg) * 100, digits: 2) }% of that spent with the @MUMPS solver. Nonetheless, we can notice that this is not the most efficient configuration for @MUMPS, comparing to the one with 8 @MPI processes with 4 OpenMP Threads each we have a solver that takes just #{ num((cudss_stats().total.avg / mumps_stats().at("8P/4T").total.avg) * 100, digits: 2) }% of the time of @MUMPS. The results are still favorable toward the cuDSS solver and a summary is presented in @speedup-cudss.
+
+#figure(
+  placement: top,
+  cudss-v-mumps(height: 7cm),
+  caption: [Comparison between cuDSS and @MUMPS:short of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different @MPI:short Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.]
+    + context {
+      if state("image-outline").get() { linebreak(justify: true) }
+    },
+) <solver-times>
 
 #figure(
   speedup-cudss-table,
-  caption: [Speedup of the cuDSS solver (configuration with 1 @MPI Process 32 OpenMP Threads) relative to different @MUMPS baselines, measured as the average over the sum of the sparse solver routines.]
+  caption: [Speedup of the cuDSS solver (configuration with 1 @MPI:short Process 32 OpenMP Threads) relative to different @MUMPS:short baselines, measured as the average over the sum of the sparse solver routines. Higher is better.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -203,10 +222,6 @@ Comparing the times with ones from a smaller benchmark with 48 thousand cells, t
 
 Curiously, the analysis step of cuDSS is measurably slower than that of @MUMPS, this could be due to a number of factors, NVIDIA's solver pulls ahead particularly in the factorization step, which in our use case coincides with the most expensive step of the sparse system resolution. The final solve step also benefits from @GPU acceleration but, being already very inexpensive before (accounting for only #{ num(mumps_stats().at("1P/32T").analysis.avg * 100 / mumps_stats().at("1P/32T").total.avg, digits: 1) }% of runtime), this result is not particularly interesting for our problems. It could offer a significant benefit in simulations with more or denser right-hand sides.
 
-#figure(
-  cudss-v-mumps(height: 6cm),
-  caption: [Comparison between cuDSS and @MUMPS of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different @MPI Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.]
-    + context {
-      if state("image-outline").get() { linebreak(justify: true) }
-    },
-) <solver-times>
+The current limitation of this approach is that higher degrees of the polynomial introduced some hard to debug `double free` type errors. Running the program under NVIDIA's `compute-sanitizer` utility, compiling the code in the `Debug` configuration (which also enables further runtime checks `-fcheck=all`), or linking dynamically `glibc`'s debug allocators (by setting the `MALLOC_CHECK_` environment variable), change the program behavior enough to completely hide the root cause of the error. We suspect this might be linked to another issue in the NVHPC compilers and for this reason we are limiting our analysis to lower degrees for the moment.
+
+We have been in contact with the two teams working at both sparse solvers, in particular the @MUMPS group. While currently their experimental and non-publicly-available @GPU accelerated version of the library is unsuitable for our application, we are confident that, by working together, we will manage to offer that as a @GPU accelerated alternative as well.

@@ -29,7 +29,7 @@
 
 = Numerical Simulations of Wave Propagation <numerical-prop>
 
-The study of the propagation of waves in a medium is a well established field, the solutions of what are known as the _wave equations_ serve as the basis for many applications in a plethora of different fields such as Earth imaging, medical imaging or non-destructive testing. In the field of seismology, many challenging problems are still open, such as the study of earthquakes and their prediction. In this field, both the simulation of the wave propagation and the reconstruction of the medium properties are of great interest. The @HAWEN software that we use in this report is a library that is designed to solve the wave equation in the frequency domain and treat the quantitative inverse problem for the reconstruction of physical properties from wave measurements. In @hawen-chapter we will give a brief overview of the software and its capabilities. In @hdg-section we will talk about the Hybridizable Discontinuous Galerkin (@HDG) method that is used to solve the problem efficiently and in a scalable manner in the software. This method will serve as the basis for the performance analysis in this work, where we will try to improve the speed of the solution of the wave equation by tackling the bottlenecks in the @HDG pipeline.
+The study of the propagation of waves in a medium is a well established field, the solutions of what are known as the _wave equations_ serve as the basis for many applications in a plethora of different fields such as Earth imaging, medical imaging or non-destructive testing. In the field of seismology, many challenging problems are still open, such as the study of earthquakes and their prediction. In this field, both the simulation of the wave propagation and the reconstruction of the medium properties are of great interest. The @HAWEN:short software that we use in this report is a library that is designed to solve the wave equation in the frequency domain and treat the quantitative inverse problem for the reconstruction of physical properties from wave measurements. In @hawen-chapter we will give a brief overview of the software and its capabilities. In @hdg-section we will talk about the @HDG method that is used to solve the problem efficiently and in a scalable manner in the software. This method will serve as the basis for the performance analysis in this work, where we will try to improve the speed of the solution of the wave equation by tackling the bottlenecks in the @HDG pipeline.
 
 == The HAWEN Open-source Software <hawen-chapter>
 
@@ -41,13 +41,13 @@ In the inverse problem, waves are measured at the receiver and are used to chara
   placement: top,
   hawen-schema(),
   kind: image,
-  caption: [Schematic representation of the @HAWEN pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the optimizations steps necessary for the *inverse problem*. Note that one use case of the software is solving the *forward problem* only.]
+  caption: [Schematic representation of the @HAWEN:short pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the optimizations steps necessary for the *inverse problem*. Note that one use case of the software is solving the *forward problem* only.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <hawen-scheme>
 
-@HAWEN is designed specifically with large scale problems in mind and it is currently deployed on supercomputers. It leverages a combination of @MPI and OpenMP to achieve a high level of parallelism on @CPU:short. An example of the problems the software is designed for can be seen in @earth-hawen @x-HAWENWebsite, where the @PREM @x-PREM model of our planet is used to simulate the propagation of elastic waves through the Earth.
+@HAWEN is designed specifically with large scale problems in mind and it is currently deployed on supercomputers. It leverages a combination of @MPI and OpenMP to achieve a high level of parallelism on @CPU:short. An example of the problems the software is designed for can be seen in @earth-hawen @x-HAWENWebsite, where the @PREM:both @x-PREM model of our planet is used to simulate the propagation of elastic waves through the Earth.
 
 A specificity of @HAWEN is the usage of the @HDG method @x-HDG for the discretization of the wave equation, which will be covered in more details in @hdg-section. More generally, we know that we can identify three computationally intensive steps in the @HAWEN pipeline:
 
@@ -64,7 +64,7 @@ Some specific configurations also highlight other inefficiencies in the code. Fo
 #figure(
   placement: top,
   image("../resources/imgs/global-earth_simu.png"),
-  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the @PREM Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 @MPI processes and 14 threads for each process). Courtesy of Florian Faucher.]
+  caption: [Propagation of elastic waves in the Earth in three-dimensions, using the @PREM:short Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 @MPI:short processes and 14 threads for each process). Courtesy of Florian Faucher.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -108,7 +108,7 @@ $
 #figure(
   placement: top,
   fem-dg-hdg-graph(),
-  caption: [Comparison of degrees of freedom in a mesh with the @FEM method, @DG and @HDG using the Lagrange basis function of order 1 for interpolation. In this case, given the low order, @HDG introduces too many additional degrees of freedom to be advantageous.]
+  caption: [Comparison of degrees of freedom in a mesh with the @FEM:short method, @DG:short and @HDG:short using the Lagrange basis function of order 4 for interpolation. In this case, we see that, by using only the degrees of freedom of the faces, we reduce the number of unknowns from, 30 #sym.arrow 25; the higher the polynomial order, the greater the benefit from the @HDG:short formulation.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -144,7 +144,7 @@ $
 Where the notation #sub(sym.circle.filled) indicates that the representation is the same for all dimensions and $phi$ corresponds to the Lagrange basis function, commonly used to interpolate points in a given data set which ensures the lowest degree polynomial. Similarly, for the absorbing boundary condition, we can use
 
 $
-lambda | cal(f) = sum_(k = 1)^(hat(N)_"dof"^((cal(f)))) lambda_(k)^(cal(f)) xi_k(bold(x)), forall cal(f) in Sigma,
+  lambda | cal(f) = sum_(k = 1)^(hat(N)_"dof"^((cal(f)))) lambda_(k)^(cal(f)) xi_k(bold(x)), forall cal(f) in Sigma,
 $
 
 to represent the unknowns for the faces (red points in @fem-dg-hdg). Here $hat(N)_"dof"^((cal(f)))$ refers to the number of degrees of freedom for the face $cal(f)$. In both cases, the number of degrees of freedom depends on the order of the polynomial. Following #cite(<x-AdjointHDG>, form: "prose", supplement: [p.~8-9]), the @HDG system is defined on each cell as
@@ -187,7 +187,7 @@ where
 Notice in @matrices-hdg that $Lambda$ only contains coefficients for the faces, $cal(R)_e$ is defined as the _connectivity map_ and serves to associate the degrees of freedom of the faces of the cell $e$ such that
 
 $
-cal(R)_e Lambda = Lambda |_(partial K_e).
+  cal(R)_e Lambda = Lambda |_(partial K_e).
 $
 
 Rewriting the unknowns for the volume integrals $U_e$ as $AA_e^(-1)(-CC_e cal(R)_e Lambda + SS_e)$ means that we can rewrite the system as

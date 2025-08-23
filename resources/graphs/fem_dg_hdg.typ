@@ -2,7 +2,7 @@
 #import "@preview/lilaq:0.4.0" as lq
 #import "@preview/touying:0.6.1": pause, touying-reducer
 
-#let fem-dg-hdg-graph(len: 2cm, stroke-width: .6pt, presentation: false) = {
+#let fem-dg-hdg-graph(len: 2cm, stroke-width: .5pt, presentation: false) = {
   let cetz-canvas = if presentation {
     touying-reducer.with(
       reduce: cetz.canvas,
@@ -19,67 +19,119 @@
     let stroke-blue = stroke-width + blue.darken(40%)
     let stroke-red = stroke-width + red.darken(40%)
 
-    line((0, 0), (1, 0), (0, 1), (0, 0), stroke: stroke-blue)
-    line((0, 1), (1, 1), (1, 0), stroke: stroke-blue)
-    circle((0, 0), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((1, 0), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((0, 1), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((1, 1), radius: .05, fill: blue, stroke: stroke-blue)
-    // content((0, -.2), $alpha_1$)
-    // content((1, -.2), $alpha_2$)
-    // content((0, 1.2), $alpha_3$)
-    // content((1, 1.2), $alpha_4$)
-    content((0.5, -0.5), [FEM])
+    let blue = blue.lighten(80%)
+    let red = red.lighten(80%)
 
-    line((2, -.05), (3, -.05), (2, .95), (2, -.05), stroke: stroke-blue)
-    line(
-      (3.1, 0.05),
-      (3.1, 1.05),
-      (2.1, 1.05),
-      (3.1, 0.05),
-      stroke: stroke-blue,
-    )
-    circle((2, -.05), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((3, -.05), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((2, .95), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((3.1, 1.05), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((2.1, 1.05), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((3.1, 0.05), radius: .05, fill: blue, stroke: stroke-blue)
-    // content((2, -.2), $alpha_1$)
-    // content((3, -.2), $alpha_2$)
-    // content((1.8, 0.95), $alpha_3$)
-    // content((3.3, 0.05), $alpha_4$)
-    // content((3.1, 1.25), $alpha_5$)
-    // content((2.15, 1.25), $alpha_6$)
-    content((2.5, -0.5), [DG])
+    let rad = .045
 
-    line((4, -.1), (5, -.1), (4, .9), (4, -.1), stroke: stroke-blue)
-    line((5.2, 0.1), (5.2, 1.1), (4.2, 1.1), (5.2, 0.1), stroke: stroke-blue)
-    circle((4, -.1), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((5, -.1), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((4, .9), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((5.2, 1.1), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((5.2, .1), radius: .05, fill: blue, stroke: stroke-blue)
-    circle((4.2, 1.1), radius: .05, fill: blue, stroke: stroke-blue)
+    let l(dx: 0, dy: 0) = {
+      line(
+        (2 + dx, dy),
+        (3 + dx, dy),
+        (2 + dx, 1 + dy),
+        (2 + dx, dy),
+        stroke: stroke-blue,
+      )
+      circle((2 + dx, dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2.25 + dx, dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2.5 + dx, dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2.75 + dx, dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((3 + dx, dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2 + dx, 1 + dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2 + dx, .25 + dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2 + dx, .5 + dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2 + dx, .75 + dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle(
+        (2.25 + dx, .75 + dy),
+        radius: rad,
+        fill: blue,
+        stroke: stroke-blue,
+      )
+      circle((2.5 + dx, .5 + dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle(
+        (2.75 + dx, .25 + dy),
+        radius: rad,
+        fill: blue,
+        stroke: stroke-blue,
+      )
+      circle(
+        (2.25 + dx, .25 + dy),
+        radius: rad,
+        fill: blue,
+        stroke: stroke-blue,
+      )
+      circle((2.5 + dx, .25 + dy), radius: rad, fill: blue, stroke: stroke-blue)
+      circle((2.25 + dx, .5 + dy), radius: rad, fill: blue, stroke: stroke-blue)
+    }
 
-    if presentation { (pause,) }
+    let u(dx: 0, dy: 0) = {
+      rotate(z: 180deg)
+      l(dx: dx - 5.2, dy: dy - 1.1)
+      rotate(z: -180deg)
+    }
 
-    line((4, -.25), (5, -.25), stroke: stroke-red)
-    line((3.85, -.1), (3.85, .9), stroke: stroke-red)
-    line((4.1, 1), (5.1, 0), stroke: stroke-red)
-    line((4.2, 1.25), (5.2, 1.25), stroke: stroke-red)
-    line((5.35, 0.1), (5.35, 1.1), stroke: stroke-red)
+    let dg(cx: 0, cy: 0) = {
+      l(dx: cx, dy: -.05 + cy)
+      u(dx: .1 + cx, dy: .05 + cy)
+      content((2.5 + cx, -0.5 + cy), [DG])
+    }
 
-    circle((4, -.25), radius: .05, fill: red, stroke: stroke-red)
-    circle((5, -.25), radius: .05, fill: red, stroke: stroke-red)
-    circle((3.85, -.1), radius: .05, fill: red, stroke: stroke-red)
-    circle((3.85, .9), radius: .05, fill: red, stroke: stroke-red)
-    circle((4.1, 1), radius: .05, fill: red, stroke: stroke-red)
-    circle((5.1, 0), radius: .05, fill: red, stroke: stroke-red)
-    circle((4.2, 1.25), radius: .05, fill: red, stroke: stroke-red)
-    circle((5.2, 1.25), radius: .05, fill: red, stroke: stroke-red)
-    circle((5.35, 0.1), radius: .05, fill: red, stroke: stroke-red)
-    circle((5.35, 1.1), radius: .05, fill: red, stroke: stroke-red)
-    content((4.5, -0.5), [HDG])
+    let fem(cx: 0, cy: 0) = {
+      l(dx: cx, dy: cy)
+      u(dx: cx, dy: cy)
+      content((2.5 + cx, -0.5 + cy), [FEM])
+    }
+
+    let hdg(cx: 0, cy: 0) = {
+      l(dx: cx, dy: cy + -.1)
+      u(dx: cx + .2, dy: cy + .1)
+
+      if presentation { (pause,) }
+
+      let face(fx: 0, fy: 0, diagonal: false) = if not diagonal {
+        line((2 + fx, fy), (3 + fx, fy), stroke: stroke-red)
+        circle((2 + fx, fy), radius: rad, fill: red, stroke: stroke-red)
+        circle(
+          (2.25 + fx, fy),
+          radius: rad,
+          fill: red,
+          stroke: stroke-red,
+        )
+        circle((2.5 + fx, fy), radius: rad, fill: red, stroke: stroke-red)
+        circle((2.75 + fx, fy), radius: rad, fill: red, stroke: stroke-red)
+        circle(
+          (3 + fx, fy),
+          radius: rad,
+          fill: red,
+          stroke: stroke-red,
+        )
+      } else {
+        // impossible to get it right with rotate
+        line((2 + fx, 1 + fy), (3 + fx, 0 + fy), stroke: stroke-red)
+        circle((2 + fx, 1 + fy), radius: rad, fill: red, stroke: stroke-red)
+        circle((2.25 + fx, .75 + fy), radius: rad, fill: red, stroke: stroke-red)
+        circle((2.5 + fx, .5 + fy), radius: rad, fill: red, stroke: stroke-red)
+        circle((2.75 + fx, .25 + fy), radius: rad, fill: red, stroke: stroke-red)
+        circle((3 + fx, fy), radius: rad, fill: red, stroke: stroke-red)
+      }
+
+      face(fx: cx, fy: cy - .1 - .15)
+      face(fx: cx + .2, fy: cy + 1.25)
+      rotate(z: 90deg)
+      face(fx: cx - 4.1, fy: cy - 3.85)
+      rotate(z: -90deg)
+      rotate(z: 90deg)
+      face(fx: cx - 3.9, fy: cy - 5.35)
+      rotate(z: -90deg)
+
+      face(fx: cx + .1, fy: cy, diagonal: true)
+      content((2.5 + cx, -0.5 + cy), [HDG])
+    }
+
+    dg()
+    fem(cx: -2)
+    hdg(cx: 2)
   })
 }
+
+#fem-dg-hdg-graph()

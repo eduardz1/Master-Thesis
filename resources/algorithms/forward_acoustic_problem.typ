@@ -1,6 +1,7 @@
 #import "@preview/algorithmic:1.0.3"
 #import algorithmic: algorithm-figure
 #import "@preview/lilaq:0.4.0" as lq
+#import "@preview/physica:0.9.5": *
 
 #let hl-1(fill: lq.color.map.petroff6.at(0).transparentize(70%), content) = box(
   content,
