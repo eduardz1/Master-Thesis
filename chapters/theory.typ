@@ -1,4 +1,7 @@
 #import "@preview/algorithmic:1.0.3"
+#import "../resources/graphs/mpi_v_openmp.typ": (
+  distributed-memory, shared-memory,
+)
 #import "../resources/graphs/cpu_v_gpu_arch.typ": cpu-v-gpu-arch
 #import algorithmic: algorithm-figure
 
@@ -42,7 +45,26 @@ Writing cross-platform code is of great interest to the team and so it was prior
 
 The @MPI:both is a specification for parallel computation in distributed memory systems @x-MPITutorial. Various implementation of the standard exists for Fortran, C and C++ and programmers can interact with it as a library. It is fundamental to enable @CPU:short:pl to communicate across nodes in a cluster but also to communicate between each other in situations where a single cluster contains multiple @CPU:short:pl. One of the most commonly used implementations due to its open nature is OpenMPI @x-OpenMPI.
 
-Compared to OpenMP, it is designed with distributed memory parallelism in mind. Where OpenMP uses threads for splitting the work, @MPI spawns processes instead. Each thread has its own memory space and executes interdependently and the overhead of process creation, although greater than that of thread creation, occurs only once at initialization. In @example-mpi we can see how a simple @MPI program is structured, the code in question initializes the @MPI context and then prints to `stdout` a test message with the rank of the process that is being executed and the total size of the cluster of processes. After the initialization, the subsequent code will be executed independently on each @MPI process, communication between processes is then carried with operations such as reduction (`MPI_Reduce`) or broadcasting of messages.
+Compared to OpenMP, it is designed with (but is not limited to) distributed memory parallelism in mind. Where OpenMP uses threads for splitting the work, @MPI spawns processes instead. Each @MPI process has its own memory space and executes independently; the overhead of process creation, although greater than that of thread creation, occurs only once at initialization. In @example-mpi we can see how a simple @MPI program is structured, the code in question initializes the @MPI context and then prints to `stdout` a test message with the rank of the process that is being executed and the total size of the cluster of processes. After the initialization, the subsequent code will be executed independently on each @MPI process, communication between processes is then carried with operations such as reduction (`MPI_Reduce`) or broadcasting of messages.
+
+#figure(
+  kind: image,
+  placement: top,
+  scale(88%, reflow: true, grid(
+    columns: 2,
+    column-gutter: 4em,
+    inset: (bottom: .5em),
+    align: center + bottom,
+    [#shared-memory()], [#distributed-memory()],
+  )),
+  caption: [Comparison of the shared memory parallelism model compared to the distributed memory one],
+)
+
+In the context of @HAWEN, the discretization mesh is initially split among the @MPI processes, leaving each process to work on their set of cells. The advantage of the @HDG method consists in the fact that each process can work completely independently from each other, without any communication between them. To partition the mesh we use the METIS partitioner, developed by #cite(<x-METIS>, form: "prose").
+
+=== OpenMP <openmp>
+
+OpenMP is a set of specification for compiler directives, library routines and environment variables that can be used to specify high-level parallelism in Fortran, C and C++ programs @x-OpenMP. It enables shared-memory parallelism in languages even with languages where the standard does not define any parallel construct. It is used extensively in @HAWEN in the matrix creation to take advantage of modern multi-core processors. In @directives-vs-dc we can see an example of how OpenMP can be used in a simple loop that scales an array by a certain weight $w$. We notice that in Fortran OpenMP directives are declared as comments (where in C++ one would use `#pragma` instead), in this example the two loops are collapsed to ensure maximum parallelism, the loop variables are implicitly private, meaning that each thread gets its own copy, while the others are implicitly shared, meaning that one copy is shared across all threads.
 
 #figure(
   kind: raw,
@@ -83,12 +105,6 @@ Compared to OpenMP, it is designed with distributed memory parallelism in mind. 
     },
 ) <example-mpi>
 
-In the context of @HAWEN, the discretization mesh is initially split among the @MPI processes, leaving each process to work on their set of cells. The advantage of the @HDG method consists in the fact that each process can work completely independently from each other, without any communication between them. To partition the mesh we use the METIS partitioner, developed by #cite(<x-METIS>, form: "prose").
-
-=== OpenMP <openmp>
-
-OpenMP is a set of specification for compiler directives, library routines and environment variables that can be used to specify high-level parallelism in Fortran, C and C++ programs @x-OpenMP. It enables shared-memory parallelism in languages even with languages where the standard does not define any parallel construct. It is used extensively in @HAWEN in the matrix creation to take advantage of modern multi-core processors. In @directives-vs-dc we can see an example of how OpenMP can be used in a simple loop that scales an array by a certain weight $w$. We notice that in Fortran OpenMP directives are declared as comments (where in C++ you would use `#pragma` instead, in this example the two loops are collapsed to ensure maximum parallelism, the loop variables are implicitly private, meaning that each thread gets its own copy, while the others are implicitly shared, meaning that one copy is shared across all threads.
-
 Later revisions of the standard have also enabled offloading #footnote[Offloading as in scheduling the execution of a specific section of code or routine on a different device (the @GPU) than the one the code is compiled for (the @CPU)] of parallel directives to @GPU:short:pl, although generally compiler support for this feature has to be enabled explicitly when building the compiler and, talking about @GCC:short, it is not a flag that is enabled by default in the packages provided by most Linux distributions.
 
 === OpenACC <openacc>
@@ -105,16 +121,8 @@ The @HAWEN software is written in free form Fortran, which differs from the fixe
 
 Compared to other languages such as C++, the various standards are usually not fully supported in their entirety by all compilers, extensions to the language are commonplace and backwards compatibility has been historically mostly ensured (with some exceptions, like the recent breaking change in the standard 2023 @x-LLVMFortran202X) so it does not make sense to discuss having as a target a specific revision, a good discussion related to the status of the standard enforcement in different compiler can be found on the CMake repository issue tracker @x-CMakeIssueFortranStd. The software does currently implement features from the Fortran 2008 standard but does not conform to it strictly, making use of non-standard intrinsics and compiler extensions. Particular care will, therefore, be given to the support status of each language feature by the different compilers.
 
-=== The `do concurrent` construct
-
-An extension of the `do` construct, known in other languages as a `for` loop, the `do concurrent` construct allows for the parallel execution of iterations of the loop.
-
-As #cite(<x-ModernFortran>, form: "prose", supplement: [p.~138]) and #cite(<x-FlangDC>, form: "prose") mention, the `do concurrent` construct only guarantees that each iteration of the loop can be executed independently, in arbitrary order. While we may expect that this implies parallel execution, this is not guaranteed by the standard and there are even instances where a standard-conforming `do concurrent` loop cannot be safely parallelized by the compiler. The Fortran 2018 standard introduces locality specifiers for the loop which mitigate but do not eliminate this problem. Furthermore, one of the most popular open source Fortran compilers, GFortran (@gfortran), only added support for locality specifiers in its latest release, `15.1`.
-
-Inspired by the work of #cite(<x-DCvsDirectives>, form: "prose") and aware of these limitations, I have decided to focus on accelerating sections of the code on @GPU using mostly standard Fortran constructs. In their work, they found that the `do concurrent` construct performs on par, if not better, than equivalent OpenMP (see @openmp) or OpenACC (see @openacc) directives with the NVIDIA compiler and often performs on par with hand written CUDA kernels.
-In the NVIDIA compiler, `do concurrent`, when offloaded on @GPU:short, is translated implicitly to OpenACC.
-
 #figure(
+  placement: top,
   kind: raw,
   grid(
     columns: 1,
@@ -142,6 +150,15 @@ In the NVIDIA compiler, `do concurrent`, when offloaded on @GPU:short, is transl
       if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <directives-vs-dc>
+
+=== The `do concurrent` construct
+
+An extension of the `do` construct, known in other languages as a `for` loop, the `do concurrent` construct allows for the parallel execution of iterations of the loop.
+
+As #cite(<x-ModernFortran>, form: "prose", supplement: [p.~138]) and #cite(<x-FlangDC>, form: "prose") mention, the `do concurrent` construct only guarantees that each iteration of the loop can be executed independently, in arbitrary order. While we may expect that this implies parallel execution, this is not guaranteed by the standard and there are even instances where a standard-conforming `do concurrent` loop cannot be safely parallelized by the compiler. The Fortran 2018 standard introduces locality specifiers for the loop which mitigate but do not eliminate this problem. Furthermore, one of the most popular open source Fortran compilers, GFortran (@gfortran), only added support for locality specifiers in its latest release, `15.1`.
+
+Inspired by the work of #cite(<x-DCvsDirectives>, form: "prose") and aware of these limitations, I have decided to focus on accelerating sections of the code on @GPU using mostly standard Fortran constructs. In their work, they found that the `do concurrent` construct performs on par, if not better, than equivalent OpenMP (see @openmp) or OpenACC (see @openacc) directives with the NVIDIA compiler and often performs on par with hand written CUDA kernels.
+In the NVIDIA compiler, `do concurrent`, when offloaded on @GPU:short, is translated implicitly to OpenACC.
 
 === Coarrays
 
@@ -275,17 +292,10 @@ Various tools have been explored during this work, different ones offer differen
 
 === The TAU Performance System <tau-sect>
 
-In the first benchmarks we used TAU as a platform to analyze the performance metrics of our program for different use cases. On Linux, TAU needs to be compiled specifically with the options needed to instruct the application we are targeting. The way that automatic TAU instrumentation works, is by wrapping the Fortran compiler and preprocessing the source code with a specific `Makefile`. For example, for my use case, I used the `Makefile.tau-mpi-pdt-openmp` `Makefile`, which enables the instrumentation of @MPI and OpenMP calls, as well as the @PDT for source code analysis. For source code analysis, a new toolkit is being developed, based on @LLVM, called SALT @x-SALT. I did not have the opportunity to test it, because it would require working closer with the @LLVM Flang compiler (see @flang) and currently relies on minor patches to the @LLVM codebase, but it certainly seems like a promising replacement for @PDT.
+In the first benchmarks we used TAU as a platform to analyze the performance metrics of our program for different use cases. In @paraprof-3D-visualization, @paraprof-function-table, and @paraprof-summary we will see some of the available visualization options available in the software. On Linux, TAU needs to be compiled specifically with the options needed to instruct the application we are targeting. The way that automatic TAU instrumentation works, is by wrapping the Fortran compiler and preprocessing the source code with a specific `Makefile`. For example, for my use case, I used the `Makefile.tau-mpi-pdt-openmp` `Makefile`, which enables the instrumentation of @MPI and OpenMP calls, as well as the @PDT for source code analysis. For source code analysis, a new toolkit is being developed, based on @LLVM, called SALT @x-SALT. I did not have the opportunity to test it, because it would require working closer with the @LLVM Flang compiler (see @flang) and currently relies on minor patches to the @LLVM codebase, but it certainly seems like a promising replacement for @PDT.
 
 Once the data are collected, it can be visualized using the `paraprof` tool, which is part of the TAU suite. It provides a graphical interface to explore the profiling data, including function call graphs, time spent in each function, and more. It also supports 3D visualization of the profiling data, which can be useful for understanding the performance characteristics of the application.
 
-In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 @CPU:short:pl. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it is usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. Originally, the reasoning for computing the inverse was that it was reused in other computations later on in the program. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on CPU.
-
-In @paraprof-3D-visualization, we can see how, with ParaProf, it is easy to visualize the behavior of a parallel and distributed program over time, thanks to the 3D visualization capabilities. In @paraprof-function-table we can see the function table, which helps with interactively navigating the call graph, a very valuable feature for understanding the performance characteristics of unfamiliar code, whilst providing performance metrics such as number of calls and inclusive/exclusive time per call.
-
-While the 2D elastic case was the one we were mostly focused on in the parallelization, each configurations differs greatly from one another. For 3D configurations, we noticed that initializing the Cartesian mapping in `dg_init_cartesian_map` was one of the slowest routines, depending on the mesh size, that could have more impact than the @MUMPS factorization step. A peculiarity of using a direct solver instead of an iterative one, is that the factorization step for the sparse matrix is done only once before solving for many right-hand sides, but this operation is order of magnitudes slower than the solving step. Other configurations, with varying polynomial orders, are bottlenecked by file I/O and would benefit from distributing the file I/O across the @MPI processes or the usage of distributed storage solutions.
-
-The complicated configuration and the need to recompile the code each time with different compiler wrappers made it cumbersome to use in the long run, for the later benchmarks we instead used the `gprofng` tool, which enabled faster iterations and broader compatibility in the clusters.
 
 #figure(
   image("../resources/imgs/paraprof_3D_visualization.png"),
@@ -296,25 +306,32 @@ The complicated configuration and the need to recompile the code each time with 
     },
 ) <paraprof-3D-visualization>
 
+In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 @CPU:short:pl. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it is usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. Originally, the reasoning for computing the inverse was that it was reused in other computations later on in the program. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on @CPU.
 
 #figure(
-  image(height: 40%, "../resources/imgs/paraview_summary.svg"),
-  placement: top,
-  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by @LAPACK:short to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
-    + context {
-      if state("image-outline").get() { linebreak(justify: true) }
-    },
-) <paraprof-summary>
-
-
-#figure(
-  image(height: 28%, "../resources/imgs/paraprof_function_table.png"),
+  image("../resources/imgs/paraprof_function_table.png"),
   placement: top,
   caption: [ParaProf's function table for a 2D elastic wave propagation simulation, sorted by inclusive time.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <paraprof-function-table>
+
+In @paraprof-3D-visualization, we can see how, with ParaProf, it is easy to visualize the behavior of a parallel and distributed program over time, thanks to the 3D visualization capabilities. Traditional function tables are also available as an option, these help us interactively navigating the call graph, a very valuable feature for understanding the performance characteristics of unfamiliar code, whilst providing performance metrics such as number of calls and inclusive/exclusive time per call. In @paraprof-function-table we see an example of such view.
+
+While the 2D elastic case was the one we were mostly focused on in the parallelization, each configurations differs greatly from one another. For 3D configurations, we noticed that initializing the Cartesian mapping in `dg_init_cartesian_map` was one of the slowest routines, depending on the mesh size, that could have more impact than the @MUMPS factorization step. A peculiarity of using a direct solver instead of an iterative one, is that the factorization step for the sparse matrix is done only once before solving for many right-hand sides, but this operation is order of magnitudes slower than the solving step. Other configurations, with varying polynomial orders, are bottlenecked by file I/O and would benefit from distributing the file I/O across the @MPI processes or the usage of distributed storage solutions.
+
+The complicated configuration and the need to recompile the code each time with different compiler wrappers made it cumbersome to use in the long run, for the later benchmarks we instead used the `gprofng` tool, which enabled faster iterations and broader compatibility in the clusters.
+
+
+#figure(
+  image("../resources/imgs/paraview_summary.svg"),
+  placement: top,
+  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by @LAPACK:short to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
+    + context {
+      if state("image-outline").get() { linebreak(justify: true) }
+    },
+) <paraprof-summary>
 
 == Clusters Used in this Work <clusters>
 

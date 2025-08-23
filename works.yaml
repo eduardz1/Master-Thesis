@@ -333,9 +333,18 @@ OpenMP:
   url: https://www.openmp.org/about/openmp-faq/#OMPAPI.General
 
 OpenMPI:
-  type: Web
-  title: "Open MPI: Open Source High Performance Computing"
-  url: https://www.open-mpi.org/
+  type: Proceedings
+  author: ["Edgar Gabriel", "Graham E. Fagg", "George Bosilca", "Thara Angskun", "Jack J. Dongarra", "Jeffrey M. Squyres", "Vishal Sahay", "Prabhanjan Kambadur", "Brian Barrett", "Andrew Lumsdaine", "Ralph H. Castain", "David J. Daniel", "Richard L. Graham", "Timothy S. Woodall"]
+  title: "Open MPI: Goals, Concept, and Design of a Next Generation MPI Implementation"
+  url: https://www.open-mpi.org/papers/euro-pvmmpi-2004-overview/euro-pvmmpi-2004-overview.pdf
+  serial-number:
+    doi: https://doi.org/10.1007/978-3-540-30218-6_19
+  date: 2004-09
+  location: "Budapest, Hungary"
+  page-range: 97-104
+  parent:
+    - type: Book
+      title: "Proceedings, 11th European PVM/MPI Users' Group Meeting"
 
 Binutils:
   type: Web

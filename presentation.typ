@@ -7,6 +7,7 @@
 #import "@preview/lilaq:0.4.0" as lq
 #import "@preview/zero:0.4.0": set-round, zi
 #import "resources/tables/clusters.typ": clusters
+#import "resources/graphs/mpi_v_openmp.typ": distributed-memory, shared-memory
 #import "resources/graphs/cudss_v_mumps.typ": cudss-v-mumps
 #import "resources/graphs/anotinv_loop_order.typ": anotinv_diagrams
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
@@ -280,7 +281,28 @@
 
 == MPI
 
+#slide[
+  #set align(horizon)
+  #grid(columns: 2, column-gutter: 3em)[
+    #set text(size: 1.3em)
+    #figure(distributed-memory(presentation: true))][
+    - *Message Passing Interface* #pause
+    - Spawns *processes* #pause
+    - Aimed (but not restricted) to the use in *distributed memory* systems
+  ]
+]
+
 == OpenMP
+
+#slide[
+  #set align(horizon)
+  #grid(columns: 2, column-gutter: 3em)[
+    #set text(size: 1.3em)
+    #figure(shared-memory(presentation: true))][
+    - Spawns *OS threads* #pause
+    - Restricted to *shared-memory* environments
+  ]
+]
 
 == OpenACC
 
@@ -296,7 +318,7 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters
 
   #speaker-note[
     - tradeoff between core count and core complexity
-    - 
+    -
   ]
 ]
 
