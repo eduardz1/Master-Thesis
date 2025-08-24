@@ -2,7 +2,7 @@
 #import "@preview/lilaq:0.4.0" as lq
 #import "@preview/touying:0.6.1": pause, touying-reducer
 
-#let fem-dg-hdg-graph(len: 2cm, stroke-width: .5pt, presentation: false) = {
+#let fem-dg-hdg-graph(len: 2cm, stroke-width: .7pt, presentation: false) = {
   let cetz-canvas = if presentation {
     touying-reducer.with(
       reduce: cetz.canvas,
@@ -13,14 +13,12 @@
   cetz-canvas(length: len, {
     import cetz.draw: *
 
-    let blue = lq.color.map.petroff6.at(0)
-    let red = lq.color.map.petroff6.at(2)
-
-    let stroke-blue = stroke-width + blue.darken(40%)
-    let stroke-red = stroke-width + red.darken(40%)
-
-    let blue = blue.lighten(80%)
-    let red = red.lighten(80%)
+    // let blue = lq.color.map.okabe-ito.at(0)
+    let blue = lq.color.map.okabe-ito.at(0).lighten(80%)
+    let stroke-blue = stroke-width + lq.color.map.okabe-ito.at(0)
+    let red = lq.color.map.okabe-ito.at(5).lighten(80%)
+    // let red = lq.color.map.okabe-ito.at(5)
+    let stroke-red = stroke-width + lq.color.map.okabe-ito.at(5)
 
     let rad = .045
 

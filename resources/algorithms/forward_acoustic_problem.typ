@@ -3,14 +3,14 @@
 #import "@preview/lilaq:0.4.0" as lq
 #import "@preview/physica:0.9.5": *
 
-#let hl-1(fill: lq.color.map.petroff6.at(0).transparentize(70%), content) = box(
+#let hl-1(fill: lq.color.map.okabe-ito.at(0).transparentize(70%), content) = box(
   content,
   inset: 0.2em,
   fill: fill,
 )
 
-#let hl-2 = hl-1.with(fill: lq.color.map.petroff6.at(1).transparentize(70%))
-#let hl-3 = hl-1.with(fill: lq.color.map.petroff6.at(2).transparentize(70%))
+#let hl-2 = hl-1.with(fill: lq.color.map.okabe-ito.at(1).transparentize(70%))
+#let hl-3 = hl-1.with(fill: lq.color.map.okabe-ito.at(2).transparentize(70%))
 
 #let forward-acoustic-problem-alg(highlight-tensors: false) = [
 

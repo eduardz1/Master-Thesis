@@ -21,7 +21,7 @@ More recently, extending similar paradigms to specialized accelerators has gaine
 
 === CUDA
 
-When developing code targeting NVIDIA @GPU:pl, the CUDA Toolkit provides compilers, libraries and tools for developing accelerated applications. These compilers enable the developer to write code that is either compiled with a traditional host compiler, like @GCC, for the specified architecture or compiled to an intermediate representation, similar to that of @LLVM, called @PTX. This approach enables each program to both include an optimized binary for a specific  @GPU architecture and at the same time take advantage of the @VM @ISA to #lower[@JIT] compile the code for different architectures @x-PTX. The parallel model of the @GPU is abstracted as a set of parallel and independent _streaming multiprocessors_. Each multiprocessor is responsible for scheduling a large number of threads simultaneously. @GPU:pl employ the @SIMT execution model where multiple threads operate in groups on multiple @SIMD instruction streams. In @cpu-v-gpu-arch-fig we can see a schematic representation of the differences between the @CPU and @GPU architectures.
+When developing code targeting NVIDIA @GPU:pl, the CUDA Toolkit provides compilers, libraries and tools for developing accelerated applications. These compilers enable the developer to write code that is either compiled with a traditional host compiler, like @GCC, for the specified architecture or compiled to an intermediate representation, similar to that of @LLVM, called @PTX. This approach enables each program to both include an optimized binary for a specific  @GPU architecture and at the same time take advantage of the @VM @ISA to @JIT compile the code for different architectures @x-PTX. The parallel model of the @GPU is abstracted as a set of parallel and independent _streaming multiprocessors_. Each multiprocessor is responsible for scheduling a large number of threads simultaneously. @GPU:pl employ the @SIMT execution model where multiple threads operate in groups on multiple @SIMD instruction streams. In @cpu-v-gpu-arch-fig we can see a schematic representation of the differences between the @CPU and @GPU architectures.
 
 #figure(
   cpu-v-gpu-arch(scale-axis: 88%),
@@ -57,7 +57,10 @@ Compared to OpenMP, it is designed with (but is not limited to) distributed memo
     align: center + bottom,
     [#shared-memory()], [#distributed-memory()],
   )),
-  caption: [Comparison of the shared memory parallelism model compared to the distributed memory one],
+  caption: [Comparison of the shared memory parallelism model compared to the distributed memory one. In the shared memory paradigm, multiple processors access the same shared pool of memory. In the distributed approach, each process has its own pool of memory and communication between processors requires a network. @MPI:short supports both paradigm while OpenMP is strictly used for shared-memory parallelism.]
+    + context {
+      if state("image-outline").get() { linebreak(justify: true) }
+    },
 )
 
 In the context of @HAWEN, the discretization mesh is initially split among the @MPI processes, leaving each process to work on their set of cells. The advantage of the @HDG method consists in the fact that each process can work completely independently from each other, without any communication between them. To partition the mesh we use the METIS partitioner, developed by #cite(<x-METIS>, form: "prose").
@@ -99,7 +102,7 @@ OpenMP is a set of specification for compiler directives, library routines and e
      Hello from process:            3 of            4
     ```,
   ),
-  caption: [Example of a simple "Hello World" type @MPI:short program and its output. The code has been executed with 4 processes (corresponding to the flag `-np 4`).]
+  caption: [Example of a simple "Hello World" type @MPI:short program and its output. The code has been compiled with the `mpifort` compiler wrapper and (`&&`) executed with 4 @MPI:short processes (corresponding to the flag `-np 4`).]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -145,7 +148,7 @@ Compared to other languages such as C++, the various standards are usually not f
     end do
     ```,
   ),
-  caption: [Comparison of the `do concurrent` construct with OpenMP and OpenACC directives.]
+  caption: [Comparison of the `do concurrent` construct with OpenMP and OpenACC directives. As we can see, collapsing loops is done automatically using a special syntax to declare all loop iteration indexes inline.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -292,6 +295,15 @@ Various tools have been explored during this work, different ones offer differen
 
 === The TAU Performance System <tau-sect>
 
+#figure(
+  image("../resources/imgs/paraview_summary.svg"),
+  placement: bottom,
+  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by @LAPACK:short to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
+    + context {
+      if state("image-outline").get() { linebreak(justify: true) }
+    },
+) <paraprof-summary>
+
 In the first benchmarks we used TAU as a platform to analyze the performance metrics of our program for different use cases. In @paraprof-3D-visualization, @paraprof-function-table, and @paraprof-summary we will see some of the available visualization options available in the software. On Linux, TAU needs to be compiled specifically with the options needed to instruct the application we are targeting. The way that automatic TAU instrumentation works, is by wrapping the Fortran compiler and preprocessing the source code with a specific `Makefile`. For example, for my use case, I used the `Makefile.tau-mpi-pdt-openmp` `Makefile`, which enables the instrumentation of @MPI and OpenMP calls, as well as the @PDT for source code analysis. For source code analysis, a new toolkit is being developed, based on @LLVM, called SALT @x-SALT. I did not have the opportunity to test it, because it would require working closer with the @LLVM Flang compiler (see @flang) and currently relies on minor patches to the @LLVM codebase, but it certainly seems like a promising replacement for @PDT.
 
 Once the data are collected, it can be visualized using the `paraprof` tool, which is part of the TAU suite. It provides a graphical interface to explore the profiling data, including function call graphs, time spent in each function, and more. It also supports 3D visualization of the profiling data, which can be useful for understanding the performance characteristics of the application.
@@ -300,18 +312,20 @@ Once the data are collected, it can be visualized using the `paraprof` tool, whi
 #figure(
   image("../resources/imgs/paraprof_3D_visualization.png"),
   placement: top,
-  caption: [ParaProf's 3D visualization of the profiling data for a 2D elastic wave propagation simulation. Highlighted is the `hdg_build_quadrature_int_2D` routine]
+  caption: [ParaProf's 3D visualization of the profiling data for a 2D elastic wave propagation simulation. Highlighted with the perpendicular green line is the `hdg_build_quadrature_int_2D` routine for the fourth thread of the third @MPI:short process. The vertical bars serve to visualize the time spent in each routine for each thread.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
 ) <paraprof-3D-visualization>
+
+
 
 In @paraprof-summary, we can see a visualization of a simulation for the 2D elastic case using a mesh of 100 thousand cells, polynomials of order 9 and executed on a single node with 2 #math.times 24 cores Zen4 @CPU:short:pl. It was configured with 8 @MPI processes and 6 OpenMP threads per process. As we can see, in this case, the entirety of the time is spent on building the matrices for the @HDG method. In particular, the `hdg_build_quadrature_int_2D` routine, which is responsible for building the quadrature matrices for the 2D case, accounts for more than half of the program's runtime. The `hdg_build_Ainv_2D` routine, which is responsible for building the inverse of the matrix, accounts for a significant portion of the time as well. The graph might be a bit misleading in the sense that, for `hdg_build_Ainv_2D`, the time spent on @LAPACK:short to inverse the matrix should also be added to the time spent on the routine. As #cite(<x-DontInvertThatMatrix>, form: "prose") mentions, it is usually more computationally efficient to solve the linear system directly, rather than inverting the matrix. Originally, the reasoning for computing the inverse was that it was reused in other computations later on in the program. This is something that I will explore in more detail in @red-mat-inv. In @paraprof-summary we also noticed that 3 threads of each @MPI process are unused, meaning that greater parallelization can be achieved even on @CPU.
 
 #figure(
   image("../resources/imgs/paraprof_function_table.png"),
   placement: top,
-  caption: [ParaProf's function table for a 2D elastic wave propagation simulation, sorted by inclusive time.]
+  caption: [ParaProf's function table for a 2D elastic wave propagation simulation. The table is sorted by inclusive time, meaning routines that occupy the greater fraction of the total program runtime, including their call trees, are placed at the top. Ignoring the first `hdg_build_quadrature_int_2D`, which is not shown in the correct place, we see highlighted the `create_matrix` routine, called from `main` #sym.arrow `process` #sym.arrow `matrix_discretization`.]
     + context {
       if state("image-outline").get() { linebreak(justify: true) }
     },
@@ -322,16 +336,6 @@ In @paraprof-3D-visualization, we can see how, with ParaProf, it is easy to visu
 While the 2D elastic case was the one we were mostly focused on in the parallelization, each configurations differs greatly from one another. For 3D configurations, we noticed that initializing the Cartesian mapping in `dg_init_cartesian_map` was one of the slowest routines, depending on the mesh size, that could have more impact than the @MUMPS factorization step. A peculiarity of using a direct solver instead of an iterative one, is that the factorization step for the sparse matrix is done only once before solving for many right-hand sides, but this operation is order of magnitudes slower than the solving step. Other configurations, with varying polynomial orders, are bottlenecked by file I/O and would benefit from distributing the file I/O across the @MPI processes or the usage of distributed storage solutions.
 
 The complicated configuration and the need to recompile the code each time with different compiler wrappers made it cumbersome to use in the long run, for the later benchmarks we instead used the `gprofng` tool, which enabled faster iterations and broader compatibility in the clusters.
-
-
-#figure(
-  image("../resources/imgs/paraview_summary.svg"),
-  placement: top,
-  caption: [ParaProf's summary view for a 2D elastic wave propagation simulation, where each bar corresponds to a thread and represents the time spent in each routine of the benchmark. In blue and red, is the time spent on the `hdg_build_quadrature_int_2D` routine, in yellow, the time spent on the `hdg_build_Ainv_2D`, the orange section corresponds to the time spent by @LAPACK:short to inverse the matrix in the previous routine. The purple section is the overhead caused by the TAU instrumentation.]
-    + context {
-      if state("image-outline").get() { linebreak(justify: true) }
-    },
-) <paraprof-summary>
 
 == Clusters Used in this Work <clusters>
 

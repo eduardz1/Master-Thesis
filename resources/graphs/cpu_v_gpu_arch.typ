@@ -4,12 +4,12 @@
 #let std-rotate = rotate
 
 #let cpu-v-gpu-arch(scale-axis: 100%) = {
-  set text(weight: "bold", size: .8em)
+  set text(weight: "medium", size: .8em, font: "Fira Code")
   scale(x: scale-axis, y: scale-axis, reflow: true)[
     #cetz.canvas({
       import cetz.draw: *
 
-      let colors = lilaq.color.map.petroff6
+      let colors = lilaq.color.map.okabe-ito
 
       let cpu(dx: 0, dy: 0) = {
         content((4 + dx, 2.5 + dy))[CPU]
@@ -67,7 +67,7 @@
             rect(
               (1 + cx, 4 + cy),
               (3.5 + cx, 6 + cy),
-              stroke: 2pt + colors.at(3),
+              stroke: 2.5pt + colors.at(3),
               fill: none,
             )
             content((2.2 + cx, 6.3 + cy), text(
@@ -165,7 +165,7 @@
           (1 + dx, 7 + dy),
           (10 + dx, 8 + dy),
           fill: none,
-          stroke: 2pt + colors.at(3),
+          stroke: 2.5pt + colors.at(3),
         )
         content((5.5 + dx, 8.3 + dy), text(
           fill: colors.at(3),
@@ -174,7 +174,7 @@
           (2 + dx, 4 + dy),
           (3 + dx, 5 + dy),
           fill: none,
-          stroke: 2pt + colors.at(3),
+          stroke: 2.5pt + colors.at(3),
         )
         content((2.5 + dx, 5.3 + dy), text(
           fill: colors.at(3),

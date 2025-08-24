@@ -73,18 +73,23 @@
   )
 
   let col-map(n) = {
-    let color = lq.color.map.petroff6.at(n)
+    let colors = (
+      lq.color.map.okabe-ito.at(1),
+      lq.color.map.okabe-ito.at(5),
+      lq.color.map.okabe-ito.at(0)
+    )
+    let color = colors.at(n)
     if highlighted {
       (
-        color.transparentize(30%),
+        color.transparentize(00%),
         color.transparentize(80%),
         color.transparentize(80%),
         color.transparentize(80%),
-        color.transparentize(30%),
+        color.transparentize(0%),
         color.transparentize(80%),
         color.transparentize(80%),
       )
-    } else { (color.transparentize(30%),) * 7 }
+    } else { (color.transparentize(00%),) * 7 }
   }
 
   lq.diagram(

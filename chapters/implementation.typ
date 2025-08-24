@@ -609,14 +609,14 @@ By simply reordering the loops and the matrices, a measurable performance improv
           (
             line: 5,
             start: 3,
-            fill: lq.color.map.petroff6.at(1).transparentize(50%),
+            fill: lq.color.map.okabe-ito.at(1).transparentize(40%),
             label: <sum-face-phi-xi>,
           ),
           // TODO: can be split on multiple lines if https://github.com/Dherse/codly/issues/96 is solved
           (
             line: 8,
             start: 5,
-            fill: lq.color.map.petroff6.at(2).transparentize(50%),
+            fill: lq.color.map.okabe-ito.at(5).transparentize(40%),
             label: <dot-face-phi-xi-nCntau>,
           ),
         ))

@@ -48,7 +48,7 @@
 ))
 #show figure.caption: emph
 
-#let colors = lq.color.map.petroff6
+#let colors = lq.color.map.okabe-ito
 #let highlights = colors.map(x => x.transparentize(80%))
 
 // #let pinit-highlight-equation-from(height: 2em, pos: bottom, fill: rgb(0, 180, 255), highlight-pins, point-pin, body) = {
@@ -173,62 +173,62 @@
 #let pinit-point-from = pinit-point-from.with(thickness: 1pt)
 #let pinit-arrow = pinit-arrow.with(thickness: 1pt)
 
-#slide[
-  #align(center + horizon)[$
-      - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
-    $
+// #slide[
+//   #align(center + horizon)[$
+//       - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
+//     $
 
-    #pinit-highlight(1, 2, fill: highlights.at(0))
-    #pinit-point-from(
-      1,
-      offset-dy: 35pt,
-      offset-dx: -50pt,
-      body-dx: -60pt,
-      fill: colors.at(0),
-    )[density]
+//     #pinit-highlight(1, 2, fill: highlights.at(0))
+//     #pinit-point-from(
+//       1,
+//       offset-dy: 35pt,
+//       offset-dx: -50pt,
+//       body-dx: -60pt,
+//       fill: colors.at(0),
+//     )[density]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(3, 4, fill: highlights.at(1))
-    #pinit-point-from(3, offset-dx: 50pt, fill: colors.at(1))[bulk modulus]
+//     #pinit-highlight(3, 4, fill: highlights.at(1))
+//     #pinit-point-from(3, offset-dx: 50pt, fill: colors.at(1))[bulk modulus]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(5, 6, fill: highlights.at(2))
-    #pinit-point-from(
-      5,
-      pin-dy: -15pt,
-      body-dy: -15pt,
-      offset-dy: -70pt,
-      fill: colors.at(2),
-    )[angular frequency]
+//     #pinit-highlight(5, 6, fill: highlights.at(2))
+//     #pinit-point-from(
+//       5,
+//       pin-dy: -15pt,
+//       body-dy: -15pt,
+//       offset-dy: -70pt,
+//       fill: colors.at(2),
+//     )[angular frequency]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(7, 8, fill: highlights.at(3))
-    #pinit-point-from(
-      8,
-      offset-dx: 80pt,
-      offset-dy: 0pt,
-      pin-dy: 0pt,
-      body-dy: -10pt,
-      fill: colors.at(3),
-    )[source]
+//     #pinit-highlight(7, 8, fill: highlights.at(3))
+//     #pinit-point-from(
+//       8,
+//       offset-dx: 80pt,
+//       offset-dy: 0pt,
+//       pin-dy: 0pt,
+//       body-dy: -10pt,
+//       fill: colors.at(3),
+//     )[source]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(9, 10, fill: highlights.at(4))
-    #pinit-highlight(11, 12, fill: highlights.at(4))
-    #pinit-point-from(
-      9,
-      pin-dy: 20pt,
-      offset-dy: 100pt,
-      body-dy: -10pt,
-      fill: colors.at(4),
-    )[#pin(13)scalar pressure field]
-    #pinit-arrow(13, 11, start-dx: 30pt, end-dy: 20pt, fill: colors.at(4))
-  ]
-]
+//     #pinit-highlight(9, 10, fill: highlights.at(4))
+//     #pinit-highlight(11, 12, fill: highlights.at(4))
+//     #pinit-point-from(
+//       9,
+//       pin-dy: 20pt,
+//       offset-dy: 100pt,
+//       body-dy: -10pt,
+//       fill: colors.at(4),
+//     )[#pin(13)scalar pressure field]
+//     #pinit-arrow(13, 11, start-dx: 30pt, end-dy: 20pt, fill: colors.at(4))
+//   ]
+// ]
 
 // #slide[
 //   To solve numerically the wave equation we need to discretize the equation and solve the Partial Differential Equation (PDE).
