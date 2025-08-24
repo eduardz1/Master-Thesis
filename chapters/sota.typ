@@ -43,7 +43,7 @@ In the inverse problem, waves are measured at the receiver and are used to chara
   kind: image,
   caption: [Schematic representation of the @HAWEN:short pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the optimizations steps necessary for the *inverse problem*. Note that one use case of the software is solving the *forward problem* only.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <hawen-scheme>
 
@@ -66,11 +66,15 @@ Some specific configurations also highlight other inefficiencies in the code. Fo
   image("../resources/imgs/global-earth_simu.png"),
   caption: [Propagation of elastic waves in the Earth in three-dimensions, using the @PREM:short Earth models for P- and S-wave speeds, density, and quality factors. The system is comprised of 30 millions of unknowns and used 2.7TB for the matrix factorization. The total computational time was 18 minutes on 1260 cores (90 @MPI:short processes and 14 threads for each process). Courtesy of Florian Faucher.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <earth-hawen>
 
-== Hybridizable Discontinuous Galerkin Methods Applied to the Acoustic Wave Problem <hdg-section>
+#heading(level: 2, context if state(
+  "in-outline",
+).get() [HDG Methods Applied to the Acoustic Wave Problem] else [
+  #set text(hyphenate: false)
+  Hybridizable Discontinuous Galerkin Methods Applied to the Acoustic Wave Problem])  <hdg-section>
 
 The software relies on the @HDG method for the discretization of the wave equation in the frequency domain. Let us consider the acoustic wave equation, given by the pressure field $p$, solution to:
 
@@ -110,7 +114,7 @@ $
   fem-dg-hdg-graph(),
   caption: [Comparison of degrees of freedom in a mesh with the @FEM:short method, @DG:short and @HDG:short using the Lagrange basis function of order 4 for interpolation. In this case, we see that, by using only the degrees of freedom of the faces, we reduce the number of unknowns from, 30 #sym.arrow 25; the higher the polynomial order, the greater the benefit from the @HDG:short formulation.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <fem-dg-hdg>
 

@@ -17,7 +17,7 @@
 
 #let flo(term, color: red) = text(color, [Flo: #term])
 
-= Evaluation of the Performance Improvements in the Proposed Changes <evaluation-of-changes>
+#heading(level: 1, context if state("in-outline").get() [Evaluation of the Performance Improvements] else [Evaluation of the Performance Improvements in the Proposed Changes]) <evaluation-of-changes>
 
 In this section we will analyze the difference in performance resulting from the proposed changes, in particular, in @quad-bench we will talk about some first analysis on the changes proposed in @computing-quad-int. In @inv-cache-bench we will explore the effects that removing matrix inversion and improving the cache locality have on an elastic 2D case, changes that where proposed in @red-mat-inv, @stiffness-matrix and @improv-cache-locality. In @cudss-vs-mumps we will compare two different sparse solvers to see if and how much could @GPU acceleration impact the solving times for the @HDG system.
 
@@ -50,7 +50,7 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
   ),
   caption: [Configuration for the `hdg_build_quadrature` routine. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_q$ is the number of quadrature points used to approximate the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials), $N_(q tau)$ is the number of quadrature points to approximate the face integrals, and $N_o$ represents the number of different orders ($frak(p)$-adaptivity).]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <config-bench>
 
@@ -122,11 +122,10 @@ The numbers are computed on an average of 10 runs for each configuration and a s
     [#num(cpu_64 / gpu_32, digits: 2)#sym.times],
     table.hline(y: 2, start: 0, end: 5, stroke: 1pt),
   ),
-  caption: [
-    Speedup of creation of volume integrals for the @HDG:short matrices on the Suroit cluster. Higher is better.
+  caption: [Speedup of creation of volume integrals for the @HDG:short matrices on the Suroit cluster. Higher is better.
   ]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <speedup-nvhpc>
 
@@ -147,11 +146,10 @@ In @loop-order-bench we can see how the changes made in @acc-mat-creation greatl
     table.header([], ..configurations),
     [#smallcaps[*Size of matrix $AA_e$*]], ..configurations.map(sizes),
     table.hline(y: 2, start: 0, end: 8, stroke: 1pt),
-    
   ),
   caption: [Size of the matrix $AA_e$ for the 2D acoustic test case that we avoid inverting with the latest changes]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <sizeof-a>
 
@@ -162,7 +160,7 @@ Interestingly, we notice that the configuration `p2-9`, which has degrees of fre
   image("../resources/imgs/2D_Marmousi2_benchmark.svg"),
   caption: [2D elastic Marmousi2 model used as a benchmark (top image) with the computed wave field. The middle image represent the absolute displacement in meters of the elastic waves, the bottom the real part of the displacement.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <marmousi-img>
 
@@ -170,7 +168,7 @@ Interestingly, we notice that the configuration `p2-9`, which has degrees of fre
   cache-branch-misses-table-figure(),
   caption: [Exclusive cache and branch misses for the `hdg_build_quadrature_int_2d` routine in the `p2-9` benchmark for the 2D acoustic case. We compare the original version with the new one that incorporates the improvements to cache locality, we see that indeed there is a very important reduction in cache misses.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <cache-branch-misses-table>
 
@@ -180,7 +178,7 @@ Interestingly, we notice that the configuration `p2-9`, which has degrees of fre
   anotinv_diagrams(mesh: "mesh100k", additional_plots: none, height: 14.1cm),
   caption: [Comparison of matrix creation time for the 2D elastic benchmark with different configurations of the 100k mesh. The benchmarks where run with a configuration of 6 @MPI:short processes and 8 OpenMP threads per process on the Suroit node. The $circle.small$ represents the outliers in the boxplot the boxes and whiskers represent the percentiles and the line in the middle the median.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <loop-order-bench>
 
@@ -191,7 +189,7 @@ Interestingly, we notice that the configuration `p2-9`, which has degrees of fre
   image("../resources/imgs/3D_homogeneous_benchmark.svg"),
   caption: [3D wave field results for a cube of $2 times 2 times 2$ meters with homogeneous wave speed and frequency of #mHz[2]]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <homogeneous-wavefield>
 
@@ -206,7 +204,7 @@ As we can see in @solver-times, the total time spent in sparse solver routines f
   cudss-v-mumps(height: 7cm),
   caption: [Comparison between cuDSS and @MUMPS:short of time spent in sparse solver routines during the execution of the 3D benchmark on the Sirocco node with different @MPI:short Processes (P) and OpenMP Threads (T) configurations. The cuDSS configuration was allocated 1 NVIDIA A100.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <solver-times>
 
@@ -214,7 +212,7 @@ As we can see in @solver-times, the total time spent in sparse solver routines f
   speedup-cudss-table,
   caption: [Speedup of the cuDSS solver (configuration with 1 @MPI:short Process 32 OpenMP Threads) relative to different @MUMPS:short baselines, measured as the average over the sum of the sparse solver routines. Higher is better.]
     + context {
-      if state("image-outline").get() { linebreak(justify: true) }
+      if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <speedup-cudss>
 

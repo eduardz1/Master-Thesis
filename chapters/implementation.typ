@@ -101,7 +101,7 @@ A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by addi
     },
     caption: [To interface with Fortran, we have to rely on C bindings from both Fortran and C++, we see that we cannot use C++'s @STL:short directly and instead have to declare the type explicitly. Ellipsis indicate omitted code.]
       + context {
-        if state("image-outline").get() { linebreak(justify: true) }
+        if not state("in-outline").get() { linebreak(justify: true) }
       },
   ) <extern-c>
 ]
@@ -159,7 +159,7 @@ To convert the sparse @CSR right-hand sides to dense, we instead used the `cuSPA
     },
     caption: [C++ code to convert a sparse @CSR:short matrix to a dense matrix using NVIDIA's cuSPARSE library. Ellipsis indicate code omissions.]
       + context {
-        if state("image-outline").get() { linebreak(justify: true) }
+        if not state("in-outline").get() { linebreak(justify: true) }
       },
   ) <csr-to-dense>
 ]
@@ -241,7 +241,7 @@ An example of the wrappers around the cuDSS library for the various phases of th
     },
     caption: [Example of wrapper around cuDSS's solve phase. Solving the system consists of three main phases: 1) analysis, 2) factorization, and 3) solve. Complex numbers in C++ can be declared using different conventions, the one we used is the one that is specified in the @GCC:short documentation for interoperability between Fortran and C. We can convert to CUDA complex types at compile type using `constexpr` code. Ellipsis indicate omitted code.]
       + context {
-        if state("image-outline").get() { linebreak(justify: true) }
+        if not state("in-outline").get() { linebreak(justify: true) }
       },
   ) <solver-cudss>
 ]
@@ -275,154 +275,10 @@ Where $x_"LU"$ is the solution obtained by solving the LU decomposition of $A$ a
 
 This result can be proven empirically, although it has been argued that for well-conditioned matrices, the difference in precision is lower than one would expect @x-WhyNotInvertMatrix.
 
-==== Compiling HAWEN with NVFortran and Taking Advantage of GPU Offloading <computing-quad-int>
 
-#figure(
-  placement: top,
-  ```f90
-  type, public :: t_array5d_complex_kindmat_h_d
-  #ifdef _CUDA
-      complex(RKIND_MAT), device, allocatable :: array(:,:,:,:,:)
-  #else
-      complex(RKIND_MAT), allocatable :: array(:,:,:,:,:)
-  #endif
-  end type t_array5d_complex_kindmat_h_d
-  ```,
-  caption: [Example of the wrapper around a 5D array of complex type of precision `RKIND_MAT` which, when compiled with NVFortran (which introduces the `_CUDA` definition), initializes the inner array as a _device_ allocated one.]
-    + context {
-      if state("image-outline").get() { linebreak(justify: true) }
-    },
-) <host-device-array>
-
-#figure(
-  placement: top,
-  ```f90
-  type t_polynomial
-    integer :: dim_domain
-    integer :: degree
-  #ifdef _CUDA
-    real(RKIND_POL), managed, allocatable :: coeff_pol(:)
-  #else
-    real(RKIND_POL), allocatable :: coeff_pol(:)
-  #endif
-  end type t_polynomial
-
-  pure elemental subroutine polynomial_eval_3d(p, x0, y0, z0, val)
-    !$acc routine
-    implicit none
-
-    type(t_polynomial), intent(in) :: p
-    real(RKIND_POL), intent(in) :: x0, y0, z0
-    real(RKIND_POL), intent(out) :: val
-
-    integer :: I, K, L
-
-    val = 0._RKIND_POL
-
-    do I = 1, p%degree + 1
-      do K = 1, I
-        do L = 1, K
-          val = val & ! we consider the ind1 element of F1
-              + p%coeff_pol((I + 1) * I * (I - 1) / 6 + K * (K - 1) / 2 + L) &
-              * x0**(I - K) &
-              * y0**(K - L) &
-              * z0**(L - 1)
-        end do
-      end do
-    end do
-  end subroutine polynomial_eval_3d
-  ```,
-  caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over a collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.]
-    + context {
-      if state("image-outline").get() { linebreak(justify: true) }
-    },
-) <elemental-poly>
-
-#figure(
-  placement: top,
-  ```cmake
-  if(HAWEN_USE_CUDA AND CMAKE_Fortran_COMPILER_ID STREQUAL "NVHPC")
-      set(CUF_SOURCES)
-      foreach(source ${HAWEN_PROJECT_SOURCES})
-          if(source MATCHES "\\.cuf$")
-              list(APPEND CUF_SOURCES ${source})
-          endif()
-      endforeach()
-      if(CUF_SOURCES)
-          set_source_files_properties(${CUF_SOURCES}
-              PROPERTIES
-              COMPILE_OPTIONS "-cuda;-stdpar=gpu"
-          )
-      endif()
-  endif()
-  target_link_options(
-      hawen_lib
-      PUBLIC $<$<BOOL:${HAWEN_USE_CUDA}>:-static-nvidia;-cuda>
-  )
-  ```,
-  caption: [Handling of the CUDA library in @HAWEN:short's build system.]
-    + context {
-      if state("image-outline").get() { linebreak(justify: true) }
-    },
-) <cmake-cuf>
-
-#figure(
-  placement: top,
-  ```f90
-  ...
-  #ifdef __GFORTRAN__
-    !$omp parallel do collapse(2)
-    do n = 1, size(C, 3); do f = 1, N_FACES
-  #else
-    do concurrent (n = 1:size(C, 3), f = 1:N_FACES)
-  #endif
-      do concurrent (i = 1:ndof_vol_map(n), j = 1:ndof_face_neigh_map(n, f))
-        do d = 1, DIMENSIONS
-          C(i + (d - 1) * ndof_vol_map(n), ndf_edges_elem_map(n, f) + j, n) &
-            = face_phii_xij(f, i, j) * normal(d, f, n) * pml_coeff(d, n)
-        end do
-
-        C(DIMENSIONS * ndof_vol_map(n) + i, ndf_edges_elem_map(n, f) + j, n) &
-          = -penalization(n) * face_phii_xij(f, i, j)
-      end do
-    end do
-  #ifdef __GFORTRAN__
-    end do
-    !$omp end parallel do
-  #endif
-  ...
-  ```,
-  caption: [Fragment of the build step for matrix $CC$, in this case we can see that the values don't depend on the cells directly and can be constructed in one shot outside the loop over all cells. We see that, by taking advantage of the preprocessor, we can have both a version parallelized on OpenMP threads and one that can be compiled to a CUDA kernel: the `do concurrent` construct is first translated to OpenACC directives and then translated to an attribute `global` function.]
-    + context {
-      if state("image-outline").get() { linebreak(justify: true) }
-    },
-) <building-c>
-
-The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with @MPI and OpenMP. The mesh is first divided in sub-meshes for each @MPI process and then each thread is assigned a cell. In particular, this last loop is the one we see in @forward-problem. This characteristic might suggest that a solution could be to directly rewrite it as a @GPU kernel. While we cannot exclude that this intuition might end up being the best way to generate the matrix, currently as it stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but we noticed that the abundance of parameters resulted in excessive branching. Combined with the high amount of data movement, this results in abysmal performance.
-
-A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the local matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of time the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing with OpenMP threads on @CPU so this change should penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values do not need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation of the model parameters, but the changes had to be applied to other 5 possible representations as well.
-
-Some of the miscellaneous changes required for writing code that could be compiled to @PTX instructions include, but are not limited to:
-
-- Changing the logic behind error handling, considering that device kernels cannot exit a program or call @MPI routines for termination (`MPI_Abort`/`MPI_Finalize`).
-
-- Use preprocessor directives to conditionally compile code with or without a @GPU target, something that can be seen in @host-device-array.
-
-- Utilize `device` and `managed` attributes when appropriate to ensure correct behavior. The example in @host-device-array is not only necessary to create device arrays-of-arrays (a pattern that is very common in the codebase), but also for traditional host allocated arrays that we want to use on @GPU. Here, the NVIDIA compiler by default treats all variables as `managed` by default (though it can be changed, for example in platforms where unified memory is available). Managed memory is tracked automatically and moved from host to device on demand, depending on its usage in the code. For `allocatable` fields, like the ones we see in the example, this attribute is not propagated and we need to explicitly treat them as `device` arrays, meaning data explicitly allocated on the @GPU global memory.
-
-- From the previous point follows that when such data structures are used throughout the codebase, we should ensure that we do not end up with too much data movement. When possible, these values should always be computed on @GPU and particular care has to be given to cases where @MPI operations are performed on the data (such as `MPI_Reduce`). In this case, fortunately the NVHPC Toolkit already bundles a CUDA-aware version of OpenMPI, but we need to treat also the accumulators as `device` arrays. Reducing data movement does not only imply a reduction of the number of data transfers but also on the size of them. Reducing the size of types to take advantage of better memory alignment and storing as little information as possible (for example avoiding storing the dimensions of a tensor when it can be inferred from the n-dimensional array's shape) have surprisingly large effects on the program. These principles are part of what is known as "Data Oriented Design", which are very well presented in the book of #cite(<x-DOD>, form: "prose").
-
-- Recognizing and declaring as such `pure` routines. When writing CUDA kernels only `pure` routines can be compiled to `device` routines and therefore executed inside a kernel. Most non-trivial kernels require additional functions to be called. An example of that can be seen in @elemental-poly.
-
-- As an extension to @precision-kinds, we also need to extend the working precision to cover more cases, previously a lot of variables where declared explicitly as double precision, changing it to a working precision, like we see in @elemental-poly, gives us greater control over the code.
-
-- Handling normal Fortran code differently from code that contains CUDA Fortran (`cuf`) directives. A simple way is by using the `.cuf` extension, but that is not sufficient, one also needs to add the `-cuda` flag (and in our case `-stdpar` flag to offload `do concurrent` constructs) to the sources and add the same options to the linker. This can be seen in @cmake-cuf.
-
-- The work presented in @replacing-mumps due to NVFortran having issues compiling the @MUMPS codebase. As a reminder, Fortran modules are not cross-compatible across compilers so offloading the @HAWEN code with NVFortran meant compiling also the @MUMPS code with it. Currently this leads to a failure at runtime and in particular an OpenMP bug that was reported in the @LLVM project repository as issue #link("https://github.com/llvm/llvm-project/issues/148884")[\#148884] @x-148884.
-
-The @GPU code will look like the one picture in @building-c. This part required the most changes and is therefore not yet production ready. Although some of the routines are already tested with representative test-cases, a benchmark with syntectic data was prepared on the routine responsible for building the quadrature integral values for the sub-matrices.
-
-==== Treatment of the Stiffness Matrix for Elastic Wave Propagation <stiffness-matrix>
+#heading(level: 3, context if state(
+  "in-outline",
+).get() [Stiffness Matrix for Elastic Wave Propagation] else [Treatment of the Stiffness Matrix for Elastic Wave Propagation ]) <stiffness-matrix>
 
 In the context of elastic wave propagation, the software uses a formulation based on the compliance tensor $S$ represented by a matrix under Voigt notation, a method used to represent a symmetric tensor by reducing its order @x-Voigt. As is detailed by #cite(<x-HDGStabilize>, form: "prose"), the compliance tensor is represented in such a way that $S = V^(-1) C^(-1) V^(-1)$, where $C$ is the elastic stiffness tensor in Voigt notation and $V$ is the transformation matrix used to reformulate the system in Voigt notation. The dimension of $S$ depends on the dimension of the domain, in 2D, it can be represented in a $3 times 3$ matrix in Voigt notation, while in 3D, it can be represented as a $6 times 6$ matrix.
 
@@ -559,6 +415,7 @@ By simply reordering the loops and the matrices, a measurable performance improv
 #[
   #show figure: set block(breakable: true)
   #figure(
+    placement: top,
     kind: raw,
     grid(
       columns: 1,
@@ -569,7 +426,6 @@ By simply reordering the loops and the matrices, a measurable performance improv
 
         do l = 1, ctx_dg%n_different_order
           n_dof_l = ctx_dg%n_dof_per_order(l)
-
           face_phi_xi(k,l)%array = 0.d0
           face_phi_xi_nCntau(k,l)%array = 0.d0
 
@@ -577,12 +433,10 @@ By simply reordering the loops and the matrices, a measurable performance improv
             do j=1, n_dof_l
               intface_Re = 0.d0
               intface_Cx = 0.d0
-
               do iquad=1,ctx_dg%quadGL_face_npts
                 do iface=1,ctx_mesh%n_neigh_per_cell ! three triangle faces
                   intface_Re(iface) = intface_Re(iface) &
                     + ctx_dg%quadGL_face_phi_phi_w(k,l)%array(i,j,iquad,iface)
-
                   do kdim=1,ctx_mesh%dim_domain ! working in 2D
                     do jdim=1,ctx_mesh%dim_domain
                       intface_Cx(iface,kdim,jdim) = intface_Cx(iface,kdim,jdim) &
@@ -636,9 +490,158 @@ By simply reordering the loops and the matrices, a measurable performance improv
     ),
     caption: [Reordering loops to improve cache locality and replacing sums and vector products with Fortran intrinsics. Highlighted in the bottom fragment of code are the two single most expensive operations in the program with, in particular, the `dot_product` accounting for more than 70% of the total program runtime.]
       + context {
-        if state("image-outline").get() { linebreak(justify: true) }
+        if not state("in-outline").get() { linebreak(justify: true) }
       },
   ) <reorder-loops>
 ]
 
 In the refactored code, the highlighted lines, for the 2D elastic variable degrees of freedom (`I01`) case, account together for *73.22%* of the total program runtime. We can notice now that the first, `face_phi_xi`, matrix of matrices does not depend on the cell and can, therefore, be computed only once. Similar reasoning can be applied to some of the volume integrals. The final result is a code where the second operation on `face_phi_xi_nCntau` is now the single most expensive operation, accounting alone for *76.49%* of the runtime.
+
+
+#heading(level: 3, context if state(
+  "in-outline",
+).get() [GPU Offloading with NVFortran] else [Compiling HAWEN with NVFortran and Taking Advantage of GPU Offloading]) <computing-quad-int>
+
+The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with @MPI and OpenMP. The mesh is first divided in sub-meshes for each @MPI process and then each thread is assigned a cell. In particular, this last loop is the one we see in @forward-problem. This characteristic might suggest that a solution could be to directly rewrite it as a @GPU kernel. While we cannot exclude that this intuition might end up being the best way to generate the matrix, currently as it stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but we noticed that the abundance of parameters resulted in excessive branching. Combined with the high amount of data movement, this results in abysmal performance.
+
+A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the local matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of time the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing with OpenMP threads on @CPU so this change should penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values do not need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation of the model parameters, but the changes had to be applied to other 5 possible representations as well.
+
+Some of the miscellaneous changes required for writing code that could be compiled to @PTX instructions include, but are not limited to:
+
+- Changing the logic behind error handling, considering that device kernels cannot exit a program or call @MPI routines for termination (`MPI_Abort`/`MPI_Finalize`).
+
+- Use preprocessor directives to conditionally compile code with or without a @GPU target, something that can be seen in @host-device-array.
+
+#figure(
+  // placement: top,
+  ```f90
+  type, public :: t_array5d_complex_kindmat_h_d
+  #ifdef _CUDA
+      complex(RKIND_MAT), device, allocatable :: array(:,:,:,:,:)
+  #else
+      complex(RKIND_MAT), allocatable :: array(:,:,:,:,:)
+  #endif
+  end type t_array5d_complex_kindmat_h_d
+  ```,
+  caption: [Example of the wrapper around a 5D array of complex type of precision `RKIND_MAT` which, when compiled with NVFortran (which introduces the `_CUDA` definition), initializes the inner array as a _device_ allocated one.]
+    + context {
+      if not state("in-outline").get() { linebreak(justify: true) }
+    },
+) <host-device-array>
+
+- Utilize `device` and `managed` attributes when appropriate to ensure correct behavior. The example in @host-device-array is not only necessary to create device arrays-of-arrays (a pattern that is very common in the codebase), but also for traditional host allocated arrays that we want to use on @GPU. Here, the NVIDIA compiler by default treats all variables as `managed` by default (though it can be changed, for example in platforms where unified memory is available). Managed memory is tracked automatically and moved from host to device on demand, depending on its usage in the code. For `allocatable` fields, like the ones we see in the example, this attribute is not propagated and we need to explicitly treat them as `device` arrays, meaning data explicitly allocated on the @GPU global memory.
+
+- From the previous point follows that when such data structures are used throughout the codebase, we should ensure that we do not end up with too much data movement. When possible, these values should always be computed on @GPU and particular care has to be given to cases where @MPI operations are performed on the data (such as `MPI_Reduce`). In this case, fortunately the NVHPC Toolkit already bundles a CUDA-aware version of OpenMPI, but we need to treat also the accumulators as `device` arrays. Reducing data movement does not only imply a reduction of the number of data transfers but also on the size of them. Reducing the size of types to take advantage of better memory alignment and storing as little information as possible (for example avoiding storing the dimensions of a tensor when it can be inferred from the n-dimensional array's shape) have surprisingly large effects on the program. These principles are part of what is known as "Data Oriented Design", which are very well presented in the book of #cite(<x-DOD>, form: "prose").
+
+- Recognizing and declaring as such `pure` routines. When writing CUDA kernels only `pure` routines can be compiled to `device` routines and therefore executed inside a kernel. Most non-trivial kernels require additional functions to be called. An example of that can be seen in @elemental-poly.
+
+
+#figure(
+  ```f90
+  type t_polynomial
+    integer :: dim_domain
+    integer :: degree
+  #ifdef _CUDA
+    real(RKIND_POL), managed, allocatable :: coeff_pol(:)
+  #else
+    real(RKIND_POL), allocatable :: coeff_pol(:)
+  #endif
+  end type t_polynomial
+
+  pure elemental subroutine polynomial_eval_3d(p, x0, y0, z0, val)
+    !$acc routine
+    implicit none
+
+    type(t_polynomial), intent(in) :: p
+    real(RKIND_POL), intent(in) :: x0, y0, z0
+    real(RKIND_POL), intent(out) :: val
+
+    integer :: I, K, L
+
+    val = 0._RKIND_POL
+
+    do I = 1, p%degree + 1
+      do K = 1, I
+        do L = 1, K
+          val = val & ! we consider the ind1 element of F1
+              + p%coeff_pol((I + 1) * I * (I - 1) / 6 + K * (K - 1) / 2 + L) &
+              * x0**(I - K) &
+              * y0**(K - L) &
+              * z0**(L - 1)
+        end do
+      end do
+    end do
+  end subroutine polynomial_eval_3d
+  ```,
+  caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over a collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.]
+    + context {
+      if not state("in-outline").get() { linebreak(justify: true) }
+    },
+) <elemental-poly>
+
+- As an extension to @precision-kinds, we also need to extend the working precision to cover more cases, previously a lot of variables where declared explicitly as double precision, changing it to a working precision, like we see in @elemental-poly, gives us greater control over the code.
+
+- Handling normal Fortran code differently from code that contains CUDA Fortran (`cuf`) directives. A simple way is by using the `.cuf` extension, but that is not sufficient, one also needs to add the `-cuda` flag (and in our case `-stdpar` flag to offload `do concurrent` constructs) to the sources and add the same options to the linker. This can be seen in @cmake-cuf.
+
+#figure(
+  ```cmake
+  if(HAWEN_USE_CUDA AND CMAKE_Fortran_COMPILER_ID STREQUAL "NVHPC")
+      set(CUF_SOURCES)
+      foreach(source ${HAWEN_PROJECT_SOURCES})
+          if(source MATCHES "\\.cuf$")
+              list(APPEND CUF_SOURCES ${source})
+          endif()
+      endforeach()
+      if(CUF_SOURCES)
+          set_source_files_properties(${CUF_SOURCES}
+              PROPERTIES
+              COMPILE_OPTIONS "-cuda;-stdpar=gpu"
+          )
+      endif()
+  endif()
+  target_link_options(
+      hawen_lib
+      PUBLIC $<$<BOOL:${HAWEN_USE_CUDA}>:-static-nvidia;-cuda>
+  )
+  ```,
+  caption: [Handling of the CUDA library in @HAWEN:short's build system.]
+    + context {
+      if not state("in-outline").get() { linebreak(justify: true) }
+    },
+) <cmake-cuf>
+
+- The work presented in @replacing-mumps due to NVFortran having issues compiling the @MUMPS codebase. As a reminder, Fortran modules are not cross-compatible across compilers so offloading the @HAWEN code with NVFortran meant compiling also the @MUMPS code with it. Currently this leads to a failure at runtime and in particular an OpenMP bug that was reported in the @LLVM project repository as issue #link("https://github.com/llvm/llvm-project/issues/148884")[\#148884] @x-148884.
+
+The @GPU code will look like the one picture in @building-c. This part required the most changes and is therefore not yet production ready. Although some of the routines are already tested with representative test-cases, a benchmark with syntectic data was prepared on the routine responsible for building the quadrature integral values for the sub-matrices.
+
+#figure(
+  placement: top,
+  ```f90
+  ...
+  #ifdef __GFORTRAN__
+    !$omp parallel do collapse(2)
+    do n = 1, size(C, 3); do f = 1, N_FACES
+  #else
+    do concurrent (n = 1:size(C, 3), f = 1:N_FACES)
+  #endif
+      do concurrent (i = 1:ndof_vol_map(n), j = 1:ndof_face_neigh_map(n, f))
+        do d = 1, DIMENSIONS
+          C(i + (d - 1) * ndof_vol_map(n), ndf_edges_elem_map(n, f) + j, n) &
+            = face_phii_xij(f, i, j) * normal(d, f, n) * pml_coeff(d, n)
+        end do
+
+        C(DIMENSIONS * ndof_vol_map(n) + i, ndf_edges_elem_map(n, f) + j, n) &
+          = -penalization(n) * face_phii_xij(f, i, j)
+      end do
+    end do
+  #ifdef __GFORTRAN__
+    end do
+    !$omp end parallel do
+  #endif
+  ...
+  ```,
+  caption: [Fragment of the build step for matrix $CC$, in this case we can see that the values don't depend on the cells directly and can be constructed in one shot outside the loop over all cells. We see that, by taking advantage of the preprocessor, we can have both a version parallelized on OpenMP threads and one that can be compiled to a CUDA kernel: the `do concurrent` construct is first translated to OpenACC directives and then translated to an attribute `global` function.]
+    + context {
+      if not state("in-outline").get() { linebreak(justify: true) }
+    },
+) <building-c>
