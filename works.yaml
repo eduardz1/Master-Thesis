@@ -4,6 +4,53 @@ HAWENRepo:
   author: ["Florian Faucher"]
   url: https://gitlab.com/ffaucher/hawen
 
+FlangIssueRuntime:
+  type: Web
+  url: https://github.com/llvm/llvm-project/issues/138340
+  serial-number: "#138340"
+  date: 2025-05-02
+  author: ["adegomme"]
+  title: "[flang] [packaging] cannot find -lflang_rt.runtime with newly packaged flang 21"
+
+IntelbenefitsGPU:
+  type: Article
+  url: https://www.intel.com/content/www/us/en/developer/articles/technical/comparing-cpus-gpus-and-fpgas-for-oneapi.html
+  title: "Compare Benefits of CPUs, GPUs, and FPGAs for Different oneAPI Compute Workloads"
+  date: 2022-09-11
+  serial-number: 757681
+  parent:
+    - type: Web
+
+EfficientLLMs:
+  type: Article
+  title: "Efficient Large Language Models: A Survey"
+  author: ["Zhongwei Wan", "Xin Wang", "Che Liu", "Samiul Alam", "Yu Zheng", "Jiachen Liu", "Zhongnan Qu", "Shen Yan", "Yi Zhu", "Quanlu Zhang", "Mosharaf Chowdhury", "Mi Zhang"]
+  date: 2024
+  url: https://arxiv.org/abs/2312.03863
+  serial-number:
+    doi: 10.48550/arXiv.2312.03863
+
+
+CompilerSupportModernFortran:
+  type: Web
+  title: "Compiler Support for Modern Fortran"
+  url: https://fortranwiki.org/fortran/show/Compiler+Support+for+Modern+Fortran
+
+CompilerSupportCPP:
+  type: Web
+  title: "C++ compiler support"
+  url: https://cppreference.net/cpp/compiler_support.html
+
+IntelFreeForm:
+  type: Web
+  title: "Free Source Form"
+  url: https://www.intel.com/content/www/us/en/docs/fortran-compiler/developer-guide-reference/2025-1/free-source-form.html
+  
+IntelFixForm:
+  type: Web
+  title: "Fixed and Tab Source Forms"
+  url: https://www.intel.com/content/www/us/en/docs/fortran-compiler/developer-guide-reference/2025-1/fixed-and-tab-source-forms.html
+
 CMakeIssueFortranStd:
   type: Web
   author: ["wolfman21"]

@@ -224,3 +224,8 @@ GCC:
   short: GCC
   long: GNU Compiler Collection
   desription: An open-source suite of compilers for multiple programming languages, originally developed for C.
+
+IO:
+  short: I/O
+  long: Input/Output
+  description: The communication of data between a computer and external devices or systems.

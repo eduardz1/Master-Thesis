@@ -20,11 +20,11 @@
             {
               Assign(
                 [$- angle.l i omega rho phi_i | phi_j angle.r_K_e$],
-                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) rho_(K_e q)$],
+                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) rho(bold(x)_q)$],
               )
               Assign(
                 [$- angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$],
-                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) kappa^(-1)_(K_e q)$],
+                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) kappa(bold(x)_q)^(-1)$],
               )
             },
           )

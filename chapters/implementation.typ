@@ -51,7 +51,7 @@ The Fortran standard, unfortunately, introduced enumerator types only very recen
 
 == Exploring Alternative Sparse Solvers <replacing-mumps>
 
-A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by adding the choice to use the @GPU native cuDSS library (see @cudss-section) instead of the @MUMPS sparse solver (see @mumps-section). The implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in C++, a Fortran wrapper was written around it to allow interfacing the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations, as we see in @extern-c.
+A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by adding the choice to use the @GPU native cuDSS library (see @cudss-section) instead of the @MUMPS sparse solver (see @mumps-section). The implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in #box(block(breakable: false)[C++]), a Fortran wrapper was written around it to allow interfacing the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations, as we see in @extern-c.
 
 #[
   #show figure: set block(breakable: true)
