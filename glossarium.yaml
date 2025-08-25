@@ -65,6 +65,8 @@ LLM:
 DOF:
   short: DOF
   long: Degrees of Freedom
+  plural: Degrees of Freedom
+  longplural: Degrees of Freedom
   description: Independent parameters that define the possible motions or states of a system.
 
 GUI:

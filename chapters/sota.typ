@@ -47,7 +47,7 @@ In the inverse problem, waves are measured at the receiver and are used to chara
     },
 ) <hawen-scheme>
 
-@HAWEN is designed specifically with large scale problems in mind and it is currently deployed on supercomputers. It leverages a combination of @MPI and OpenMP to achieve a high level of parallelism on @CPU:short. An example of the problems the software is designed for can be seen in @earth-hawen @x-HAWENWebsite, where the @PREM:both @x-PREM model of our planet is used to simulate the propagation of elastic waves through the Earth.
+@HAWEN is designed specifically with large scale problems in mind and it is currently deployed on supercomputers. It leverages a combination of @MPI:short and OpenMP to achieve a high level of parallelism on @CPU:short. An example of the problems the software is designed for can be seen in @earth-hawen @x-HAWENWebsite, where the @PREM:both @x-PREM model of our planet is used to simulate the propagation of elastic waves through the Earth.
 
 A specificity of @HAWEN is the usage of the @HDG method @x-HDG for the discretization of the wave equation, which will be covered in more details in @hdg-section. More generally, we know that we can identify three computationally intensive steps in the @HAWEN pipeline:
 
@@ -76,13 +76,13 @@ Some specific configurations also highlight other inefficiencies in the code. Fo
   #set text(hyphenate: false)
   Hybridizable Discontinuous Galerkin Methods Applied to the Acoustic Wave Problem])  <hdg-section>
 
-The software relies on the @HDG method for the discretization of the wave equation in the frequency domain. Let us consider the acoustic wave equation, given by the pressure field $p$, solution to:
+The software relies on the @HDG method for the discretization of the wave equation in the frequency domain. Let us consider the acoustic wave equation, given by the scalar pressure field $p$, solution to:
 
 $
   - nabla dot 1/(rho(bold(x))) nabla p(bold(x)) - omega^2 / kappa(bold(x)) p(bold(x)) = g(bold(x)) .
 $ <acoustic-wave-equation>
 
-Here the medium is characterized by the density $rho$ and the bulk modulus $kappa$ while $g$ represents the source. The angular frequency is represented with $omega$ and corresponds to $2 pi f$, where $f$ corresponds to the frequency. The symbol $p$ is used to represent the scalar pressure field.
+Here the medium is characterized by the density $rho$ and the bulk modulus $kappa$ while $g$ represents the source. The angular frequency is represented with $omega$ and corresponds to $2 pi f$, where $f$ is the frequency. //The symbol $p$ is used to represent the scalar pressure field.
 
 To solve numerically the wave propagation problem, one needs to discretize the equation. Several methods exist for solving such @PDE:pl, common ways include:
 
@@ -90,11 +90,11 @@ To solve numerically the wave propagation problem, one needs to discretize the e
 
 / Galerkin Methods: instead of approximating derivatives directly, these methods approximate the solution itself by expressing it as a combination of basis functions and solving the variational formulation of the problem.
 
-Once the domain is discretized into cells #footnote[In the case of @HAWEN, the domain is discretized into cells which are simplexes.], one approach to solve the @PDE using Galerkin methods would be the @FEM:long. As can be seen in @fem-dg-hdg, this method results in a mesh where each triangle's solution are coupled with the neighboring triangle, limiting the potential for concurrent computations.
+Once the domain is discretized into cells #footnote[In the case of @HAWEN, the domain is discretized into cells which are simplexes.], one approach to solve the @PDE using Galerkin methods would be the @FEM. As can be seen in @fem-dg-hdg, this method results in a mesh where each triangle's solution are coupled with the neighboring triangle, limiting the potential for concurrent computations.
 
-A first approach to tackle this problem is the usage of @DG:long methods, a class of @FEM:pl using completely discontinuous basis functions which results in embarrassingly high parallel efficiency @x-DiscontinousGalerkin. This characteristic makes it a good target for @GPU acceleration, #cite(<x-GPUDG>, form: "prose") explore this with good success and high occupancy. @DG also enables $frak(p)$-adaptivity, meaning that each cell in a mesh can have a different order, a characteristic that is particularly useful when dealing with complex media. The high computational cost associated with @DG due to the higher @DOF count, however, makes it very expensive, compared to traditional methods. To address this issue, the @HDG:long (@HDG:short) method is introduced.
+A first approach to tackle this problem is the usage of @DG methods, a class of @FEM:pl using completely discontinuous basis functions which results in embarrassingly high parallel efficiency @x-DiscontinousGalerkin. This characteristic makes it a good target for @GPU acceleration, #cite(<x-GPUDG>, form: "prose") explore this with good success and high occupancy. @DG also enables $frak(p)$-adaptivity, meaning that each cell in a mesh can have a different order, a characteristic that is particularly useful when dealing with complex media. The high computational cost associated with @DG due to the higher @DOF count, however, makes it very expensive, compared to traditional methods. To address this issue, the @HDG:both method is introduced.
 
-Compared to traditional @DG methods, @HDG reduces significantly the number of global @DOF, which can allow for a substantial reduction in the computational cost and memory usage @x-HDG. We see in @fem-dg-hdg, how @HDG introduces additional #lower[@DOF:long] at the border of each cell. By ignoring the inner #lower[@DOF:long] in the global linear system, this method results in a smaller global matrix when using high order basis functions.
+Compared to traditional @DG methods, @HDG reduces significantly the number of globally coupled #lower[@DOF:long:pl], which can allow for a substantial reduction in the computational cost and memory usage @x-HDG. We see in @fem-dg-hdg, how @HDG introduces additional #lower[@DOF:long:pl] at the border of each cell. By ignoring the inner #lower[@DOF:long] in the global linear system, this method results in a smaller global matrix when using high order basis functions.
 
 More specifically, following the derivation of #cite(<x-AdjointHDG>, form: "prose", supplement: [p.~5]), the domain is discretized in the @HDG formulation over the medium $Omega$ using a non overlapping partition. This mesh is denoted $cal(T)$ and is composed of $N$ cells $K_e$ such that
 
@@ -151,7 +151,7 @@ $
   lambda | cal(f) = sum_(k = 1)^(hat(N)_"dof"^((cal(f)))) lambda_(k)^(cal(f)) xi_k(bold(x)), forall cal(f) in Sigma,
 $
 
-to represent the unknowns for the faces (red points in @fem-dg-hdg). Here $hat(N)_"dof"^((cal(f)))$ refers to the number of degrees of freedom for the face $cal(f)$. In both cases, the number of degrees of freedom depends on the order of the polynomial. Following #cite(<x-AdjointHDG>, form: "prose", supplement: [p.~8-9]), the @HDG system is defined on each cell as
+to represent the unknowns for the faces (red points in @fem-dg-hdg). Here $hat(N)_"dof"^((cal(f)))$ refers to the number of #lower[@DOF:long] for the face $cal(f)$. In both cases, the number of #lower[@DOF:long] depends on the order of the polynomial. Following #cite(<x-AdjointHDG>, form: "prose", supplement: [p.~8-9]), the @HDG system is defined on each cell as
 
 $
   cases(
@@ -160,7 +160,7 @@ $
   ).
 $
 
-In this system our unknowns are grouped inside the tensors $U_e$ and $Lambda$. The other tensors are derived from the discretization of the firs-order formulation. In particular, for the 2D acoustic case, the tensors $AA_e$, $CC_e$ and the unknowns have the following structure:
+In this system our unknowns are grouped inside the tensors $U_e$ and $Lambda$. The other tensors are derived from the discretization of the first-order formulation. In particular, for the 2D acoustic case, the tensors $AA_e$, $CC_e$ and the unknowns $U_e$ and $Lambda$ have the following structure:
 
 $
   AA_e & = mat(
@@ -202,7 +202,7 @@ $
   cal(A) Lambda &= cal(B).
 $
 
-Here we see the benefit of @HDG: by rewriting the system in a way that depends only on the degrees of freedom of the faces ($Lambda$), we can significantly reduce the size of the unknowns in the sparse system that is fed to the sparse solver, a topic that we discussed in @sparse-solvers. A summary of the algorithm can be seen in @forward-problem. The final system results in a very sparse matrix, solving this system efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel to solve the system iteratively.
+Here we see the benefit of @HDG: by rewriting the system in a way that depends only on the degrees of freedom of the faces ($Lambda$), we can significantly reduce the size of the unknowns in the sparse system that is fed to the sparse solver, a topic that we discussed in @sparse-solvers. A summary of the algorithm can be seen in @forward-problem. The final system results in a very sparse matrix, solving it efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel to solve the system iteratively.
 
 #block(breakable: false, forward-acoustic-problem-alg())
 

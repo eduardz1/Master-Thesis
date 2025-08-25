@@ -7,11 +7,14 @@
 #import "../resources/graphs/anotinv_loop_order.typ": anotinv_diagrams
 #import "@preview/algorithmic:1.0.3"
 #import algorithmic: algorithm-figure
+#import "../resources/algorithms/build_volume_integrals.typ": build-volume-integrals
 #import "../resources/tables/clusters.typ": clusters
 #import "../resources/tables/cache_branch_misses.typ": (
   cache-branch-misses-table-figure,
 )
 #import "../resources/tables/speedup_cudss.typ": speedup-cudss-table
+#import "../resources/tables/speedup_nvhpc.typ": *
+#import "../resources/tables/synthetic_data.typ": synthetic-data-table
 
 #set-round(mode: "uncertainty")
 
@@ -34,94 +37,19 @@ For the experiments that only compare different @CPU only implementation, the co
 As previously mentioned in @computing-quad-int, the @GPU code to accelerate the routines that build the matrices necessary for the @HDG linear system are not yet ready for production so evaluation was done using synthetic data. In particular we will analyze the routine responsible for building the values of matrix $AA_e$, here we found that computing $-angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$, $-angle.l i omega rho phi_i | phi_j angle.r_K_e$, and $angle.l partial_(bold(x)) phi_i | phi_j angle.r_K_e$  are especially expensive. The summary of the algorithm in pseudocode is presented in @hdg-build-quadrature-pseudo (note that the Fortran code includes more steps) where we use the quadrature rules (see @gauss-leg) to compute the inner products. Here we see how the loop over all cells $cal(T)$ we saw in @forward-problem is moved inside what we called the #smallcaps[BuildTensors] routine. Here we can see that, by isolating three explicit reductions, denoted by the symbol $plus.circle$, we can map them to an optimized parallel CUDA reduction automatically with NVIDIA's compiler. Furthermore, localizing the loop over all cells enables us to offload this entire computation to a CUDA kernel efficiently. A summary of the configuration used can be seen in @config-bench, the size of the arrays used in this configuration are similar in magnitude to the ones we find in real use cases with the values generated randomly.
 
 #figure(
-  table(
-    columns: 7,
-    align: (left, ..(right,) * 6),
-    table.header(
-      [Model Representation],
-      [$N_e$],
-      [$N_q$],
-      [$N_"dof"$],
-      [$N_(q tau)$],
-      [$N_o$],
-    ),
-    [Piecewise constant], [50000], [300], [150], [100], [6],
-    table.hline(y: 2, start: 0, end: 7, stroke: 1pt),
-  ),
+  synthetic-data-table(),
   caption: [Configuration for the `hdg_build_quadrature` routine. Here "Model Representation" is the representation that we use for the model (in our previous examples we used piecewise polynomials), $N_e$ is the number of cells, $N_q$ is the number of quadrature points used to approximate the integrals, $N_"dof"$ is the number of degrees of freedom in a cell (note that this does not necessarily correspond to a real number obtained from the Lagrange polynomials), $N_(q tau)$ is the number of quadrature points to approximate the face integrals, and $N_o$ represents the number of different orders ($frak(p)$-adaptivity).]
     + context {
       if not state("in-outline").get() { linebreak(justify: true) }
     },
 ) <config-bench>
 
-#block(breakable: false)[
-  #algorithm-figure(
-    [Build Values for $AA_e$],
-    vstroke: .5pt + luma(200),
-    inset: .5em,
-    {
-      import algorithmic: *
-      Procedure(
-        "BuildVolumeIntegrals",
-        ($cal(T)$, $omega$, $rho$, $kappa$, $phi$, $w$, $w'$),
-        {
-          Comment[The arrays $w$ and $w'$ represent the weights of the quadrature approximations for the integrals computed in the first and second loop]
-          Comment[The symbol $plus.circle$ indicates a parallel reduction]
-          Comment[Being the loop over cells more localized, it can be offloaded on device, we take advantage of CUDA's _dynamic parallelism_ to launch nested kernels]
-          For([$K_e in cal(T)$ *in parallel*], {
-            For(
-              [$j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$ *in parallel*],
-              {
-                Assign(
-                  [$- angle.l i omega rho phi_i | phi_j angle.r_K_e$],
-                  [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) rho_(K_e q)$],
-                )
-                Assign(
-                  [$- angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$],
-                  [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) kappa^(-1)_(K_e q)$],
-                )
-              },
-            )
-            // LineBreak
-            // Comment[In 3D $bold(x) = {x, y, z}$]
-            For(
-              [$d in bold(x), j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$ *in parallel*],
-              Assign(
-                [$angle.l partial_d phi_i | phi_j angle.r_K_e$],
-                [$plus.circle.big_(q = 1)^N_q w'_q partial_d phi(bold(x)_q)_i phi(bold(x)_q)_j$],
-              ),
-            )
-          })
-        },
-      )
-    },
-  ) <hdg-build-quadrature-pseudo>]
-
-#let cpu_64 = 68.575575138999994
-#let cpu_32 = 42.075588857299998
-#let gpu_64 = 11.11494379790000
-#let gpu_32 = 2.521715399800000
+#block(breakable: false, [#build-volume-integrals() <hdg-build-quadrature-pseudo>])
 
 The numbers are computed on an average of 10 runs for each configuration and a summary of the speedup compared to the baseline can be seen in @speedup-nvhpc. The result is a #{ num(cpu_64 / gpu_64, digits: 2) }#sym.times speedup in runtime compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{ num(100 - (cpu_32 * 100) / cpu_64, digits: 2) }% and by #{ num(100 - (gpu_32 * 100) / gpu_64, digits: 2) }% for the @GPU FP32 version. The A100 @GPU that we are using for our benchmark has 9.7 T@FLOP:pl of peak FP64 performance and 19.5 T@FLOP:pl of FP32 yet we do not only see a #{ num(19.5 / 9.7, digits: 0) }#sym.times improvement but a #{ num(gpu_64 / gpu_32, digits: 1) }#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggest that approaches similar to the ones used @it-alg could be used in @HAWEN.
 
 #figure(
-  table(
-    align: (left, ..(right,) * 4),
-    columns: 5,
-    table.header(
-      [],
-      [CPU#sub[FP64] (Baseline)],
-      [CPU#sub[FP32]],
-      [GPU#sub[FP64]],
-      [GPU#sub[FP64]],
-    ),
-    [#smallcaps[*Speedup*]],
-    [#num(cpu_64 / cpu_64)#sym.times (#num(cpu_64, digits: 2) seconds)],
-    [#num(cpu_64 / cpu_32, digits: 2)#sym.times],
-    [#num(cpu_64 / gpu_64, digits: 2)#sym.times],
-    [#num(cpu_64 / gpu_32, digits: 2)#sym.times],
-    table.hline(y: 2, start: 0, end: 5, stroke: 1pt),
-  ),
+  speedup-nvhpc-table(),
   caption: [Speedup of creation of volume integrals for the @HDG:short matrices on the Suroit cluster. Higher is better.
   ]
     + context {

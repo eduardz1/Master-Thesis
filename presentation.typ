@@ -5,6 +5,9 @@
 #import "@preview/codly-languages:0.1.8": *
 #import "@preview/numbly:0.1.0": numbly
 #import "@preview/lilaq:0.4.0" as lq
+#import "resources/algorithms/build_volume_integrals.typ": (
+  build-volume-integrals,
+)
 #import "@preview/zero:0.4.0": set-round, zi
 #import "resources/tables/clusters.typ": clusters
 #import "resources/graphs/mpi_v_openmp.typ": distributed-memory, shared-memory
@@ -23,6 +26,8 @@
   forward-acoustic-problem-alg,
 )
 #import "resources/utils.typ": mHz
+#import "resources/tables/synthetic_data.typ": *
+#import "resources/tables/speedup_nvhpc.typ": *
 #import "@preview/algorithmic:1.0.3": style-algorithm
 
 #let primary = rgb("#0c4842")
@@ -716,7 +721,48 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
   Explore using the *NVHPC Toolkit* which provides #pause
   - Fortran, C, and C++ compilers #pause
   - General CUDA and math libraries #pause
-  - CUDA-aware OpenMPI @OpenMPI #pause
+  - CUDA-aware OpenMPI #only("4")[@OpenMPI] #pause
+
+  Special care is required #pause
+  - Files with CUDA code (`.cuf`) have to be compiled separately #pause
+  - Always specify *working precision* #pause
+  - *Conditional compilation* for CPU and GPU code #pause
+  - *Reduce data movement*, correctly use *`managed`* and *`device`* attributes
+  - Offloaded routines have to be *`pure`*
+]
+
+#slide[
+  === Challenges
+
+  Uncovered 3 compiler bugs in NVFortran + 1 in LLVM: #pause
+  - \#TPR37335 @TPR37335 #sym.arrow.l *deadlock* in compiler #pause
+  - \#TPR37469 @TPR37469 #sym.arrow.l *memory leak* in compiler-generated kernels #pause
+  - \#TPR37570 @TPR37570 #sym.arrow.l incorrect propagation of `managed` attribute in OpenMP private variables #pause
+  - \#148884 @148884 #sym.arrow.l runtime failure of OpenMP code in MUMPS
+]
+
+#slide[
+  === Localizing Loops
+
+  #set text(.52em)
+  #build-volume-integrals()
+]
+
+#slide[
+  === Evaluation
+
+  Tested the acoustic case on Suroit #sym.arrow.l *A100 40GB* (*9.7* TFLOPs FP64, *19.5* TFLOPs FP32)
+
+  #set table(inset: .5em)
+  #figure(
+    synthetic-data-table(presentation: true),
+    caption: [Synthetic data similar to real benchmarks],
+  )
+
+  #figure(
+    speedup-nvhpc-table(presentation: true),
+    caption: [Speedup for different configurations],
+  ) // Here mention that the A100 should only have double the perfomance in FP32 but clearly we have way more
 ]
 
 #heading(
@@ -763,7 +809,7 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
   - 4 sources (right-hand sides $cal(B)$ of the global linear system) #pause
   - frequency of #mHz[2] #pause
   - polynomial order 3 #pause
-  - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster
+  - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster #pause
   - 1 combination of MPI/OpenMP for cuDSS, several for MUMPS
 ]
 
@@ -783,11 +829,23 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 #slide[
   #set align(horizon)
   #figure(
-    speedup-cudss-table(presentation: true)
+    speedup-cudss-table(presentation: true),
   )
 ]
 
-= Conclusions
+#heading(
+  level: 1,
+  depth: 1,
+  context if in-outline.get() [Conclusions] else [Conclusions and Future Works],
+)
+
+#slide[
+  - Extend the work on GPU offloading  #pause
+  - Explore GCC's support for GPU offloading through OpenMP and OpenACC #pause
+  - Reduce memory usage #pause
+  - Take advantage of the a-synchronicity of GPU code #pause
+  - Explore computation in lower precisions
+]
 
 #focus-slide[
   Thank you for your attention

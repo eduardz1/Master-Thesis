@@ -220,6 +220,11 @@ PTX:
     - type: Web
       url: https://developer.nvidia.com/blog
 
+Linaro:
+  type: Web
+  title: "HPC Debugging and Profiling Suite"
+  url: https://www.linaroforge.com/
+
 CMake:
   type: Web
   title: "CMake: A Powerful Software Build System"
