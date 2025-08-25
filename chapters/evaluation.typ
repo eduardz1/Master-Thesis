@@ -209,7 +209,7 @@ As we can see in @solver-times, the total time spent in sparse solver routines f
 ) <solver-times>
 
 #figure(
-  speedup-cudss-table,
+  speedup-cudss-table(),
   caption: [Speedup of the cuDSS solver (configuration with 1 @MPI:short Process 32 OpenMP Threads) relative to different @MUMPS:short baselines, measured as the average over the sum of the sparse solver routines. Higher is better.]
     + context {
       if not state("in-outline").get() { linebreak(justify: true) }

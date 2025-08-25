@@ -12,6 +12,7 @@
 #import "resources/graphs/anotinv_loop_order.typ": anotinv_diagrams
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 #import "@preview/pinit:0.2.2": *
+#import "resources/tables/speedup_cudss.typ": speedup-cudss-table
 #import "resources/tables/cache_branch_misses.typ": (
   cache-branch-misses-table-figure,
 )
@@ -115,6 +116,8 @@
 )
 
 // #set heading(numbering: numbly("{1}.", default: "1.1"))
+
+#show footnote.entry: set text(size: .8em)
 
 #title-slide()
 
@@ -706,10 +709,54 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 #heading(
   level: 2,
   depth: 2,
+  context if in-outline.get() [NVHPC] else [Compiling HAWEN with the NVHPC Toolkit],
+)
+
+#slide[
+  Explore using the *NVHPC Toolkit* which provides #pause
+  - Fortran, C, and C++ compilers #pause
+  - General CUDA and math libraries #pause
+  - CUDA-aware OpenMPI @OpenMPI #pause
+]
+
+#heading(
+  level: 2,
+  depth: 2,
   context if in-outline.get() [cuDSS] else [Using a GPU Accelerated Sparse Solver],
 )
 
 #slide[
+  #grid(
+    columns: 2,
+    column-gutter: 1em,
+    [
+      - $cal(A) Lambda = cal(B)$ is very sparse, cannot rely on LAPACK #pause
+      - HAWEN uses a *direct* solver: *MUMPS* @MUMPS
+        - Currently cannot compile with NVFortran
+        - GPU version not yet public
+        - Relies on XKBlas @XKBlas, not configured for the NVHPC Toolkit #pause
+      - we explore a very recent GPU accelerated sparse solver by NVIDIA: *cuDSS*
+    ],
+    figure(image(height: 62%, "resources/imgs/A_spy_plot.svg")),
+  )
+]
+
+#slide[
+  === Implementation
+
+  - Interface between Fortran and C++ through C bindings #pause
+  - Communication layers built in-tree to support *multi-threading* and *MGMN* mode #pause
+  - conversion between *COO* and *CSR* formats efficiently using algorithms from SciPy @SciPy #pause
+  - Sparse to dense conversion for RHS using *cuSPARSE* #pause
+
+  === Limitations of our Implementation
+
+  - Currently faulty at high polynomial orders
+]
+
+#slide[
+  === Evaluation
+
   Benchmarked with
   - Homogeneous planar waves in a $2 times 2 times 2$ meters cube (sources in one of the corners)  #pause
   - 100 thousand cells #pause
@@ -732,6 +779,12 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 
 #slide[
   #cudss-v-mumps(width: 26cm, height: 9cm, highlighted: true)
+]
+#slide[
+  #set align(horizon)
+  #figure(
+    speedup-cudss-table(presentation: true)
+  )
 ]
 
 = Conclusions

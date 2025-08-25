@@ -504,7 +504,7 @@ In the refactored code, the highlighted lines, when looking at a 2D elastic simu
 
 The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with @MPI and OpenMP. The mesh is first divided in sub-meshes for each @MPI process and then each thread is assigned a cell. In particular, this last loop is the one we see in @forward-problem. This characteristic might suggest that a solution could be to directly rewrite it as a @GPU kernel. While we cannot exclude that this intuition might end up being the best way to generate the matrix, currently as it stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but we noticed that the abundance of parameters resulted in excessive branching. Combined with the high amount of data movement, this results in abysmal performance.
 
-A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the local matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of time the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing with OpenMP threads on @CPU so this change should penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values do not need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation of the model parameters, but the changes had to be applied to other 5 possible representations as well.
+A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the local matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of time the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing it with OpenMP threads on @CPU, so this change should not penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values do not need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation of the model parameters, but the changes had to be applied to other 5 possible representations as well.
 
 Some of the miscellaneous changes required for writing code that could be compiled to @PTX instructions include, but are not limited to:
 
@@ -535,49 +535,51 @@ Some of the miscellaneous changes required for writing code that could be compil
 
 - Recognizing and declaring as such `pure` routines. When writing CUDA kernels only `pure` routines can be compiled to `device` routines and therefore executed inside a kernel. Most non-trivial kernels require additional functions to be called. An example of that can be seen in @elemental-poly.
 
+#[
+  #show figure: set block(breakable: true)
+  #figure(
+    ```f90
+    type t_polynomial
+      integer :: dim_domain
+      integer :: degree
+    #ifdef _CUDA
+      real(RKIND_POL), managed, allocatable :: coeff_pol(:)
+    #else
+      real(RKIND_POL), allocatable :: coeff_pol(:)
+    #endif
+    end type t_polynomial
 
-#figure(
-  ```f90
-  type t_polynomial
-    integer :: dim_domain
-    integer :: degree
-  #ifdef _CUDA
-    real(RKIND_POL), managed, allocatable :: coeff_pol(:)
-  #else
-    real(RKIND_POL), allocatable :: coeff_pol(:)
-  #endif
-  end type t_polynomial
+    pure elemental subroutine polynomial_eval_3d(p, x0, y0, z0, val)
+      !$acc routine
+      implicit none
 
-  pure elemental subroutine polynomial_eval_3d(p, x0, y0, z0, val)
-    !$acc routine
-    implicit none
+      type(t_polynomial), intent(in) :: p
+      real(RKIND_POL), intent(in) :: x0, y0, z0
+      real(RKIND_POL), intent(out) :: val
 
-    type(t_polynomial), intent(in) :: p
-    real(RKIND_POL), intent(in) :: x0, y0, z0
-    real(RKIND_POL), intent(out) :: val
+      integer :: I, K, L
 
-    integer :: I, K, L
+      val = 0._RKIND_POL
 
-    val = 0._RKIND_POL
-
-    do I = 1, p%degree + 1
-      do K = 1, I
-        do L = 1, K
-          val = val & ! we consider the ind1 element of F1
-              + p%coeff_pol((I + 1) * I * (I - 1) / 6 + K * (K - 1) / 2 + L) &
-              * x0**(I - K) &
-              * y0**(K - L) &
-              * z0**(L - 1)
+      do I = 1, p%degree + 1
+        do K = 1, I
+          do L = 1, K
+            val = val & ! we consider the ind1 element of F1
+                + p%coeff_pol((I + 1) * I * (I - 1) / 6 + K * (K - 1) / 2 + L) &
+                * x0**(I - K) &
+                * y0**(K - L) &
+                * z0**(L - 1)
+          end do
         end do
       end do
-    end do
-  end subroutine polynomial_eval_3d
-  ```,
-  caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over a collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.]
-    + context {
-      if not state("in-outline").get() { linebreak(justify: true) }
-    },
-) <elemental-poly>
+    end subroutine polynomial_eval_3d
+    ```,
+    caption: [Example of functions to compute a polynomial for the 3D case, here error handling in the evaluation routine can be avoided and performed earlier in the program, giving us the opportunity to write the routines not only as `pure` but also `elemental`, meaning that it can operate in a transparent way over a collection of inputs. The `$acc routine` directive tells the compiler to generate both a `host` and `device` version of the routine, making it usable inside CUDA kernels.]
+      + context {
+        if not state("in-outline").get() { linebreak(justify: true) }
+      },
+  ) <elemental-poly>
+]
 
 - As an extension to @precision-kinds, we also need to extend the working precision to cover more cases, previously a lot of variables where declared explicitly as double precision, changing it to a working precision, like we see in @elemental-poly, gives us greater control over the code.
 

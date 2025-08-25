@@ -1,13 +1,15 @@
 #import "../graphs/cudss_v_mumps.typ": cudss_stats, mpi-configs, mumps_stats
 #import "@preview/zero:0.4.0": num
 
-#let speedup-cudss-table = {
+#let speedup-cudss-table(presentation: false) = {
   set table(
     stroke: (_, y) => (
       top: if y == 0 { 1pt } else if y == 2 { none } else { 0pt },
       bottom: .5pt,
     ),
   )
+
+  set table(inset: .5em) if presentation
   table(
     columns: 7,
     // align: left,
