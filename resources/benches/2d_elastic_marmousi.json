@@ -789,7 +789,7 @@
         "matrix_global_size": 2003422,
         "matrix_nnz": 85430307,
         "mesh_size": "100k",
-        "polynomial_order": "I01",
+        "polynomial_order": "2-9",
         "successful_runs": [
           {
             "elapsed_time_seconds": 231.81,
@@ -1663,7 +1663,7 @@
       },
       "p2-9": {
         "mesh_size": "100k",
-        "polynomial_order": "I01",
+        "polynomial_order": "2-9",
         "successful_runs": [
           {
             "elapsed_time_seconds": 126.42,
@@ -2537,7 +2537,7 @@
       },
       "p2-9": {
         "mesh_size": "100k",
-        "polynomial_order": "I01",
+        "polynomial_order": "2-9",
         "successful_runs": [
           {
             "elapsed_time_seconds": 130.51,
@@ -3411,7 +3411,7 @@
       },
       "p2-9": {
         "mesh_size": "100k",
-        "polynomial_order": "I01",
+        "polynomial_order": "2-9",
         "successful_runs": [
           {
             "elapsed_time_seconds": 248.21,

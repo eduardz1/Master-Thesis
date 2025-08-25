@@ -12,6 +12,7 @@
   set text(fill: white, weight: "bold")
 
   let boxes-width = if presentation { 11cm } else { 6cm }
+  let stroke-size = if presentation { 2pt } else { 1pt }
 
   let diagram-content = (
     node(
@@ -22,7 +23,7 @@
       width: boxes-width,
     ),
     if presentation { pause },
-    edge("->", stroke: 1pt + grey),
+    edge("->", stroke: stroke-size + grey),
     node(
       (1, 1),
       block(
@@ -31,8 +32,8 @@
       ),
       width: boxes-width,
       fill: yellow,
-      extrude: (0, -3),
-      stroke: 1pt + white,
+      extrude: (0, if presentation { 0 } else { -3 }),
+      stroke: stroke-size + white,
     ),
     if presentation { pause },
     node(
@@ -42,41 +43,53 @@
       balance[Measured data from acquisition],
       width: boxes-width,
     ),
-    edge((0, 0), (0, 2), "->", stroke: 1pt + grey),
-    edge((1, 1), "d,l", "->", stroke: 1pt + grey),
+    edge((0, 0), (0, 2), "->", stroke: stroke-size + grey),
+    edge((1, 1), "d,l", "->", stroke: stroke-size + grey),
     node(
       (0, 2),
       block(
         inset: .2em,
         balance[Comparison between the observations and the simulations],
       ),
-      extrude: (0, -3),
+      extrude: (0, if presentation { 0 } else { -3 }),
       width: boxes-width,
       fill: blue,
-      stroke: (paint: white, dash: "dashed", thickness: 1pt),
+      stroke: (
+        paint: white,
+        dash: if presentation { none } else { "dashed" },
+        thickness: stroke-size,
+      ),
     ),
     if presentation { pause },
-    edge("->", stroke: 1pt + grey),
+    edge("->", stroke: stroke-size + grey),
     node(
       (0, 3),
       block(inset: .2em, balance[Optimization]),
-      extrude: (0, -3),
+      extrude: (0, if presentation { 0 } else { -3 }),
       width: boxes-width,
       fill: blue,
-      stroke: (paint: white, dash: "dashed", thickness: 1pt),
+      stroke: (
+        paint: white,
+        dash: if presentation { none } else { "dashed" },
+        thickness: stroke-size,
+      ),
     ),
     if presentation { pause },
-    edge("->", stroke: 1pt + grey),
+    edge("->", stroke: stroke-size + grey),
     node(
       (1, 3),
       block(
         inset: .2em,
         balance[Update of the physical properties of the medium],
       ),
-      extrude: (0, -3),
+      extrude: (0, if presentation { 0 } else { -3 }),
       width: boxes-width,
       fill: blue,
-      stroke: (paint: white, dash: "dashed", thickness: 1pt),
+      stroke: (
+        paint: white,
+        dash: if presentation { none } else { "dashed" },
+        thickness: stroke-size,
+      ),
     ),
     if presentation { pause },
     edge(
@@ -85,7 +98,7 @@
       "->",
       text(fill: grey)[next iteration],
       shift: -10pt,
-      stroke: 1pt + grey,
+      stroke: stroke-size + grey,
     ),
   )
 

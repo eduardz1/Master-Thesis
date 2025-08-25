@@ -41,7 +41,7 @@ In the inverse problem, waves are measured at the receiver and are used to chara
   placement: top,
   hawen-schema(),
   kind: image,
-  caption: [Schematic representation of the @HAWEN:short pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the optimizations steps necessary for the *inverse problem*. Note that one use case of the software is solving the *forward problem* only.]
+  caption: [Schematic representation of the @HAWEN:short pipeline. In #mark2[yellow] it's highlighted the *forward problem* and in #underline(stroke: (dash: "dashed"))[blue] the optimizations steps necessary for the *inverse problem*. Note that our use case of the software is solving the *forward problem* only.]
     + context {
       if not state("in-outline").get() { linebreak(justify: true) }
     },

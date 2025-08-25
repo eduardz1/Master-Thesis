@@ -4,7 +4,7 @@
 #let GB-core = zi.declare("GB/core").with(fraction: "inline")
 #let MT-s = zi.declare("MT/s").with(fraction: "inline")
 
-#let clusters() = table(
+#let clusters(presentation: false) = table(
   columns: 4,
   align: left + horizon,
   inset: 1em,
@@ -17,5 +17,5 @@
   [$2 times 32$ core AMD Zen3 Milan EPYC 7513 \@ #zi.GHz[2.6]],
   [#GB[512] (#GB-core[8]) \@ #MT-s[3200]],
   [$2 times$ NVIDIA A100 (#GB[40])],
-  table.hline(y: 3, start: 0, end: 4, stroke: 1pt),
+  table.hline(y: 3, start: 0, end: 4, stroke: if presentation {2pt} else {1pt}),
 )

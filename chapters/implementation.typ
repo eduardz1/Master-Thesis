@@ -495,7 +495,7 @@ By simply reordering the loops and the matrices, a measurable performance improv
   ) <reorder-loops>
 ]
 
-In the refactored code, the highlighted lines, for the 2D elastic variable degrees of freedom (`I01`) case, account together for *73.22%* of the total program runtime. We can notice now that the first, `face_phi_xi`, matrix of matrices does not depend on the cell and can, therefore, be computed only once. Similar reasoning can be applied to some of the volume integrals. The final result is a code where the second operation on `face_phi_xi_nCntau` is now the single most expensive operation, accounting alone for *76.49%* of the runtime.
+In the refactored code, the highlighted lines, when looking at a 2D elastic simulation with variable degrees of freedom (configuration `p2-9` in @inv-cache-bench), account together for *73.22%* of the total program runtime. We can notice now that the first, `face_phi_xi`, matrix of matrices does not depend on the cell and can, therefore, be computed only once. Similar reasoning can be applied to some of the volume integrals. The final result is a code where the second operation on `face_phi_xi_nCntau` is now the single most expensive operation, accounting alone for *76.49%* of the runtime.
 
 
 #heading(level: 3, context if state(

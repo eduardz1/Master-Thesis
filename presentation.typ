@@ -15,6 +15,7 @@
 #import "resources/tables/cache_branch_misses.typ": (
   cache-branch-misses-table-figure,
 )
+#import "@preview/fletcher:0.5.8"
 #import "resources/graphs/cpu_v_gpu_arch.typ": cpu-v-gpu-arch
 #import "resources/graphs/hawen_schema.typ": hawen-schema
 #import "resources/algorithms/forward_acoustic_problem.typ": (
@@ -25,7 +26,15 @@
 
 #let primary = rgb("#0c4842")
 
-
+#set outline.entry(fill: repeat(gap: .6em)[#sym.dot.c])
+#show outline.entry.where(level: 1): set block(above: 1.3em)
+#show outline.entry.where(level: 1): set text(weight: "bold")
+#let in-outline = state("in-outline", false)
+#show outline: it => {
+  in-outline.update(true)
+  it
+  in-outline.update(false)
+}
 #show figure.where(kind: table): set figure.caption(position: top)
 #show table.cell.where(y: 0): strong
 #show table.cell.where(y: 0): smallcaps
@@ -73,7 +82,7 @@
 )
 
 // #set-round(mode: "uncertainty")
-// #show: codly-init.with()
+#show: codly-init.with()
 // #show: dewdrop-theme
 #show: dewdrop-theme.with(
   aspect-ratio: "16-9",
@@ -87,9 +96,10 @@
     },
     preamble: {
       codly(
+        breakable: true,
         languages: codly-languages,
+        aliases: ("cuda": "c++"),
         zebra-fill: none,
-        lang-outset: (x: -5pt, y: 5pt),
         number-align: right + horizon,
         number-format: it => text(fill: luma(200), str(it)),
       )
@@ -134,7 +144,11 @@
   ]
 ]
 
-= Numerical Simulations of Wave Propagation
+#heading(
+  level: 1,
+  depth: 1,
+  context if in-outline.get() [Wave Simulations] else [Numerical Simulations of Wave Propagation],
+)
 
 == HAWEN
 
@@ -169,66 +183,72 @@
   #align(center + horizon, hawen-schema(presentation: true))
 ]
 
-== HDG Methods Applied to the Acoustic Wave Problem
+#heading(
+  level: 2,
+  depth: 2,
+  context if in-outline.get() [HDG for Acoustic] else [HDG Methods Applied to the Acoustic Wave Problem],
+)
+
+
 #let pinit-point-from = pinit-point-from.with(thickness: 1pt)
 #let pinit-arrow = pinit-arrow.with(thickness: 1pt)
 
-// #slide[
-//   #align(center + horizon)[$
-//       - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
-//     $
+#slide[
+  #align(center + horizon)[$
+      - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
+    $
 
-//     #pinit-highlight(1, 2, fill: highlights.at(0))
-//     #pinit-point-from(
-//       1,
-//       offset-dy: 35pt,
-//       offset-dx: -50pt,
-//       body-dx: -60pt,
-//       fill: colors.at(0),
-//     )[density]
+    #pinit-highlight(1, 2, fill: highlights.at(0))
+    #pinit-point-from(
+      1,
+      offset-dy: 35pt,
+      offset-dx: -50pt,
+      body-dx: -60pt,
+      fill: colors.at(0),
+    )[density]
 
-//     #pause
+    #pause
 
-//     #pinit-highlight(3, 4, fill: highlights.at(1))
-//     #pinit-point-from(3, offset-dx: 50pt, fill: colors.at(1))[bulk modulus]
+    #pinit-highlight(3, 4, fill: highlights.at(1))
+    #pinit-point-from(3, offset-dx: 50pt, fill: colors.at(1))[bulk modulus]
 
-//     #pause
+    #pause
 
-//     #pinit-highlight(5, 6, fill: highlights.at(2))
-//     #pinit-point-from(
-//       5,
-//       pin-dy: -15pt,
-//       body-dy: -15pt,
-//       offset-dy: -70pt,
-//       fill: colors.at(2),
-//     )[angular frequency]
+    #pinit-highlight(5, 6, fill: highlights.at(2))
+    #pinit-point-from(
+      5,
+      pin-dy: -15pt,
+      body-dy: -15pt,
+      offset-dy: -70pt,
+      fill: colors.at(2),
+    )[angular frequency]
 
-//     #pause
+    #pause
 
-//     #pinit-highlight(7, 8, fill: highlights.at(3))
-//     #pinit-point-from(
-//       8,
-//       offset-dx: 80pt,
-//       offset-dy: 0pt,
-//       pin-dy: 0pt,
-//       body-dy: -10pt,
-//       fill: colors.at(3),
-//     )[source]
+    #pinit-highlight(7, 8, fill: highlights.at(3))
+    #pinit-point-from(
+      8,
+      offset-dx: 80pt,
+      offset-dy: 0pt,
+      pin-dy: 0pt,
+      body-dy: -10pt,
+      fill: colors.at(3),
+    )[source]
 
-//     #pause
+    #pause
 
-//     #pinit-highlight(9, 10, fill: highlights.at(4))
-//     #pinit-highlight(11, 12, fill: highlights.at(4))
-//     #pinit-point-from(
-//       9,
-//       pin-dy: 20pt,
-//       offset-dy: 100pt,
-//       body-dy: -10pt,
-//       fill: colors.at(4),
-//     )[#pin(13)scalar pressure field]
-//     #pinit-arrow(13, 11, start-dx: 30pt, end-dy: 20pt, fill: colors.at(4))
-//   ]
-// ]
+    #pinit-highlight(9, 10, fill: highlights.at(4))
+    #pinit-highlight(11, 12, fill: highlights.at(4))
+    #pinit-point-from(
+      9,
+      pin-dy: 20pt,
+      offset-dy: 100pt,
+      body-dy: -10pt,
+      fill: colors.at(4),
+    )[#pin(13)scalar pressure field]
+    #pinit-arrow(13, 11, start-dx: 30pt, end-dy: 20pt, fill: colors.at(4))
+  ]
+]
 
 // #slide[
 //   To solve numerically the wave equation we need to discretize the equation and solve the Partial Differential Equation (PDE).
@@ -273,7 +293,7 @@
 == CUDA
 
 #slide[
-  #set text(size: .7em)
+  #set text(size: .6em)
   #figure(
     cpu-v-gpu-arch(scale-axis: 170%),
   )
@@ -288,7 +308,8 @@
     #figure(distributed-memory(presentation: true))][
     - *Message Passing Interface* #pause
     - Spawns *processes* #pause
-    - Aimed (but not restricted) to the use in *distributed memory* systems
+    - Aimed (but not restricted) to the use in *distributed memory* systems #pause
+    - It's a specification, it can be used as a *library*
   ]
 ]
 
@@ -300,20 +321,57 @@
     #set text(size: 1.3em)
     #figure(shared-memory(presentation: true))][
     - Spawns *OS threads* #pause
-    - Restricted to *shared-memory* environments
+    - Restricted to *shared-memory* environments #pause
+    - Requires support at the compiler level, used with *compiler directives* #pause
+    - Currently supports both *CPU* and *GPU* targets
   ]
 ]
 
 == OpenACC
 
+#slide[
+  - Similar to OpenMP, but more target for *heterogenous* systems #pause
+  - Default for GPU offloading in *NVHPC* due to better performance/implementation #pause
+
+  #figure(
+    kind: raw,
+    {
+      set text(size: .68em)
+      grid(
+        columns: 1,
+        column-gutter: 1em,
+        row-gutter: 1em,
+        align: center + horizon,
+        ```f90
+        !$omp parallel do collapse(2) default(shared)
+        !$acc parallel loop collapse(2) default(present)
+        do i=1, n
+          do j=1, m
+            a(i, j) = w * b(i, j)
+          end do
+        end do
+        !$acc end parallel loop
+        !$omp end parallel do
+        ```,
+
+        ```f
+        do concurrent (i=1:n, j=1:m)
+          a(i, j) = w * b(i, j)
+        end do
+        ```,
+      )
+    },
+  )
+]
+
 == Clusters
 
-We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters
+We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
 
 #[
   #set text(size: .78em)
   #figure(
-    clusters(),
+    clusters(presentation: true),
   )
 
   #speaker-note[
@@ -322,27 +380,206 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters
   ]
 ]
 
-// = Contributions
-
-// == Preliminary Contributions
-
-// == Exploring Alternative Sparse Solvers
-
-// == Accelerating the Matrix Creation
-
-// === Replacing Matrix Inversions
-
-// === Improving Cache Locality
-
-// === Compiling HAWEN with NVFortran and Taking Advantage of GPU Offloading
-
 = Contributions
 
 == Preliminary Work
 
-== Removing Matrix Inversions and Optimizing Cache Locality
+#slide[
+  #grid(
+    columns: 2,
+    column-gutter: 4em,
+    [
+      === CMake
+      - Modernizing HAWEN's build system #pause
+      - Simplified to a single library #pause
+      - Fixes for *parallel compilation* #pause
+      - Integration with *Ninja* and *Ccache* #pause
+      - *Declarative dependency management* // with fetch content
+    ],
+    move(dy: 40pt, scale(150%, figure(
+      supplement: none,
+      numbering: none,
+      image(height: 45%, "resources/imgs/icons/cmake.png"),
+      caption: [#set text(size: .5em, fill: gray)
+        Image courtesy of https://earthly.dev/blog/cmake-vs-make-diff/],
+    ))),
+  )
+
+  === Others
+
+  - Integrated a *Unit Testing* framework #pause
+  - Fixes for non-standard precision kinds #pause // to ensure compatibility acrosso compilers
+  - Eliminating string operations (`trim`, `adjustl`, `select("...")`, ...) in potential GPU code
+
+  // I'll use an image from the internet instead, this looks like shit
+  // #fletcher.diagram({
+  //   let color = lq.color.map.okabe-ito.at(2)
+
+  //   fletcher.node((0, 1.4), [#image(
+  //       height: 1.2cm,
+  //       "resources/imgs/icons/c.svg",
+  //     )])
+  //   fletcher.node((.5, 1), [#image(
+  //       height: 1.2cm,
+  //       "resources/imgs/icons/cplusplus.svg",
+  //     )])
+  //   fletcher.node((1, 1.4), [#image(
+  //       height: 1.2cm,
+  //       "resources/imgs/icons/cuda.svg",
+  //     )])
+  //   fletcher.node((.5, 1.5), [#image(
+  //       height: 2cm,
+  //       "resources/imgs/icons/fortran.svg",
+  //     )])
+
+  //   edge("->", stroke: 2pt + color)
+
+  //   fletcher.node((.5, 2.8), [#grid(columns: 1, row-gutter: .5em, image(
+  //       height: 2cm,
+  //       "resources/imgs/icons/cmake.svg",
+  //     ), [*CMake*])])
+
+  //   edge((.5, 2.8), "r", (2, 1.5), "->", stroke: 2pt + color)
+
+  //   fletcher.node((1.5, 3.4), [#grid(
+  //       columns: 1,
+  //       row-gutter: .5em,
+  //       image(height: 1.2cm, "resources/imgs/icons/json.svg"),
+  //       [*JSON preset*],
+  //     )])
+
+  //   edge((1.5, 3.4), (1.5, 2.8), stroke: 2pt + color)
+
+  //   fletcher.node((2, 1.5), [
+  //     #grid(
+  //       columns: 2,
+  //       column-gutter: 1.5em,
+  //       row-gutter: .5em,
+  //       image(
+  //         height: 2cm,
+  //         "resources/imgs/icons/makefile.svg",
+  //       ),
+  //       image(
+  //         height: 2cm,
+  //         "resources/imgs/icons/ninja.svg",
+  //       ),
+
+  //       [*GNU Make*], [*Ninja*],
+  //     )
+  //   ])
+
+  //   edge((1, 1.4), (2, 1.5), "->", stroke: 2pt + color)
+  // })
+]
+
+#heading(
+  level: 2,
+  depth: 2,
+  context if in-outline.get() [Matrix Inversions & Cache Locality] else [Removing Matrix Inversions and Optimizing Cache Locality],
+)
 
 #slide[
+  === Improving Cache Locality
+
+  - Concepts from *Data-Oriented Design* @DOD #pause
+  - *Reordering loops* and changing the order of the dimensions of the tensors #pause // Fortran is column major
+
+  // These two lines of code alone represent 90% of the program runtime for a 2D elastic benchmark
+  #figure({
+    set text(.68em)
+    ```f90
+    do concurrent(l=1:ctx_dg%n_different_order, k=1:ctx_dg%n_different_order)
+      n_dof_k = ctx_dg%n_dof_per_order(k)
+      n_dof_l = ctx_dg%n_dof_per_order(l)
+      face_phi_xi(k,l)%array = sum(ctx_dg%quadGL_face_phi_phi_w(k,l)%array, dim=4)
+      do concurrent(j=1:n_dof_l, i=1:n_dof_k, iface=1:3, jdim=1:2, kdim=1:2)
+        face_phi_xi_nCntau(k,l)%array(kdim,jdim,iface,i,j) = dot_product(face_coeff_Cx(kdim,jdim,iface,:), ctx_dg%quadGL_face_phi_phi_w(k,l)%array(iface,i,j,:))
+      end do
+    end do
+    ```
+  })
+]
+
+#slide(repeat: 2, self => [
+  === Replacing Inversions of Dense Matrices
+
+  #alternatives[#grid(columns: 2, align: horizon, column-gutter: -.5em)[#figure(
+        image(width: 90%, "resources/imgs/paraview_summary.svg"),
+      )][
+      - Profiled using the TAU Performance System@TAU
+      - Visualization with ParaProf
+    ]][
+    #figure(
+      image(width: 100%, "resources/imgs/paraview_summary_cropped.png"),
+    )
+    For the bottom 5 bars we have, in order:
+    - `hdg_build_quadrature_int_2D`
+    - `hdg_build_quadrature_int_2D`
+    - Overhead of TAU instrumentation
+    - LAPACK's `*GETRI` (matrix inverse)
+    - `hdg_build_Ainv_2D`
+  ]
+])
+
+#slide[
+  When solving a system $A X = B$, $L U$ decomposition is #pause
+  - *always faster* #only("2")[@DontInvertThatMatrix @WhyNotInvertMatrix @WhyLUbetterThanInverse] #pause
+  - *more accurate* for ill-conditioned matrices #only("3")[@AccuracyAndStability[Section 14.1]] #pause
+
+  $
+    A = mat(a_11, a_12, a_13; a_21, a_22, a_23; a_31, a_32, a_33) = L U = mat(1, 0, 0; l_21, 1, 0; l_31, l_32, 1) mat(u_11, u_12, u_13; 0, u_22, u_23; 0, 0, u_33)
+  $
+
+  #pause
+
+  We rewrite the previous equation to avoid computing the inverse
+  - LAPACK's `*GETRF` and `*GETRS`
+]
+
+#slide[
+  === Computing Analytically Other Inversions
+
+  - *elastic wave propagation*: compliance tensor in Voigt notation #only("1")[@Voigt] is #only("1")[@HDGStabilize] $S = V^(-1) C^(-1) V^(-1)$ #pause
+
+  #let zeros = $0$
+
+  #only(2)[
+    $
+      V_"3D" = mat(
+        1, zeros, zeros, zeros, zeros, zeros;
+        zeros, 1, zeros, zeros, zeros, zeros;
+        zeros, zeros, 1, zeros, zeros, zeros;
+        zeros, zeros, zeros, 2, zeros, zeros;
+        zeros, zeros, zeros, zeros, 2, zeros;
+        zeros, zeros, zeros, zeros, zeros, 2
+      ), C_"3D" & = mat(
+                    lambda + 2 mu, lambda, lambda, zeros, zeros, zeros;
+                    lambda, lambda + 2 mu, lambda, zeros, zeros, zeros;
+                    lambda, lambda, lambda + 2 mu, zeros, zeros, zeros;
+                    zeros, zeros, zeros, mu, zeros, zeros;
+                    zeros, zeros, zeros, zeros, mu, zeros;
+                    zeros, zeros, zeros, zeros, zeros, mu
+                  )
+    $] #pause
+
+  #only(3)[
+    $
+      S = mat(
+        (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+        -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+        -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), zeros, zeros, zeros;
+        zeros, zeros, zeros, 1 / (4 mu), zeros, zeros;
+        zeros, zeros, zeros, zeros, 1 / (4 mu), zeros;
+        zeros, zeros, zeros, zeros, zeros, 1 / (4 mu)
+      )
+    $
+  ]
+]
+
+
+#slide[
+  === Evaluation
+
   Benchmarked with
   - Marmousi2 2D model @Marmousi2 #pause
   - 100 thousand cells #pause
@@ -410,10 +647,10 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters
         lq.hboxplot(
           y: 0.5,
           label: branch_name,
-          stroke: lq.color.map.petroff6.at(branch_idx),
-          fill: lq.color.map.petroff6.at(branch_idx).transparentize(90%),
-          median: lq.color.map.petroff6.at(branch_idx),
-          outlier-stroke: lq.color.map.petroff6.at(branch_idx),
+          stroke: 1pt + lq.color.map.okabe-ito.at(branch_idx),
+          fill: lq.color.map.okabe-ito.at(branch_idx).transparentize(90%),
+          median: 3pt + lq.color.map.okabe-ito.at(branch_idx),
+          outlier-stroke: 1pt + lq.color.map.okabe-ito.at(branch_idx),
           data
             .at(branch_name)
             .at(config)
@@ -461,12 +698,16 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters
 
   Looking at the generated assembly code
   - $approx 30%$ reduction in instruction count with `MOV` and `ADD` type instructions decreasing in equal measure: *less data movement* #pause
-  - dot product for face integrals accounting for $approx 80%$ of the *total program runtime* #pause
+  - dot product for face integrals accounting for $approx$ *80%* of the *total program runtime* #pause
   - no improvements with BLAS or GEMM operations: a higher level of parallelism is necessary #pause
   #figure(cache-branch-misses-table-figure())
 ]
 
-== Using a GPU Accelerated Sparse Solver
+#heading(
+  level: 2,
+  depth: 2,
+  context if in-outline.get() [cuDSS] else [Using a GPU Accelerated Sparse Solver],
+)
 
 #slide[
   Benchmarked with

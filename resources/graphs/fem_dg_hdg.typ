@@ -68,16 +68,21 @@
       rotate(z: -180deg)
     }
 
-    let dg(cx: 0, cy: 0) = {
-      l(dx: cx, dy: -.05 + cy)
-      u(dx: .1 + cx, dy: .05 + cy)
-      content((2.5 + cx, -0.5 + cy), [DG])
-    }
 
     let fem(cx: 0, cy: 0) = {
       l(dx: cx, dy: cy)
       u(dx: cx, dy: cy)
-      content((2.5 + cx, -0.5 + cy), [FEM])
+      content((2.5 + cx, -0.5 + cy), text(weight: if presentation {
+        "bold"
+      } else { "regular" })[FEM])
+    }
+
+    let dg(cx: 0, cy: 0) = {
+      l(dx: cx, dy: -.05 + cy)
+      u(dx: .1 + cx, dy: .05 + cy)
+      content((2.5 + cx, -0.5 + cy), text(weight: if presentation {
+        "bold"
+      } else { "regular" })[DG])
     }
 
     let hdg(cx: 0, cy: 0) = {
@@ -107,9 +112,19 @@
         // impossible to get it right with rotate
         line((2 + fx, 1 + fy), (3 + fx, 0 + fy), stroke: stroke-red)
         circle((2 + fx, 1 + fy), radius: rad, fill: red, stroke: stroke-red)
-        circle((2.25 + fx, .75 + fy), radius: rad, fill: red, stroke: stroke-red)
+        circle(
+          (2.25 + fx, .75 + fy),
+          radius: rad,
+          fill: red,
+          stroke: stroke-red,
+        )
         circle((2.5 + fx, .5 + fy), radius: rad, fill: red, stroke: stroke-red)
-        circle((2.75 + fx, .25 + fy), radius: rad, fill: red, stroke: stroke-red)
+        circle(
+          (2.75 + fx, .25 + fy),
+          radius: rad,
+          fill: red,
+          stroke: stroke-red,
+        )
         circle((3 + fx, fy), radius: rad, fill: red, stroke: stroke-red)
       }
 
@@ -123,11 +138,13 @@
       rotate(z: -90deg)
 
       face(fx: cx + .1, fy: cy, diagonal: true)
-      content((2.5 + cx, -0.5 + cy), [HDG])
+      content((2.5 + cx, -0.5 + cy), text(weight: if presentation {
+        "bold"
+      } else { "regular" })[HDG])
     }
 
-    dg()
     fem(cx: -2)
+    dg()
     hdg(cx: 2)
   })
 }
