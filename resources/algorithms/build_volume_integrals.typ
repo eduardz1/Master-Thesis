@@ -20,11 +20,11 @@
             {
               Assign(
                 [$- angle.l i omega rho phi_i | phi_j angle.r_K_e$],
-                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) rho(bold(x)_q)$],
+                [$plus.circle.big_(q = 1)^N_q w_q phi_i (bold(x)_q) phi_j (bold(x)_q) rho (bold(x)_q)$],
               )
               Assign(
                 [$- angle.l i omega kappa^(-1) phi_i | phi_j angle.r_K_e$],
-                [$plus.circle.big_(q = 1)^N_q w_q phi_i(bold(x)_q) phi_j(bold(x)_q) kappa(bold(x)_q)^(-1)$],
+                [$plus.circle.big_(q = 1)^N_q w_q phi_i (bold(x)_q) phi_j (bold(x)_q) kappa (bold(x)_q)^(-1)$],
               )
             },
           )
@@ -34,7 +34,7 @@
             [$d in bold(x), j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$ *in parallel*],
             Assign(
               [$angle.l partial_d phi_i | phi_j angle.r_K_e$],
-              [$plus.circle.big_(q = 1)^N_q w'_q partial_d phi(bold(x)_q)_i phi(bold(x)_q)_j$],
+              [$plus.circle.big_(q = 1)^N_q w'_q partial_d phi_i (bold(x)_q) phi_j (bold(x)_q)$],
             ),
           )
         })
