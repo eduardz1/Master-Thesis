@@ -56,7 +56,12 @@
   conf: "1P/32T",
 ) = num[#mumps_stats().at(conf).total.avg+-#mumps_stats().at(conf).total.sem]
 
-#let cudss-v-mumps(height: 6.1cm, width: 13.4cm, highlighted: true) = {
+#let cudss-v-mumps(
+  height: 6.1cm,
+  width: 13.4cm,
+  highlighted: true,
+  presentation: false,
+) = {
   set-round(mode: "uncertainty")
   show: lq.set-label(pad: 1em)
   show lq.selector(lq.label): set align(top + right)
@@ -76,7 +81,7 @@
     let colors = (
       lq.color.map.okabe-ito.at(1),
       lq.color.map.okabe-ito.at(5),
-      lq.color.map.okabe-ito.at(0)
+      lq.color.map.okabe-ito.at(0),
     )
     let color = colors.at(n)
     if highlighted {
@@ -93,7 +98,7 @@
   }
 
   lq.diagram(
-    xlabel: [Time in seconds],
+    xlabel: if presentation { none } else [Time in seconds],
     margin: (right: 25%, rest: 6%),
     width: width,
     height: height,

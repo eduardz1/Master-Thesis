@@ -11,9 +11,11 @@
       "BuildVolumeIntegrals",
       ($cal(T)$, $omega$, $rho$, $kappa$, $phi$, $w$, $w'$),
       {
-        Comment[The arrays $w$ and $w'$ represent the weights of the quadrature approximations for the integrals computed in the first and second loop]
-        Comment[The symbol $plus.circle$ indicates a parallel reduction]
-        Comment[Being the loop over cells more localized, it can be offloaded on device, we take advantage of CUDA's _dynamic parallelism_ to launch nested kernels]
+        if not presentation {
+          Comment[The arrays $w$ and $w'$ represent the weights of the quadrature approximations for the integrals computed in the first and second loop]
+          Comment[The symbol $plus.circle$ indicates a parallel reduction]
+          Comment[Being the loop over cells more localized, it can be offloaded on device, we take advantage of CUDA's _dynamic parallelism_ to launch nested kernels]
+        }
         For([$K_e in cal(T)$ *in parallel*], {
           For(
             [$j in [1, N_"dof"^((e))], i in [1, N_"dof"^((e))]$ *in parallel*],

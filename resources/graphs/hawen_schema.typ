@@ -7,9 +7,10 @@
 #let hawen-schema(presentation: false) = {
   let colors = lq.color.map.okabe-ito
   let blue = colors.at(0)
-  let yellow = colors.at(1)
+  let yellow = colors.at(5)
   let grey = colors.at(2)
-  set text(fill: white, weight: "bold")
+  set text(fill: white)
+  set text(weight: "bold") if not presentation
 
   let boxes-width = if presentation { 11cm } else { 6cm }
   let stroke-size = if presentation { 2pt } else { 1pt }

@@ -34,7 +34,7 @@
 
 #set outline.entry(fill: repeat(gap: .6em)[#sym.dot.c])
 #show outline.entry.where(level: 1): set block(above: 1.3em)
-#show outline.entry.where(level: 1): set text(weight: "bold")
+#show outline.entry.where(level: 1): set text(weight: "bold", fill: primary)
 #let in-outline = state("in-outline", false)
 #show outline: it => {
   in-outline.update(true)
@@ -87,6 +87,12 @@
   cover: fletcher.hide,
 )
 
+#set text(font: "Atkinson Hyperlegible")
+#show math.equation: set text(font: "Lete Sans Math")
+// #set text(hyphenate: false)
+
+// #set strong(delta: 100)
+
 // #set-round(mode: "uncertainty")
 #show: codly-init.with()
 // #show: dewdrop-theme
@@ -95,6 +101,13 @@
   footer: self => self.info.institution,
   navigation: "mini-slides",
   alpha: 30%,
+  mini-slides: (
+    height: 2em,
+    x: 2em,
+    display-section: false,
+    display-subsection: false,
+    short-heading: true,
+  ),
   config-common(
     show-bibliography-as-footnote: {
       set text(.5em)
@@ -126,7 +139,7 @@
 
 #title-slide()
 
-#outline-slide()
+// #outline-slide(depth: 1)
 
 
 // Good evening, I'm Eduard Occhipinti and in this presentation I will talk about the subject of my master internship and thesis, which is a perfomance study on an open source software for wave simulations called "HAWEN" with a particular focus on CUDA acceleration and in general GPU computing. Let's start by giving a bit of context.
@@ -136,15 +149,7 @@
 // When studying the earth, trying to predict earthquakes and vulcanic eruptions or locating mineral or oil deposits or using ultrasound imaging for medical purposes a common problem arises and that is the study of waves and wave propagation. Solving this problem requires the solution of wave equations, such as the one shown here. This problem implies the solution of a large scale linear system.
 
 #slide[
-  - Researching ways to predict earthquakes or vulcanic eruptions #pause
-
-  - Predicting the location of mineral deposits #pause
-
-  - Ultrasound imaging for medical purposes #pause
-
-  #align(center + horizon)[$
-      - nabla dot 1/(rho(bold(x))) nabla p(bold(x)) - omega^2 / (kappa(bold(x))) p(bold(x)) = g(bold(x))
-    $]
+  talk about te team
 
   #speaker-note[
     - LARGE SCALE LINEAR SYSTEMS
@@ -155,30 +160,37 @@
 #heading(
   level: 1,
   depth: 1,
-  context if in-outline.get() [Wave Simulations] else [Numerical Simulations of Wave Propagation],
+  context if in-outline.get() [Wave Simulations] else [HAWEN],
 )
 
-== HAWEN
+== Inverse Wave Problem
+
+#slide[
+  #align(center + horizon, hawen-schema(presentation: true))
+]
+
+== The Software
 
 // In this context, the HAWEN software was developed. HAWEN is a tool used to solve wave equations in the frequency domain and compute the solution of both the forward problem, meaning the simulation of the propagation of waves through a medium, and the inverse problem, meaning the reconstruction of the properties of a non-directly accessible medium.
 
 #slide[
+
   #figure(
-    image(height: 74%, "resources/imgs/global-earth_simu.png"),
-    caption: [30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 threads each)],
+    image("resources/imgs/global-earth_simu.png"),
+    // caption: [30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 threads each)],
   )
 ]
 
 #slide[
-  Open source software developed by Florian Faucher @HAWEN @FloPhD.
+  Open source software developed by Florian Faucher@HAWEN@FloPhD.
 
-  - Used to solve both the _forward_ and _inverse_ problem #pause
+  - Used to solve both the _forward_ and _inverse_ problem in the frequency domain #pause
 
-  - Designed for large scale problems using the Hybridizable Discontinuous Method (HDG) #pause
+  - Uses the Hybridizable Discontinuous Method (HDG) #pause
 
-  - Parallelized using a combination of MPI and OpenMP #pause
+  - Designed for large scale problems, parallelized with MPI + OpenMP #pause
 
-  - Written in Fortran
+  - Written in modern Fortran
 
   #speaker-note[
     / FORWARD PROBLEM: simulation of the propagation of waves through a medium
@@ -187,76 +199,74 @@
   ]
 ]
 
-#slide[
-  #align(center + horizon, hawen-schema(presentation: true))
-]
+== The HDG Method
 
-#heading(
-  level: 2,
-  depth: 2,
-  context if in-outline.get() [HDG for Acoustic] else [HDG Methods Applied to the Acoustic Wave Problem],
-)
+// #heading(
+//   level: 2,
+//   depth: 2,
+//   context if in-outline.get() [HDG for Acoustic] else [HDG Methods Applied to the Acoustic Wave Problem],
+// )
 
 
-#let pinit-point-from = pinit-point-from.with(thickness: 1pt)
-#let pinit-arrow = pinit-arrow.with(thickness: 1pt)
+// #let pinit-point-from = pinit-point-from.with(thickness: 1pt)
+// #let pinit-arrow = pinit-arrow.with(thickness: 1pt)
 
-#slide[
-  #align(center + horizon)[$
-      - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
-    $
+// #slide[
+//   #align(center + horizon)[$
+//       - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
+//     $
 
-    #pinit-highlight(1, 2, fill: highlights.at(0))
-    #pinit-point-from(
-      1,
-      offset-dy: 35pt,
-      offset-dx: -50pt,
-      body-dx: -60pt,
-      fill: colors.at(0),
-    )[density]
+//     #pinit-highlight(1, 2, fill: highlights.at(0))
+//     #pinit-point-from(
+//       1,
+//       offset-dy: 35pt,
+//       offset-dx: -50pt,
+//       body-dx: -60pt,
+//       fill: colors.at(0),
+//     )[density]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(3, 4, fill: highlights.at(1))
-    #pinit-point-from(3, offset-dx: 50pt, fill: colors.at(1))[bulk modulus]
+//     #pinit-highlight(3, 4, fill: highlights.at(1))
+//     #pinit-point-from(3, offset-dx: 50pt, fill: colors.at(1))[bulk modulus]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(5, 6, fill: highlights.at(2))
-    #pinit-point-from(
-      5,
-      pin-dy: -15pt,
-      body-dy: -15pt,
-      offset-dy: -70pt,
-      fill: colors.at(2),
-    )[angular frequency]
+//     #pinit-highlight(5, 6, fill: highlights.at(2))
+//     #pinit-point-from(
+//       5,
+//       pin-dy: -15pt,
+//       body-dy: -15pt,
+//       offset-dy: -70pt,
+//       fill: colors.at(2),
+//     )[angular frequency]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(7, 8, fill: highlights.at(3))
-    #pinit-point-from(
-      8,
-      offset-dx: 80pt,
-      offset-dy: 0pt,
-      pin-dy: 0pt,
-      body-dy: -10pt,
-      fill: colors.at(3),
-    )[source]
+//     #pinit-highlight(7, 8, fill: highlights.at(3))
+//     #pinit-point-from(
+//       8,
+//       offset-dx: 80pt,
+//       offset-dy: 0pt,
+//       pin-dy: 0pt,
+//       body-dy: -10pt,
+//       fill: colors.at(3),
+//     )[source]
 
-    #pause
+//     #pause
 
-    #pinit-highlight(9, 10, fill: highlights.at(4))
-    #pinit-highlight(11, 12, fill: highlights.at(4))
-    #pinit-point-from(
-      9,
-      pin-dy: 20pt,
-      offset-dy: 100pt,
-      body-dy: -10pt,
-      fill: colors.at(4),
-    )[#pin(13)scalar pressure field]
-    #pinit-arrow(13, 11, start-dx: 30pt, end-dy: 20pt, fill: colors.at(4))
-  ]
-]
+//     #pinit-highlight(9, 10, fill: highlights.at(4))
+//     #pinit-highlight(11, 12, fill: highlights.at(4))
+//     #pinit-point-from(
+//       9,
+//       pin-dy: 20pt,
+//       offset-dy: 100pt,
+//       body-dy: -10pt,
+//       fill: colors.at(4),
+//     )[#pin(13)scalar pressure field]
+//     #pinit-arrow(13, 11, start-dx: 30pt, end-dy: 20pt, fill: colors.at(4))
+//   ]
+// ]
 
 // #slide[
 //   To solve numerically the wave equation we need to discretize the equation and solve the Partial Differential Equation (PDE).
@@ -288,32 +298,37 @@
 //   $ <first-order-system>
 // ]
 
-#slide(repeat: 2, self => [
-  #set text(size: .8em)
+// #pagebreak()
 
+#slide(repeat: 2, self => [
+  $
+    cases(
+      AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
+      sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
+    )
+  $
+  #set text(size: .77em)
   #alternatives[#forward-acoustic-problem-alg(
+      presentation: true,
       highlight-tensors: false,
-    )][#forward-acoustic-problem-alg(highlight-tensors: true)]
+    )][#forward-acoustic-problem-alg(
+      highlight-tensors: true,
+      presentation: true,
+    )]
 ])
 
 = Tools for Parallelism
-
-== CUDA
-
-#slide[
-  #set text(size: .6em)
-  #figure(
-    cpu-v-gpu-arch(scale-axis: 170%),
-  )
-]
 
 == MPI
 
 #slide[
   #set align(horizon)
   #grid(columns: 2, column-gutter: 3em)[
-    #set text(size: 1.3em)
-    #figure(distributed-memory(presentation: true))][
+    // #set text(size: 1.3em)
+    #figure(
+      distributed-memory(presentation: true),
+      caption: [Distributed memory paradigm],
+    )][
     - *Message Passing Interface* #pause
     - Spawns *processes* #pause
     - Aimed (but not restricted) to the use in *distributed memory* systems #pause
@@ -326,8 +341,11 @@
 #slide[
   #set align(horizon)
   #grid(columns: 2, column-gutter: 3em)[
-    #set text(size: 1.3em)
-    #figure(shared-memory(presentation: true))][
+    // #set text(size: 1.3em)
+    #figure(
+      shared-memory(presentation: true),
+      caption: [Shared-memory paradigm],
+    )][
     - Spawns *OS threads* #pause
     - Restricted to *shared-memory* environments #pause
     - Requires support at the compiler level, used with *compiler directives* #pause
@@ -335,58 +353,72 @@
   ]
 ]
 
-== OpenACC
+== CUDA
 
 #slide[
-  - Similar to OpenMP, but more target for *heterogenous* systems #pause
-  - Default for GPU offloading in *NVHPC* due to better performance/implementation #pause
-
+  #set text(size: .6em)
   #figure(
-    kind: raw,
-    {
-      set text(size: .68em)
-      grid(
-        columns: 1,
-        column-gutter: 1em,
-        row-gutter: 1em,
-        align: center + horizon,
-        ```f90
-        !$omp parallel do collapse(2) default(shared)
-        !$acc parallel loop collapse(2) default(present)
-        do i=1, n
-          do j=1, m
+    cpu-v-gpu-arch(scale-axis: 170%),
+  )
+]
+
+== Fortran's `do concurrent`
+
+#slide[
+  #grid(columns: (1.6fr, 1fr), column-gutter: 1em)[
+    #figure(
+      kind: raw,
+      {
+        set text(size: .78em)
+        grid(
+          columns: 1,
+          column-gutter: 1em,
+          row-gutter: 1em,
+          align: center + horizon,
+          ```f
+          do concurrent (i=1:n, j=1:m)
             a(i, j) = w * b(i, j)
           end do
-        end do
-        !$acc end parallel loop
-        !$omp end parallel do
-        ```,
+          ```,
+          ```f90
+          !$omp parallel do collapse(2) default(shared)
+          !$acc parallel loop collapse(2) default(present)
+          do i=1, n
+            do j=1, m
+              a(i, j) = w * b(i, j)
+            end do
+          end do
+          !$acc end parallel loop
+          !$omp end parallel do
+          ```,
+        )
+      },
+    )][
+    - Enables to run each iteration independently #pause
 
-        ```f
-        do concurrent (i=1:n, j=1:m)
-          a(i, j) = w * b(i, j)
-        end do
-        ```,
-      )
-    },
-  )
-]
+    - *Can* be parallelized with OpenMP or *OpenACC* #pause
 
-== Clusters
-
-We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
-
-#[
-  #set text(size: .78em)
-  #figure(
-    clusters(presentation: true),
-  )
-
-  #speaker-note[
-    - tradeoff between core count and core complexity
-    -
+    - Default for GPU offloading in *NVHPC* due to better performance/implementation #pause
   ]
+
+
 ]
+
+// == Clusters
+
+// We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
+
+// #[
+//   #set text(size: .78em)
+//   #figure(
+//     clusters(presentation: true),
+//   )
+
+//   #speaker-note[
+//     - tradeoff between core count and core complexity
+//     -
+//   ]
+// ]
 
 = Contributions
 
@@ -395,29 +427,32 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 #slide[
   #grid(
     columns: 2,
-    column-gutter: 4em,
+    column-gutter: 1em,
+    [#figure(
+        supplement: none,
+        numbering: none,
+        image("resources/imgs/icons/cmake.png"),
+        caption: [#set text(size: .9em, fill: gray)
+          Image courtesy of \ https://earthly.dev/blog/cmake-vs-make-diff/],
+      )],
     [
       === CMake
-      - Modernizing HAWEN's build system #pause
-      - Simplified to a single library #pause
-      - Fixes for *parallel compilation* #pause
-      - Integration with *Ninja* and *Ccache* #pause
-      - *Declarative dependency management* // with fetch content
+      // - Modernizing HAWEN's build system #pause
+      // - Simplified to a single library #pause
+      - Fixes for *parallel compilation*, simplified the software to a single library #pause
+      // - Integration with *Ninja* and *Ccache* #pause
+      - *Declarative dependency management*
+        - Explicit tested dependency versions
+        - Ensuring build reproducibility
+        - Better portability #pause // with fetch content
+
+      === Others
+
+      // - Integrated a *Unit Testing* framework #pause
+      - Fixes for non-standard precision kinds #pause // to ensure compatibility acrosso compilers
+      - *Eliminating string operations* (`trim`, `adjustl`, `select("...")`, ...) in potential GPU code
     ],
-    move(dy: 40pt, scale(150%, figure(
-      supplement: none,
-      numbering: none,
-      image(height: 45%, "resources/imgs/icons/cmake.png"),
-      caption: [#set text(size: .5em, fill: gray)
-        Image courtesy of https://earthly.dev/blog/cmake-vs-make-diff/],
-    ))),
   )
-
-  === Others
-
-  - Integrated a *Unit Testing* framework #pause
-  - Fixes for non-standard precision kinds #pause // to ensure compatibility acrosso compilers
-  - Eliminating string operations (`trim`, `adjustl`, `select("...")`, ...) in potential GPU code
 
   // I'll use an image from the internet instead, this looks like shit
   // #fletcher.diagram({
@@ -480,37 +515,40 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
   // })
 ]
 
-#heading(
-  level: 2,
-  depth: 2,
-  context if in-outline.get() [Matrix Inversions & Cache Locality] else [Removing Matrix Inversions and Optimizing Cache Locality],
-)
+// #heading(
+//   level: 2,
+//   depth: 2,
+//   context if in-outline.get() [Matrix Inversions & Cache Locality] else [Removing Matrix Inversions and Optimizing Cache Locality],
+// )
+
+== Improving Cache Locality
 
 #slide[
-  === Improving Cache Locality
-
-  - Concepts from *Data-Oriented Design* @DOD #pause
+  - Concepts from *Data-Oriented Design*@DOD #pause // programming paradigm that focuses on HOW data is laied out in memory and how it flows thorught the system
   - *Reordering loops* and changing the order of the dimensions of the tensors #pause // Fortran is column major
 
   // These two lines of code alone represent 90% of the program runtime for a 2D elastic benchmark
   #figure({
     set text(.68em)
     ```f90
-    do concurrent(l=1:ctx_dg%n_different_order, k=1:ctx_dg%n_different_order)
-      n_dof_k = ctx_dg%n_dof_per_order(k)
-      n_dof_l = ctx_dg%n_dof_per_order(l)
-      face_phi_xi(k,l)%array = sum(ctx_dg%quadGL_face_phi_phi_w(k,l)%array, dim=4)
-      do concurrent(j=1:n_dof_l, i=1:n_dof_k, iface=1:3, jdim=1:2, kdim=1:2)
-        face_phi_xi_nCntau(k,l)%array(kdim,jdim,iface,i,j) = dot_product(face_coeff_Cx(kdim,jdim,iface,:), ctx_dg%quadGL_face_phi_phi_w(k,l)%array(iface,i,j,:))
+    do concurrent(l=1:n_diff_orders, k=1:n_diff_orders)
+      n_dof_k = dof_map(k)
+      n_dof_l = dof_map(l)
+
+      first(k,l)%array = sum(weights(k,l)%array, dim=4)
+
+      do concurrent(j=1:n_dof_l, i=1:n_dof_k, face=1:3, jdim=1:2, kdim=1:2)
+        second(k,l)%array(kdim,jdim,face,i,j) = dot_product(coeff(kdim,jdim,face,:), &
+                                                            weigths(k,l)%array(face,i,j,:))
       end do
     end do
     ```
   })
 ]
 
-#slide(repeat: 2, self => [
-  === Replacing Inversions of Dense Matrices
+== Replacing Inversions of Dense Matrices
 
+#slide(repeat: 2, self => [
   #alternatives[#grid(columns: 2, align: horizon, column-gutter: -.5em)[#figure(
         image(width: 90%, "resources/imgs/paraview_summary.svg"),
       )][
@@ -530,87 +568,85 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 ])
 
 #slide[
+  // move before TAU
   When solving a system $A X = B$, $L U$ decomposition is #pause
-  - *always faster* #only("2")[@DontInvertThatMatrix @WhyNotInvertMatrix @WhyLUbetterThanInverse] #pause
+  - *always faster* than the $A^(-1)$ form #only("2")[@DontInvertThatMatrix @WhyNotInvertMatrix @WhyLUbetterThanInverse] #pause
   - *more accurate* for ill-conditioned matrices #only("3")[@AccuracyAndStability[Section 14.1]] #pause
 
-  $
-    A = mat(a_11, a_12, a_13; a_21, a_22, a_23; a_31, a_32, a_33) = L U = mat(1, 0, 0; l_21, 1, 0; l_31, l_32, 1) mat(u_11, u_12, u_13; 0, u_22, u_23; 0, 0, u_33)
-  $
+  // $
+  //   A = mat(a_11, a_12, a_13; a_21, a_22, a_23; a_31, a_32, a_33) = L U = mat(1, 0, 0; l_21, 1, 0; l_31, l_32, 1) mat(u_11, u_12, u_13; 0, u_22, u_23; 0, 0, u_33)
+  // $ TODO: move in the end slides
 
   #pause
 
   We rewrite the previous equation to avoid computing the inverse
-  - LAPACK's `*GETRF` and `*GETRS`
+  - LAPACK's `*GETRF` and `*GETRS` #pause
+
+  We replace the matrix inversion in
+  + the $cal(A)$ matrix assembly
+  + the computation of the HDG solution
+  + some specifics in the elastic wave propagation
 ]
 
-#slide[
-  === Computing Analytically Other Inversions
-
-  - *elastic wave propagation*: compliance tensor in Voigt notation #only("1")[@Voigt] is #only("1")[@HDGStabilize] $S = V^(-1) C^(-1) V^(-1)$ #pause
-
-  #let zeros = $0$
-
-  #only(2)[
-    $
-      V_"3D" = mat(
-        1, zeros, zeros, zeros, zeros, zeros;
-        zeros, 1, zeros, zeros, zeros, zeros;
-        zeros, zeros, 1, zeros, zeros, zeros;
-        zeros, zeros, zeros, 2, zeros, zeros;
-        zeros, zeros, zeros, zeros, 2, zeros;
-        zeros, zeros, zeros, zeros, zeros, 2
-      ), C_"3D" & = mat(
-                    lambda + 2 mu, lambda, lambda, zeros, zeros, zeros;
-                    lambda, lambda + 2 mu, lambda, zeros, zeros, zeros;
-                    lambda, lambda, lambda + 2 mu, zeros, zeros, zeros;
-                    zeros, zeros, zeros, mu, zeros, zeros;
-                    zeros, zeros, zeros, zeros, mu, zeros;
-                    zeros, zeros, zeros, zeros, zeros, mu
-                  )
-    $] #pause
-
-  #only(3)[
-    $
-      S = mat(
-        (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
-        -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
-        -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), zeros, zeros, zeros;
-        zeros, zeros, zeros, 1 / (4 mu), zeros, zeros;
-        zeros, zeros, zeros, zeros, 1 / (4 mu), zeros;
-        zeros, zeros, zeros, zeros, zeros, 1 / (4 mu)
-      )
-    $
-  ]
-]
-
-
-#slide[
-  === Evaluation
-
-  Benchmarked with
-  - Marmousi2 2D model @Marmousi2 #pause
-  - 100 thousand cells #pause
-  - 169 sources (right-hand sides $cal(B)$ of global liner system) #pause
-  - frequency of #zi.Hz[7] #pause
-  - 8 different configuration, polynomial in $[2, 9]$ + $frak(p)$-adaptability
-]
-
-#slide[
-  #figure(
-    image("resources/imgs/model_plot.svg"),
-  )
-]
 // #slide[
-//   #figure(
-//     image("resources/imgs/magnitude_plot.svg"),
-//     caption: [Magnitude of displacement field],
-//   )
-// ]
+//   === Computing Analytically Other Inversions
+
+//   - *elastic wave propagation*: compliance tensor in Voigt notation #only("1")[@Voigt] is #only("1")[@HDGStabilize] $S = V^(-1) C^(-1) V^(-1)$ #pause
+
+//   #let zeros = $0$
+
+//   #only(2)[
+//     $
+//       V_"3D" = mat(
+//         1, zeros, zeros, zeros, zeros, zeros;
+//         zeros, 1, zeros, zeros, zeros, zeros;
+//         zeros, zeros, 1, zeros, zeros, zeros;
+//         zeros, zeros, zeros, 2, zeros, zeros;
+//         zeros, zeros, zeros, zeros, 2, zeros;
+//         zeros, zeros, zeros, zeros, zeros, 2
+//       ), C_"3D" & = mat(
+//                     lambda + 2 mu, lambda, lambda, zeros, zeros, zeros;
+//                     lambda, lambda + 2 mu, lambda, zeros, zeros, zeros;
+//                     lambda, lambda, lambda + 2 mu, zeros, zeros, zeros;
+//                     zeros, zeros, zeros, mu, zeros, zeros;
+//                     zeros, zeros, zeros, zeros, mu, zeros;
+//                     zeros, zeros, zeros, zeros, zeros, mu
+//                   )
+//     $] #pause
+
+//   #only(3)[
+//     $
+//       S = mat(
+//         (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+//         -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+//         -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), zeros, zeros, zeros;
+//         zeros, zeros, zeros, 1 / (4 mu), zeros, zeros;
+//         zeros, zeros, zeros, zeros, 1 / (4 mu), zeros;
+//         zeros, zeros, zeros, zeros, zeros, 1 / (4 mu)
+//       )
+//     $
+//   ]
+// ] TODO: this goes at theend
+
+
 #slide[
-  #figure(
-    image("resources/imgs/real_part_plot.svg"),
-  )
+  #grid(columns: 2, column-gutter: 1em)[
+    #grid(columns: 1, row-gutter: .1em)[#figure(
+        image(width: 99%, "resources/imgs/model_plot.svg"),
+      )][#figure(
+        image(width: 99%, "resources/imgs/real_part_plot.svg"),
+      )]
+  ][
+    === Evaluation
+
+    Benchmarked with
+    - Marmousi2 2D model @Marmousi2 #pause
+
+    - 100 thousand cells #pause
+    - 169 sources (right-hand sides $cal(B)$ of global liner system) #pause
+    - frequency of #zi.Hz[7] #pause
+    - 8 different configurations, polynomial in $[3, 9]$ + $frak(p)$-adaptivity in $[2, 9]$
+  ]
 ]
 
 #slide[
@@ -707,7 +743,7 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
   Looking at the generated assembly code
   - $approx 30%$ reduction in instruction count with `MOV` and `ADD` type instructions decreasing in equal measure: *less data movement* #pause
   - dot product for face integrals accounting for $approx$ *80%* of the *total program runtime* #pause
-  - no improvements with BLAS or GEMM operations: a higher level of parallelism is necessary #pause
+  - no improvements with BLAS1 or GEMM operations: a higher level of parallelism is necessary #pause
   #figure(cache-branch-misses-table-figure())
 ]
 
@@ -724,29 +760,29 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
   - CUDA-aware OpenMPI #only("4")[@OpenMPI] #pause
 
   Special care is required #pause
-  - Files with CUDA code (`.cuf`) have to be compiled separately #pause
+  // - Files with CUDA code (`.cuf`) have to be compiled separately #pause
   - Always specify *working precision* #pause
   - *Conditional compilation* for CPU and GPU code #pause
-  - *Reduce data movement*, correctly use *`managed`* and *`device`* attributes
-  - Offloaded routines have to be *`pure`*
+  - *Reduce data movement*, correctly use *`managed`* and *`device`* attributes #pause
+  // - Offloaded routines have to be *`pure`*
 ]
 
 #slide[
   === Challenges
 
   Uncovered 3 compiler bugs in NVFortran + 1 in LLVM: #pause
-  - \#TPR37335 @TPR37335 #sym.arrow.l *deadlock* in compiler #pause
-  - \#TPR37469 @TPR37469 #sym.arrow.l *memory leak* in compiler-generated kernels #pause
-  - \#TPR37570 @TPR37570 #sym.arrow.l incorrect propagation of `managed` attribute in OpenMP private variables #pause
-  - \#148884 @148884 #sym.arrow.l runtime failure of OpenMP code in MUMPS
+  - \#TPR37335#only("2-")[@TPR37335] #sym.arrow.l *deadlock* in compiler #pause
+  - \#TPR37469#only("3-")[@TPR37469] #sym.arrow.l *memory leak* in compiler-generated kernels #pause
+  - \#TPR37570#only("4-")[@TPR37570] #sym.arrow.l incorrect propagation of `managed` attribute in OpenMP #pause
+  - \#148884#only("5-")[@148884] #sym.arrow.l runtime failure of OpenMP code in MUMPS
 ]
 
-#slide[
-  === Localizing Loops
+// #slide[
+//   === Localizing Loops
 
-  #set text(.52em)
-  #build-volume-integrals()
-]
+//   #set text(.65em)
+//   #build-volume-integrals(presentation: true)
+// ]
 
 #slide[
   === Evaluation
@@ -777,10 +813,10 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
     column-gutter: 1em,
     [
       - $cal(A) Lambda = cal(B)$ is very sparse, cannot rely on LAPACK #pause
+
       - HAWEN uses a *direct* solver: *MUMPS* @MUMPS
         - Currently cannot compile with NVFortran
-        - GPU version not yet public
-        - Relies on XKBlas @XKBlas, not configured for the NVHPC Toolkit #pause
+        - GPU version not yet public and relies on XKBlas@XKBlas, not configured for the NVHPC Toolkit #pause
       - we explore a very recent GPU accelerated sparse solver by NVIDIA: *cuDSS*
     ],
     figure(image(height: 62%, "resources/imgs/A_spy_plot.svg")),
@@ -790,10 +826,11 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 #slide[
   === Implementation
 
-  - Interface between Fortran and C++ through C bindings #pause
-  - Communication layers built in-tree to support *multi-threading* and *MGMN* mode #pause
-  - conversion between *COO* and *CSR* formats efficiently using algorithms from SciPy @SciPy #pause
-  - Sparse to dense conversion for RHS using *cuSPARSE* #pause
+  - Interface between Fortran and C++ through ISO C bindings #pause
+  - we had to conform to cuDSS's formalisms for matrices
+  // - Communication layers built in-tree to support *multi-threading* and *MGMN* mode #pause
+  // - conversion between *COO* and *CSR* formats efficiently using algorithms from SciPy @SciPy #pause
+  // - Sparse to dense conversion for RHS using *cuSPARSE* #pause
 
   === Limitations of our Implementation
 
@@ -801,36 +838,48 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 ]
 
 #slide[
-  === Evaluation
+  #grid(columns: 2, column-gutter: 1em)[#move(dx: -30pt, dy: 20pt, scale(
+      120%,
+      figure(image("resources/imgs/3dparaprof.png")),
+    ))][
+    === Evaluation
 
-  Benchmarked with
-  - Homogeneous planar waves in a $2 times 2 times 2$ meters cube (sources in one of the corners)  #pause
-  - 100 thousand cells #pause
-  - 4 sources (right-hand sides $cal(B)$ of the global linear system) #pause
-  - frequency of #mHz[2] #pause
-  - polynomial order 3 #pause
-  - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster #pause
-  - 1 combination of MPI/OpenMP for cuDSS, several for MUMPS
-]
+    Benchmarked with
+    - Homogeneous plane waves in a #box(block(breakable: false)[$2 times 2 times 2$]) meters cube #pause
 
-#slide[
-  #align(center + horizon)[
-    #figure(image(height: 88%, "resources/imgs/3D_homogeneous_benchmark.svg"))
+    - 100 thousand cells, polynomial order 3 (matrix of size 2206490#super[2]) #pause
+    - 4 sources (right-hand sides $cal(B)$ of the global linear system) #pause
+    - frequency of #mHz[2] #pause
   ]
 ]
 
-#slide[
-  #cudss-v-mumps(width: 26cm, height: 9cm, highlighted: false)
-]
+#slide(repeat: 5, self => [
+  #align(bottom)[
+    - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster #pause
+    - 1 combination of MPI/OpenMP for cuDSS, several for MUMPS #pause
+
+    #set text(size: .8em)
+    #cudss-v-mumps(
+      width: 26cm,
+      height: 8.4cm,
+      highlighted: false,
+      presentation: true,
+    )
+  ]
+])
 
 #slide[
-  #cudss-v-mumps(width: 26cm, height: 9cm, highlighted: true)
-]
-#slide[
-  #set align(horizon)
-  #figure(
-    speedup-cudss-table(presentation: true),
-  )
+  #align(bottom)[
+    #figure(speedup-cudss-table(presentation: true))
+
+    #set text(size: .8em)
+    #cudss-v-mumps(
+      width: 26cm,
+      height: 8.4cm,
+      highlighted: true,
+      presentation: true,
+    )
+  ]
 ]
 
 #heading(
@@ -840,10 +889,15 @@ We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM*
 )
 
 #slide[
+  === Conclusions
+  - We improved the HAWEN software for forward wave problems #pause
+  - We started to take advantage of heterogenous systems in HAWEN #pause
+
+  === Future Works
   - Extend the work on GPU offloading  #pause
   - Explore GCC's support for GPU offloading through OpenMP and OpenACC #pause
   - Reduce memory usage #pause
-  - Take advantage of the a-synchronicity of GPU code #pause
+  - Take advantage of the asynchronicity of GPU code #pause
   - Explore computation in lower precisions
 ]
 

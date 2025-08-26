@@ -7,26 +7,48 @@
       top: if y == 0 { 1pt } else if y == 2 { none } else { 0pt },
       bottom: .5pt,
     ),
-  )
+  ) if not presentation
 
   set table(inset: .5em) if presentation
-  table(
-    columns: 7,
-    // align: left,
-    align: (left, ..(right,) * 6),
-    table.header([], table.cell(align: center, colspan: 6)[MUMPS baselines]),
-    [], ..mpi-configs().map(strong).map(smallcaps),
-    [#smallcaps[*Speedup*]],
-    ..for c in mpi-configs() {
-      (
-        [
-          #num(
-            mumps_stats().at(c).total.avg / cudss_stats().total.avg,
-            digits: 2,
-          )#sym.times
-        ],
-      )
-    },
-    table.hline(y: 3, start: 0, end: 7, stroke: 1pt),
-  )
+
+  if presentation {
+    table(
+      columns: 7,
+      // align: left,
+      align: (left, ..(right,) * 6),
+      [], ..mpi-configs().map(strong).map(smallcaps),
+      [#smallcaps[*Speedup*]],
+      ..for c in mpi-configs() {
+        (
+          [
+            #num(
+              mumps_stats().at(c).total.avg / cudss_stats().total.avg,
+              digits: 2,
+            )#sym.times
+          ],
+        )
+      },
+      table.hline(y: 2, start: 0, end: 7, stroke: 2pt),
+    )
+  } else {
+    table(
+      columns: 7,
+      // align: left,
+      align: (left, ..(right,) * 6),
+      table.header([], table.cell(align: center, colspan: 6)[MUMPS baselines]),
+      [], ..mpi-configs().map(strong).map(smallcaps),
+      [#smallcaps[*Speedup*]],
+      ..for c in mpi-configs() {
+        (
+          [
+            #num(
+              mumps_stats().at(c).total.avg / cudss_stats().total.avg,
+              digits: 2,
+            )#sym.times
+          ],
+        )
+      },
+      table.hline(y: 3, start: 0, end: 7, stroke: 1pt),
+    )
+  }
 }

@@ -13,7 +13,7 @@
     [CPU#sub[FP64] (Baseline)],
     [CPU#sub[FP32]],
     [GPU#sub[FP64]],
-    [GPU#sub[FP64]],
+    [GPU#sub[FP32]],
   ),
   [#smallcaps[*Speedup*]],
   [#num(cpu_64 / cpu_64)#sym.times (#num(cpu_64, digits: 2) seconds)],
