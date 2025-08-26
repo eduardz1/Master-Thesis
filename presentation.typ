@@ -524,26 +524,29 @@
 == Improving Cache Locality
 
 #slide[
-  - Concepts from *Data-Oriented Design*@DOD #pause // programming paradigm that focuses on HOW data is laied out in memory and how it flows thorught the system
-  - *Reordering loops* and changing the order of the dimensions of the tensors #pause // Fortran is column major
+  #grid(columns: 2, column-gutter: 0.1em)[#figure(
+      image(height: 79%, "resources/imgs/memory_speed_comparison.gif"),
+    )][
+    - Concepts from *Data-Oriented Design*@DOD #pause // programming paradigm that focuses on HOW data is laied out in memory and how it flows thorught the system
+    - *Reordering loops* and changing the order of the dimensions of the tensors #pause // Fortran is column major
 
-  // These two lines of code alone represent 90% of the program runtime for a 2D elastic benchmark
-  #figure({
-    set text(.68em)
-    ```f90
-    do concurrent(l=1:n_diff_orders, k=1:n_diff_orders)
-      n_dof_k = dof_map(k)
-      n_dof_l = dof_map(l)
+    // These two lines of code alone represent 90% of the program runtime for a 2D elastic benchmark
+    #figure({
+      set text(.66em)
+      ```f90
+      do concurrent(l=1:n_diff_orders, k=1:n_diff_orders)
+        n_dof_k = dof_map(k)
+        n_dof_l = dof_map(l)
+        first(k,l)%array = sum(weights(k,l)%array, dim=4)
 
-      first(k,l)%array = sum(weights(k,l)%array, dim=4)
-
-      do concurrent(j=1:n_dof_l, i=1:n_dof_k, face=1:3, jdim=1:2, kdim=1:2)
-        second(k,l)%array(kdim,jdim,face,i,j) = dot_product(coeff(kdim,jdim,face,:), &
-                                                            weigths(k,l)%array(face,i,j,:))
+        do concurrent(j=1:n_dof_l, i=1:n_dof_k, face=1:3, jdim=1:2, kdim=1:2)
+          second(k,l)%array(kdim,jdim,face,i,j) &
+            = dot_product(coeff(kdim,jdim,face,:), &
+                          weigths(k,l)%array(face,i,j,:))
+        end do
       end do
-    end do
-    ```
-  })
+      ```
+    })]
 ]
 
 == Replacing Inversions of Dense Matrices
