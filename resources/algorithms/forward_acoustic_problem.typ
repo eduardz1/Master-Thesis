@@ -40,7 +40,6 @@
               } else [BuildTensors]][$K_e$, $omega$, $rho$, $bold(v)$, $f$],
             )
           })
-          if not presentation { LineBreak }
           LineComment(
             Assign(
               [$cal(A)$],

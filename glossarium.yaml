@@ -229,3 +229,13 @@ IO:
   short: I/O
   long: Input/Output
   description: The communication of data between a computer and external devices or systems.
+
+RAM:
+  short: RAM
+  long: Random Access Memory
+  description: A computer's short-term memory used to store data and instructions for quick access.
+
+VRAM:
+  short: VRAM
+  long: Video Random Access Memory
+  description: Specialized memory used by a GPU to store and access image, video, and graphical data quickly. Similar in technology to regular RAM, but optimized for the high bandwidth.

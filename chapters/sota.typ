@@ -188,7 +188,7 @@ where
 - $w_i$ are the weights associated to each point
 - $x_i$ are the positions of the quadrature points, for example with Gauss-Legendre quadrature in the 1D case with the integral over the interval $[-1, 1]$, they correspond to the roots of the $n$#super[th] Legendre polynomial @x-LegendrePoly.
 
-Notice in @matrices-hdg that $Lambda$ only contains coefficients for the faces, $cal(R)_e$ is defined as the _connectivity map_ and serves to associate the degrees of freedom of the faces of the cell $e$ such that
+Notice in @matrices-hdg that $Lambda$ only contains coefficients for the faces, $cal(R)_e$ is defined as the _connectivity map_ and serves to associate the #lower[@DOF:long] of the faces of the cell $e$ such that
 
 $
   cal(R)_e Lambda = Lambda |_(partial K_e).
@@ -202,8 +202,8 @@ $
   cal(A) Lambda &= cal(B).
 $
 
-Here we see the benefit of @HDG: by rewriting the system in a way that depends only on the degrees of freedom of the faces ($Lambda$), we can significantly reduce the size of the unknowns in the sparse system that is fed to the sparse solver, a topic that we discussed in @sparse-solvers. A summary of the algorithm can be seen in @forward-problem. The final system results in a very sparse matrix, solving it efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel to solve the system iteratively.
+Here we see the benefit of @HDG: by rewriting the system in a way that depends only on the #lower[@DOF:long] of the faces ($Lambda$), we can significantly reduce the size of the unknowns in the sparse system that is fed to the sparse solver, a topic that we discussed in @sparse-solvers. A summary of the algorithm can be seen in @forward-problem. The final system results in a very sparse matrix, solving it efficiently is one of the most challenging aspects of @HDG. As an example, #cite(<x-GPUHDG>, form: "prose") take advantage of the sparsity structure inherent in their problem to write an optimized _ad-hoc_ kernel to solve the system iteratively.
 
 #block(breakable: false, forward-acoustic-problem-alg())
 
-We will not discuss the @HDG method in any more detail as that would be out of scope for this work. Further reading and references can be found in the bibliography, in particular in the works of @x-AdjointHDG and @x-HDG. The performance analysis will focus on the first two matrices $AA_e$ and $CC_e$ in particular with the others being relatively inexpensive to compute. As a final remark, the key to an efficient @HDG implementation is a performant construction of the various matrices necessary to build the final system and optimized operations between the matrices.
+We will not discuss the @HDG method in any more detail as that would be out of scope for this work. Further reading and references can be found in the bibliography, in particular in the works of @x-AdjointHDG and @x-HDG. The performance analysis will specifically focus on the first two matrices $AA_e$ and $CC_e$ with the others being relatively inexpensive to compute. As a final remark, the key to an efficient @HDG implementation is a performant construction of the various matrices necessary to build the final system and optimized operations between the matrices.

@@ -19,7 +19,7 @@ In this section we detail the practical contributions that are done as part of t
 
 == Preliminary Work <preliminary-work>
 
-Tackling some general problems in a code base before starting with the core of the work is useful to acquire familiarity with the codebase. At the same time, some of the solutions presented in this section enable a more streamlined contribution process for other changes more directly related to the parallelization work.
+Tackling some general problems in a codebase before starting with the core of the work is useful to acquire familiarity with said codebase. At the same time, some of the solutions presented in this section enable a more streamlined contribution process for other changes more directly related to the parallelization work.
 
 === CMake Contributions
 
@@ -27,31 +27,29 @@ The build system was one of the first problems that was tackled, @HAWEN provides
 
 Another improvement that could be made in @HAWEN was in the dependency management. The project depends on some heavy libraries, an option to download some of the key ones on-demand was added to simplify usage of the software by newcomers and simplify configuration across different systems. This results in a declarative way of managing dependencies, which also enables us to pin the project to a specific version of a given dependency, something that was not possible before in an automatic fashion. Another advantage of this approach is the ability of building dependencies in-tree and therefore having the ability to take advantage of link-time optimizations, which allow for smaller binaries and sometimes significant performance improvements. Another advantage is the streamlining of testing across different compilers, given that modules compiled with different compilers are not cross-compatible in Fortran, each Fortran dependency has to be re-compiled with the same compiler used to compile the main project.
 
-Being this work performance focused, a correct distinction between the debug and release builds, and encouragement of the usage of one over the other was ensured. This was done through the definition of CMake presets and the addition of a development guide in the documentation.
+Being this work performance focused, a correct distinction between the `Debug` and `Release` builds, and encouragement of the usage of one over the other was ensured. This was done through the definition of CMake presets (in JSON format) and the addition of a development guide in the documentation.
 
 === Unit Testing
 
-To ensure the correctness of the new code that was written, unit tests for each of the subroutines that was modified or written were introduced. Previously, @HAWEN lacked a proper testing framework and only had a couple of end to end tests. A first testing framework that was tested was pFUnit @x-pFUnit, a very complete and powerful library for Fortran originally developed by NASA and NGC TASC. Some open issues prevented us from using it in the software. Another framework that was tested was Fortuno @x-Fortuno, a very well written testing framework, but which unfortunately presented some issues when used with the NVIDIA compiler, in particular, some modern features such as recursive types with `allocatable` definition of the pointer to the type, were not supported. Even after reverting some of those to older style Fortran, a bug in the NVIDIA compiler prevented us from using it. Finally, we settled on `test-drive` @x-testdrive, an extremely simple testing framework by the Fortran-lang community. While not very feature-full, it was sufficient for our needs and the code is simple enough that making it work across different compilers was not a problem.
+To ensure the correctness of the new code that was written, unit tests for each of the subroutines that were modified or written were introduced. Previously, @HAWEN lacked a proper testing framework and only had a couple of end to end tests. A first testing framework that was tested was pFUnit @x-pFUnit, a very complete and powerful library for Fortran originally developed by NASA and NGC TASC. Some open issues prevented us from using it in the software. Another framework that was tested was Fortuno @x-Fortuno, a very well written testing framework, but which unfortunately presented some issues when used with the NVIDIA compiler, in particular, some modern features such as recursive types with `allocatable` definition of the pointer to the type, were not supported. Even after reverting some of those to older style Fortran, a bug in the NVIDIA compiler prevented us from using it. Finally, we settled on `test-drive` @x-testdrive, an extremely simple testing framework by the Fortran-lang community. While not very feature-full, it was sufficient for our needs and the code is simple enough that making it work across different compilers was not a problem.
 
 While `test-drive` does not provide any integrated benchmarking utilities, a small wrapper around it with `volatile` arguments (to avoid targeted optimizations by the compiler) was written to benchmark some of the routines we were testing, like the `hdg_build_quadrature_integrals` routines, in an isolated and repeatable way.
 
-=== Using explicit precision kinds <precision-kinds>
+=== Using Explicit Precision Kinds <precision-kinds>
 
-At the start of this work, it could noticed that @HAWEN was using non-portable precision kinds, such as `real(8)` and `integer(4)`, which are not guaranteed to be the same across different compilers. Interpreting the first as a 64 bit IEEE 754 floating point number and the second as a 32 bit integer is not assured by the standard. In the floating point case, the Fortran standard is particularly interesting.
-
-The Fortran standard defines some constant in the `intrinsic` `iso_fortran_env` module, such as `real64` and `int32`, these constants are guaranteed to be representations of, respectively 64 bit floating point numbers and 32 bit integers, across all compilers. The standard only requires that the `real64` constant is a 64 bit floating point number, but it does not require that it is represented as an IEEE 754 number. To ensure that, the intrinsic `ieee_select_real_kind` function was used (the related `select_real_kind` function, does not ensure IEEE 754 floats). This flexibility in Fortran makes it very easy to define custom floating point types, a feature that is used by the team at @MUMPS to decouple the precision of the matrix entries from the precision of the arithmetic operations.
+At the start of this work, it could be noticed that @HAWEN was using non-portable precision kinds, such as `real(8)` and `integer(4)`, which are not guaranteed to be the same across different compilers. Interpreting the first as a 64 bit IEEE 754 floating point number and the second as a 32 bit integer is not assured by the standard. In the floating point case, the Fortran standard is particularly interesting. The Fortran standard defines some constant in the `intrinsic` `iso_fortran_env` module, such as `real64` and `int32`, these constants are guaranteed to be representations of, respectively 64 bit floating point numbers and 32 bit integers, across all compilers. The standard only requires that the `real64` constant is a 64 bit floating point number, but it does not require that it is represented as an IEEE 754 number. To ensure that, the intrinsic `ieee_select_real_kind` function was used (the related `select_real_kind` function, does not ensure IEEE 754 floats). This flexibility in Fortran makes it very easy to define custom floating point types, a feature that is used by the team at @MUMPS to decouple the precision of the matrix entries from the precision of the arithmetic operations.
 
 Ensuring that the precision kinds used are the ones we expect was very important when comparing the performance of different compilers and was key in ensuring that the values being fed to the @GPU were the expected ones, being @GPU:short:pl very sensitive to the precision of the data they receive and usually optimized for lower precision operations.
 
-=== Making use of C bindings for enums
+=== Making Use of C Bindings for Enumerators
 
-Being the code very broad in scope, a lot of options are available for the user. In most cases, these options were handled as strings (or better, arrays of characters, given that Fortran doesn't have a string type). Operations such as `trim` and `adjustl` (respectively, to remove empty characters and to align a string to the left), are essential to guarantee the correctness of a switch case in Fortran that operates on arrays of characters. These operations, however, are incompatible with @GPU programming. Most of these options can be instead replaced by taking advantage of Fortran's C interoperability with the `enum` data structure @x-ModernFortran[p.~408]).
+Being the code very broad in scope, a lot of options are available for the user. In most cases, these options were handled as strings (or better, arrays of characters, given that Fortran doesn't have a string type). Operations such as `trim` and `adjustl` (respectively, to remove empty characters and to align a string to the left), are essential to guarantee the correctness of a switch case in Fortran that operates on arrays of characters. These operations, however, are incompatible with @GPU programming. Most of these options can be instead replaced by taking advantage of Fortran's C interoperability with the `enum` data structure @x-ModernFortran[p.~408].
 
 The Fortran standard, unfortunately, introduced enumerator types only very recently @x-ModernFortran[p.~461] and is a feature that is still not supported by the major compilers, in part due to the lackluster standardization of the feature, which offers very little benefits compared to the aforementioned `enum, bind(C)` feature. The new enumerator type in Fortran is just defined again as a collection of integers instead of the more powerful sum types present in languages such as Haskell and Rust @x-LLVMFortran202X.
 
 == Exploring Alternative Sparse Solvers <replacing-mumps>
 
-A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by adding the choice to use the @GPU native cuDSS library (see @cudss-section) instead of the @MUMPS sparse solver (see @mumps-section). The implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in #box(block(breakable: false)[C++]), a Fortran wrapper was written around it to allow interfacing the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations, as we see in @extern-c.
+A first attempt at parallelizing part of the @HAWEN codebase on @GPU was by adding the choice to use the @GPU#[-native] cuDSS library (see @cudss-section) instead of the @MUMPS sparse solver (see @mumps-section). The implementation introduced a compile time option to switch between the two solvers. Being cuDSS written in #box(block(breakable: false)[C++]), a Fortran wrapper was written around it to allow interfacing the two using the intrinsic C bindings of both Fortran, through the `iso_c_binding` `intrinsic` module, and C++ `extern "C"` declarations, as we see in @extern-c.
 
 #[
   #show figure: set block(breakable: true)
@@ -195,7 +193,6 @@ An example of the wrappers around the cuDSS library for the various phases of th
         // Only the main MPI process should start the Solve step, the work will be split
         // between the processes by the cuDSS library
         if (master) {
-          // b
           CUDA_ERROR_CHECK(cudaMalloc(&b_d, x.size() * sizeof(val_type)));
           std::vector<T> csr_offsets_b_vec(csr_offsets.begin(), csr_offsets.end());
           std::vector<T> columns_b_vec(csr_columns.begin(), csr_columns.end());
@@ -220,7 +217,6 @@ An example of the wrappers around the cuDSS library for the various phases of th
               solver->cusparse_handle, n, std::span{csr_offsets_b_vec},
               std::span{columns_b_vec}, std::span{b_copy}, &b_d);
 
-          // x
           CUDA_ERROR_CHECK(cudaMalloc(&x_d, x.size() * sizeof(val_type)));
         }
 
@@ -248,9 +244,9 @@ An example of the wrappers around the cuDSS library for the various phases of th
 
 == Accelerating the Matrix Creation <acc-mat-creation>
 
-When looking at offloading on device part of the computation of the matrix for the @HDG system, we have to keep in mind Amdahl's law. This observation states that the maximum theoretical speedup of an overall system is limited by the fraction of time that the improved section is actually used @x-Amdahl. It would be unwise, therefore, to focus on routines which are not particularly expensive, even when they offer perfect parallelism opportunities. A focused approach has been employed, with specific functions, such as the one responsible for computing the values of the matrix $AA$ (defined in @matrices-hdg), being analyzed in isolation.
+When looking at offloading on device part of the computation of the matrix for the @HDG system, we have to keep in mind #cite(<x-Amdahl>, form: "prose")'s law. This observation states that the maximum theoretical speedup of an overall system is limited by the fraction of time that the improved section is actually used. It would be unwise, therefore, to focus on routines which are not particularly expensive, even when they offer perfect parallelism opportunities. A focused approach has been employed, with specific functions, such as the one responsible for computing the values of each matrix $AA_e$ (defined in @matrices-hdg), being analyzed in isolation.
 
-Generating the sparse matrix that is fed to the sparse solver can be one of the most costly operations we can find in @HAWEN as seen in @paraprof-summary. As a reminder, the step for matrix creation that we saw in @hdg-section involve computing a series of dense matrices that are then assembled for the @HDG system. In this section we will explore some of the techniques used to accelerate it, in particular by replacing the matrix inversions with @red-mat-inv and @stiffness-matrix, improving cache locality of the code in @improv-cache-locality and exploring a way to rewrite some parts of the computations in a way that is more friendly to @GPU offloading in @computing-quad-int.
+Generating the sparse matrix that is fed to the sparse solver can be one of the most costly operations we can find in @HAWEN as seen in @paraprof-summary. As a reminder, the step for matrix creation that we saw in @hdg-section involve computing a series of dense matrices that are then assembled for the @HDG system. In this section we will explore some of the techniques used to accelerate it, in particular by replacing the matrix inversions with @red-mat-inv and @stiffness-matrix, improving cache locality of the code in @improv-cache-locality, and exploring a way to rewrite some parts of the computations in a way that is more friendly to @GPU offloading in @computing-quad-int.
 
 === Replacing the Inversion of Dense Matrices <red-mat-inv>
 
@@ -280,9 +276,9 @@ This result can be proven empirically, although it has been argued that for well
   "in-outline",
 ).get() [Stiffness Matrix for Elastic Wave Propagation] else [Treatment of the Stiffness Matrix for Elastic Wave Propagation ]) <stiffness-matrix>
 
-In the context of elastic wave propagation, the software uses a formulation based on the compliance tensor $S$ represented by a matrix under Voigt notation, a method used to represent a symmetric tensor by reducing its order @x-Voigt. As is detailed by #cite(<x-HDGStabilize>, form: "prose"), the compliance tensor is represented in such a way that $S = V^(-1) C^(-1) V^(-1)$, where $C$ is the elastic stiffness tensor in Voigt notation and $V$ is the transformation matrix used to reformulate the system in Voigt notation. The dimension of $S$ depends on the dimension of the domain, in 2D, it can be represented in a $3 times 3$ matrix in Voigt notation, while in 3D, it can be represented as a $6 times 6$ matrix.
+In the context of elastic wave propagation, the software uses a formulation based on the compliance tensor $S$ represented by a matrix under Voigt notation, a method used to represent a symmetric tensor by reducing its order @x-Voigt. As is detailed by #cite(<x-HDGStabilize>, form: "prose"), the compliance tensor is represented in such a way that $S = V^(-1) C^(-1) V^(-1)$, where $C$ is the elastic stiffness tensor in Voigt notation and $V$ is the transformation matrix used to reformulate the system in Voigt notation. The dimension of $S$ depend on the dimension of the domain, in 2D, it can be represented in a $3 times 3$ matrix in Voigt notation, while in 3D, it can be represented as a $6 times 6$ matrix.
 
-Under the consideration of visco-elasticity, $C$ and $S$ are complex-valued. Evaluating the complex-valued compliance tensor $S$ meant solving the system $S = V^(-1) C^(-1) V^(-1)$, where the $C$ and $V$ matrices have the following structure, for the 2D and 3D isotropic cases:
+Under the consideration of visco-elasticity, $C$ and $S$ are complex-valued. Evaluating the complex-valued compliance tensor $S$ meant solving the system #box(block(breakable: false)[$S = V^(-1) C^(-1) V^(-1)$]), where the $C$ and $V$ matrices have the following structure, for the 2D and 3D isotropic cases:
 
 #let zeros = $0$
 
@@ -381,7 +377,7 @@ $
   (A + u v^TT)^(-1) = A^(-1) - (A^(-1) u v^T A^(-1)) / (1 + v^T A^(-1) u).
 $
 
-Computing the inverse of $A$ is trivial, and if we rewrite $J$ as $e e^TT$, with $u = e$ and $v = lambda e$, we get
+Computing the inverse of $A = 2 mu I$ is trivial, and if we rewrite $J$ as $e e^TT$, with $u = e$ and $v = lambda e$, we get
 
 $
   C_("3D"_"upper left block")^(-1) = mat(
@@ -504,7 +500,7 @@ In the refactored code, the highlighted lines, when looking at a 2D elastic simu
 
 The current creation matrix algorithm takes advantage of the embarrassingly parallel nature of @DG methods to split the work with @MPI and OpenMP. The mesh is first divided in sub-meshes for each @MPI process and then each thread is assigned a cell. In particular, this last loop is the one we see in @forward-problem. This characteristic might suggest that a solution could be to directly rewrite it as a @GPU kernel. While we cannot exclude that this intuition might end up being the best way to generate the matrix, currently as it stands, the code responsible for generating $cal(A)$ is too complex to result in an efficient kernel. A first attempt was made at that, but we noticed that the abundance of parameters resulted in excessive branching. Combined with the high amount of data movement, this results in abysmal performance.
 
-A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the local matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of time the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing it with OpenMP threads on @CPU, so this change should not penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values do not need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation of the model parameters, but the changes had to be applied to other 5 possible representations as well.
+A second attempt consisted in targeting only specific routines. In particular we start with the one responsible to generate the local matrices. The problem with the current code, that prevents us from simply using OpenACC to offload loops such as the ones we see in @reorder-loops, is that we generally work with meshes with a large number of cells. Calling thousands of kernels on @GPU means that we also multiply by thousands of times the overhead resulting from the kernel call and the one resulting from the back and forth copy of the data between host and device. It was clear then that what we had to do was extract these "hot" loops from the big one over the cells so that we could group the computation in a single kernel call (note that splitting the loop does not prevent us from parallelizing it with OpenMP threads on @CPU, so this change should not penalize systems with no available discrete @GPU). From the results in @hdg-section, we can also notice that some of the values do not need to be computed on a cell by cell basis. In the @HDG section we only look at a piecewise polynomial representation of the model parameters, but the changes had to be applied to other 5 possible representations as well.
 
 Some of the miscellaneous changes required for writing code that could be compiled to @PTX instructions include, but are not limited to:
 
@@ -581,7 +577,7 @@ Some of the miscellaneous changes required for writing code that could be compil
   ) <elemental-poly>
 ]
 
-- As an extension to @precision-kinds, we also need to extend the working precision to cover more cases, previously a lot of variables where declared explicitly as double precision, changing it to a working precision, like we see in @elemental-poly, gives us greater control over the code.
+- As an extension to @precision-kinds, we also need to extend the working precision to cover more cases, previously a lot of variables where declared explicitly as double precision, changing it to a working precision, like we see in @elemental-poly, -- where we use `RKIND_POL` to control at compile tme the precision of the `t_polynomial` type -- gives us greater control over the code.
 
 - Handling normal Fortran code differently from code that contains CUDA Fortran (`cuf`) directives. A simple way is by using the `.cuf` extension, but that is not sufficient, one also needs to add the `-cuda` flag (and in our case `-stdpar` flag to offload `do concurrent` constructs) to the sources and add the same options to the linker. This can be seen in @cmake-cuf.
 
@@ -614,7 +610,7 @@ Some of the miscellaneous changes required for writing code that could be compil
 
 - The work presented in @replacing-mumps due to NVFortran having issues compiling the @MUMPS codebase. As a reminder, Fortran modules are not cross-compatible across compilers so offloading the @HAWEN code with NVFortran meant compiling also the @MUMPS code with it. Currently this leads to a failure at runtime and in particular an OpenMP bug that was reported in the @LLVM project repository as issue #link("https://github.com/llvm/llvm-project/issues/148884")[\#148884] @x-148884.
 
-The @GPU code will look like the one picture in @building-c. This part required the most changes and is therefore not yet production ready. Although some of the routines are already tested with representative test-cases, a benchmark with syntectic data was prepared on the routine responsible for building the quadrature integral values for the sub-matrices.
+The @GPU code will look like the one pictured in @building-c. This part required the most changes and is therefore not yet production ready. Although some of the routines are already tested with representative test-cases, a benchmark with synthetic data was prepared on the routine responsible for building the quadrature integral values for the sub-matrices.
 
 #figure(
   placement: top,
