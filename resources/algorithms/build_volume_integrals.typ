@@ -2,7 +2,7 @@
 #import algorithmic: algorithm-figure
 
 #let build-volume-integrals(presentation: false) = algorithm-figure(
-  [Build Values for $AA_e$],
+  if not presentation [Build Values for $AA_e$],
   vstroke: .5pt + luma(200),
   inset: .5em,
   {

@@ -59,7 +59,7 @@
 
 #show: style-algorithm.with(hlines: (
   grid.hline(stroke: 2pt + primary),
-  grid.hline(stroke: 1pt + primary),
+  grid.hline(stroke: 0pt + primary),
   grid.hline(stroke: 2pt + primary),
 ))
 #show figure.caption: emph
@@ -210,10 +210,10 @@
   }
 
   #figure(
-    image("resources/imgs/global-earth_simu.png"),
+    image(height: 64%, "resources/imgs/global-earth_simu.png"),
     caption: [
-      #set text(fill: gray)
-      30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 OpenMP threads each)],
+      #set text(fill: gray, size: .8em)
+      30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 OpenMP threads each) on the PREM@PREM model of the Earth.],
   )
 ]
 
@@ -264,7 +264,7 @@
       sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
     )
   $
-  #set text(size: .77em)
+  #set text(size: .8em)
   #alternatives[#forward-acoustic-problem-alg(
       presentation: true,
       highlight-tensors: false,
@@ -846,7 +846,7 @@
 
   === Localizing Loops
 
-  #set text(.76em)
+  #set text(.79em)
   #build-volume-integrals(presentation: true)
 ]
 

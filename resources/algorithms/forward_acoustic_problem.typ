@@ -23,7 +23,7 @@
   #let ainv = if highlight-tensors { hl-1[$AA_e^(-1)$] } else { $AA_e^(-1)$ }
 
   #algorithm-figure(
-    "Forward Acoustic Problem",
+    if not presentation { "Forward Acoustic Problem" } else { none },
     vstroke: .5pt + luma(200),
     inset: .5em,
     {
@@ -36,8 +36,8 @@
             Assign(
               [$#ainv, LL_e, BB_e, CC_e$],
               CallInline[#if highlight-tensors {
-                hl-2[BuildTensors]
-              } else [BuildTensors]][$K_e$, $omega$, $rho$, $bold(v)$, $f$],
+                  hl-2[BuildTensors]
+                } else [BuildTensors]][$K_e$, $omega$, $rho$, $bold(v)$, $f$],
             )
           })
           LineComment(
@@ -53,8 +53,8 @@
           )
           LineComment(
             Assign([$Lambda$], CallInline[#if highlight-tensors {
-              hl-3[Solve]
-            } else [Solve]][$cal(A) Lambda = cal(B)$]),
+                hl-3[Solve]
+              } else [Solve]][$cal(A) Lambda = cal(B)$]),
             [Use a sparse solver for the global system],
           )
           LineComment(
