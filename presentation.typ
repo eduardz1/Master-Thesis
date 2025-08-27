@@ -226,7 +226,7 @@
 
   - Used to solve both the _forward_ and _inverse_ problem in the frequency domain #pause
 
-  - Uses the Hybridizable Discontinuous Method (HDG) #pause
+  - Uses the Hybridizable Discontinuous Galerkin (HDG) method #pause
 
   - Designed for large scale problems, parallelized with MPI + OpenMP #pause
 
