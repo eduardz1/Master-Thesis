@@ -3,6 +3,7 @@
 #import "resources/graphs/fem_dg_hdg.typ": fem-dg-hdg-graph
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.8": *
+#import "@preview/physica:0.9.5": *
 #import "@preview/numbly:0.1.0": numbly
 #import "@preview/lilaq:0.4.0" as lq
 #import "resources/algorithms/build_volume_integrals.typ": (
@@ -66,22 +67,6 @@
 #let colors = lq.color.map.okabe-ito
 #let highlights = colors.map(x => x.transparentize(80%))
 
-// #let pinit-highlight-equation-from(height: 2em, pos: bottom, fill: rgb(0, 180, 255), highlight-pins, point-pin, body) = {
-//   pinit-highlight(..highlight-pins, dy: -0.9em, fill: rgb(..fill.components().slice(0, -1), 40))
-//   pinit-point-from(
-//     fill: fill, pin-dx: 0em, pin-dy: if pos == bottom { 0.5em } else { -0.9em }, body-dx: 0pt, body-dy: if pos == bottom { -1.7em } else { -1.6em }, offset-dx: 0em, offset-dy: if pos == bottom { 0.8em + height } else { -0.6em - height },
-//     point-pin,
-//     rect(
-//       inset: 0.5em,
-//       stroke: (bottom: 0.12em + fill),
-//       {
-//         set text(fill: fill)
-//         body
-//       }
-//     )
-//   )
-// }
-
 #let fletcher-diagram = touying-reducer.with(
   reduce: fletcher.diagram,
   cover: fletcher.hide,
@@ -109,6 +94,7 @@
     short-heading: true,
   ),
   config-common(
+    new-section-slide-fn: new-section-slide.with(depth: 1),
     show-bibliography-as-footnote: {
       set text(.5em)
       bibliography(title: none, "works.yaml")
@@ -136,6 +122,9 @@
 // #set heading(numbering: numbly("{1}.", default: "1.1"))
 
 #show footnote.entry: set text(size: .8em)
+#set figure(supplement: none)
+
+#let hide-appendinx = true
 
 #title-slide()
 
@@ -146,10 +135,48 @@
 
 
 = Introduction
-// When studying the earth, trying to predict earthquakes and vulcanic eruptions or locating mineral or oil deposits or using ultrasound imaging for medical purposes a common problem arises and that is the study of waves and wave propagation. Solving this problem requires the solution of wave equations, such as the one shown here. This problem implies the solution of a large scale linear system.
 
 #slide[
-  talk about te team
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+  - Internship conducted at *MAKUTU* team
+    - INRIA Centre at the University of Bordeaux #pause
+
+  - Specialized in mathematical model and computational framework for wave modeling
+    - heavily invested in *full waveform inversion* #pause
+
+    #set text(.8em)
+    #figure(
+      grid(
+        columns: 4,
+        align: bottom,
+        column-gutter: 0em,
+        row-gutter: 1em,
+        figure(
+          image(width: 80%, "resources/imgs/helio_modeling-300x289.png"),
+          caption: [Solar Imaging],
+        ),
+        figure(
+          image(width: 80%, "resources/imgs/bateauv4-300x165.png"),
+          caption: [Electromagnetism],
+        ),
+
+        figure(
+          image(width: 80%, "resources/imgs/vents-300x297.jpg"),
+          caption: [Musical Acoustics],
+        ),
+        figure(
+          image(width: 80%, "resources/imgs/3layers_grad1.png"),
+          caption: [Geophysical Imaging],
+        ),
+      ),
+      caption: [#text(
+          fill: gray,
+        )[Images courtesy of https://team.inria.fr/makutu/]],
+    )
+
+  // Makutu builds advanced mathematical models and computational frameworks for the reconstruction of complex media that are crossed by mechanical or electromagnetic waves. The team is particularly interested in discontinuous finite element methods, spectral elements and high-order time schemes, each of which is relevant to solving wave equations. These numerical methods are eventually hybridized with machine learning techniques. Reconstruction is via inverse problem solving, and Makutu is heavily invested in full waveform inversion, which is a high-definition imaging method widely used in geophysics.
 
   #speaker-note[
     - LARGE SCALE LINEAR SYSTEMS
@@ -166,6 +193,10 @@
 == Inverse Wave Problem
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #align(center + horizon, hawen-schema(presentation: true))
 ]
 
@@ -174,14 +205,23 @@
 // In this context, the HAWEN software was developed. HAWEN is a tool used to solve wave equations in the frequency domain and compute the solution of both the forward problem, meaning the simulation of the propagation of waves through a medium, and the inverse problem, meaning the reconstruction of the properties of a non-directly accessible medium.
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
 
   #figure(
     image("resources/imgs/global-earth_simu.png"),
-    // caption: [30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 threads each)],
+    caption: [
+      #set text(fill: gray)
+      30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 OpenMP threads each)],
   )
 ]
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   Open source software developed by Florian Faucher@HAWEN@FloPhD.
 
   - Used to solve both the _forward_ and _inverse_ problem in the frequency domain #pause
@@ -201,82 +241,11 @@
 
 == The HDG Method
 
-// #heading(
-//   level: 2,
-//   depth: 2,
-//   context if in-outline.get() [HDG for Acoustic] else [HDG Methods Applied to the Acoustic Wave Problem],
-// )
-
-
-// #let pinit-point-from = pinit-point-from.with(thickness: 1pt)
-// #let pinit-arrow = pinit-arrow.with(thickness: 1pt)
-
-// #slide[
-//   #align(center + horizon)[$
-//       - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
-//     $
-
-//     #pinit-highlight(1, 2, fill: highlights.at(0))
-//     #pinit-point-from(
-//       1,
-//       offset-dy: 35pt,
-//       offset-dx: -50pt,
-//       body-dx: -60pt,
-//       fill: colors.at(0),
-//     )[density]
-
-//     #pause
-
-//     #pinit-highlight(3, 4, fill: highlights.at(1))
-//     #pinit-point-from(3, offset-dx: 50pt, fill: colors.at(1))[bulk modulus]
-
-//     #pause
-
-//     #pinit-highlight(5, 6, fill: highlights.at(2))
-//     #pinit-point-from(
-//       5,
-//       pin-dy: -15pt,
-//       body-dy: -15pt,
-//       offset-dy: -70pt,
-//       fill: colors.at(2),
-//     )[angular frequency]
-
-//     #pause
-
-//     #pinit-highlight(7, 8, fill: highlights.at(3))
-//     #pinit-point-from(
-//       8,
-//       offset-dx: 80pt,
-//       offset-dy: 0pt,
-//       pin-dy: 0pt,
-//       body-dy: -10pt,
-//       fill: colors.at(3),
-//     )[source]
-
-//     #pause
-
-//     #pinit-highlight(9, 10, fill: highlights.at(4))
-//     #pinit-highlight(11, 12, fill: highlights.at(4))
-//     #pinit-point-from(
-//       9,
-//       pin-dy: 20pt,
-//       offset-dy: 100pt,
-//       body-dy: -10pt,
-//       fill: colors.at(4),
-//     )[#pin(13)scalar pressure field]
-//     #pinit-arrow(13, 11, start-dx: 30pt, end-dy: 20pt, fill: colors.at(4))
-//   ]
-// ]
-
-// #slide[
-//   To solve numerically the wave equation we need to discretize the equation and solve the Partial Differential Equation (PDE).
-
-//   / Finite Difference Methods (FDMs): approximate differential equations through finite differences, for example $f'(x)$ can be approximated as $ f'(x) approx (f(x + Delta x) - f(x - Delta x)) / (2 Delta x). $
-
-//   / Galerkin Methods: approximate the solution itself by expressing it as a combination of basis functions and ensuring that the equation holds on average across the whole domain.
-// ]
-
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #align(center + horizon)[
     #figure(
       fem-dg-hdg-graph(len: 4.5cm, stroke-width: 2pt, presentation: true),
@@ -284,23 +253,11 @@
   ]
 ]
 
-// #slide[
-//   === First-order Formulation
-
-//   For HDG we need the first-order formulation @AdjointHDG, considering a domain $Omega in RR^2$ with boundary $Gamma$, we have scalar pressure field as $p : Omega -> CC$ and vectorial velocity as $bold(v) : Omega -> CC^"dim"$
-
-//   $
-//     cases(
-//       - i omega rho(bold(x)) bold(v)(bold(x)) + gradient p(bold(x)) & = 0 & "in" &Omega,
-//       - i omega p (bold(x)) kappa(bold(x))^(-1) + gradient dot bold(v)(bold(x)) &= g(bold(x)) &"in" &Omega,
-//       - (rho(bold(x)) sqrt(kappa(bold(x)) rho(bold(x))^(-1)))^(-1) p(bold(x)) + bold(v)(bold(x)) dot bold(nu) &= 0 &"on" &Gamma,
-//     ).
-//   $ <first-order-system>
-// ]
-
-// #pagebreak()
-
 #slide(repeat: 2, self => [
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   $
     cases(
       AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
@@ -322,6 +279,10 @@
 == MPI
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #set align(horizon)
   #grid(columns: 2, column-gutter: 3em)[
     // #set text(size: 1.3em)
@@ -330,6 +291,7 @@
       caption: [Distributed memory paradigm],
     )][
     - *Message Passing Interface* #pause
+
     - Spawns *processes* #pause
     - Aimed (but not restricted) to the use in *distributed memory* systems #pause
     - It's a specification, it can be used as a *library*
@@ -339,6 +301,10 @@
 == OpenMP
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #set align(horizon)
   #grid(columns: 2, column-gutter: 3em)[
     // #set text(size: 1.3em)
@@ -347,6 +313,7 @@
       caption: [Shared-memory paradigm],
     )][
     - Spawns *OS threads* #pause
+
     - Restricted to *shared-memory* environments #pause
     - Requires support at the compiler level, used with *compiler directives* #pause
     - Currently supports both *CPU* and *GPU* targets
@@ -356,6 +323,10 @@
 == CUDA
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #set text(size: .6em)
   #figure(
     cpu-v-gpu-arch(scale-axis: 170%),
@@ -365,6 +336,10 @@
 == Fortran's `do concurrent`
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #grid(columns: (1.6fr, 1fr), column-gutter: 1em)[
     #figure(
       kind: raw,
@@ -398,33 +373,19 @@
 
     - *Can* be parallelized with OpenMP or *OpenACC* #pause
 
-    - Default for GPU offloading in *NVHPC* due to better performance/implementation #pause
+    - Default for GPU offloading in *NVHPC* due to better performance/implementation
   ]
-
-
 ]
-
-// == Clusters
-
-// We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
-
-// #[
-//   #set text(size: .78em)
-//   #figure(
-//     clusters(presentation: true),
-//   )
-
-//   #speaker-note[
-//     - tradeoff between core count and core complexity
-//     -
-//   ]
-// ]
 
 = Contributions
 
 == Preliminary Work
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #grid(
     columns: 2,
     column-gutter: 1em,
@@ -453,81 +414,20 @@
       - *Eliminating string operations* (`trim`, `adjustl`, `select("...")`, ...) in potential GPU code
     ],
   )
-
-  // I'll use an image from the internet instead, this looks like shit
-  // #fletcher.diagram({
-  //   let color = lq.color.map.okabe-ito.at(2)
-
-  //   fletcher.node((0, 1.4), [#image(
-  //       height: 1.2cm,
-  //       "resources/imgs/icons/c.svg",
-  //     )])
-  //   fletcher.node((.5, 1), [#image(
-  //       height: 1.2cm,
-  //       "resources/imgs/icons/cplusplus.svg",
-  //     )])
-  //   fletcher.node((1, 1.4), [#image(
-  //       height: 1.2cm,
-  //       "resources/imgs/icons/cuda.svg",
-  //     )])
-  //   fletcher.node((.5, 1.5), [#image(
-  //       height: 2cm,
-  //       "resources/imgs/icons/fortran.svg",
-  //     )])
-
-  //   edge("->", stroke: 2pt + color)
-
-  //   fletcher.node((.5, 2.8), [#grid(columns: 1, row-gutter: .5em, image(
-  //       height: 2cm,
-  //       "resources/imgs/icons/cmake.svg",
-  //     ), [*CMake*])])
-
-  //   edge((.5, 2.8), "r", (2, 1.5), "->", stroke: 2pt + color)
-
-  //   fletcher.node((1.5, 3.4), [#grid(
-  //       columns: 1,
-  //       row-gutter: .5em,
-  //       image(height: 1.2cm, "resources/imgs/icons/json.svg"),
-  //       [*JSON preset*],
-  //     )])
-
-  //   edge((1.5, 3.4), (1.5, 2.8), stroke: 2pt + color)
-
-  //   fletcher.node((2, 1.5), [
-  //     #grid(
-  //       columns: 2,
-  //       column-gutter: 1.5em,
-  //       row-gutter: .5em,
-  //       image(
-  //         height: 2cm,
-  //         "resources/imgs/icons/makefile.svg",
-  //       ),
-  //       image(
-  //         height: 2cm,
-  //         "resources/imgs/icons/ninja.svg",
-  //       ),
-
-  //       [*GNU Make*], [*Ninja*],
-  //     )
-  //   ])
-
-  //   edge((1, 1.4), (2, 1.5), "->", stroke: 2pt + color)
-  // })
 ]
-
-// #heading(
-//   level: 2,
-//   depth: 2,
-//   context if in-outline.get() [Matrix Inversions & Cache Locality] else [Removing Matrix Inversions and Optimizing Cache Locality],
-// )
 
 == Improving Cache Locality
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #grid(columns: 2, column-gutter: 0.1em)[#figure(
       image(height: 79%, "resources/imgs/memory_speed_comparison.gif"),
     )][
     - Concepts from *Data-Oriented Design*@DOD #pause // programming paradigm that focuses on HOW data is laied out in memory and how it flows thorught the system
+
     - *Reordering loops* and changing the order of the dimensions of the tensors #pause // Fortran is column major
 
     // These two lines of code alone represent 90% of the program runtime for a 2D elastic benchmark
@@ -551,36 +451,15 @@
 
 == Replacing Inversions of Dense Matrices
 
-#slide(repeat: 2, self => [
-  #alternatives[#grid(columns: 2, align: horizon, column-gutter: -.5em)[#figure(
-        image(width: 90%, "resources/imgs/paraview_summary.svg"),
-      )][
-      - Profiled using the TAU Performance System@TAU
-      - Visualization with ParaProf
-    ]][
-    #figure(
-      image(width: 100%, "resources/imgs/paraview_summary_cropped.png"),
-    )
-    For the bottom 5 bars we have, in order:
-    - `hdg_build_quadrature_int_2D`
-    - `hdg_build_quadrature_int_2D`
-    - Overhead of TAU instrumentation
-    - LAPACK's `*GETRI` (matrix inverse)
-    - `hdg_build_Ainv_2D`
-  ]
-])
-
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   // move before TAU
   When solving a system $A X = B$, $L U$ decomposition is #pause
-  - *always faster* than the $A^(-1)$ form #only("2")[@DontInvertThatMatrix @WhyNotInvertMatrix @WhyLUbetterThanInverse] #pause
+  - *always faster* than the $A^(-1)$ form #only("2")[@DontInvertThatMatrix] #only("2")[@WhyNotInvertMatrix] #only("2")[@WhyLUbetterThanInverse] #pause
   - *more accurate* for ill-conditioned matrices #only("3")[@AccuracyAndStability[Section 14.1]] #pause
-
-  // $
-  //   A = mat(a_11, a_12, a_13; a_21, a_22, a_23; a_31, a_32, a_33) = L U = mat(1, 0, 0; l_21, 1, 0; l_31, l_32, 1) mat(u_11, u_12, u_13; 0, u_22, u_23; 0, 0, u_33)
-  // $ TODO: move in the end slides
-
-  #pause
 
   We rewrite the previous equation to avoid computing the inverse
   - LAPACK's `*GETRF` and `*GETRS` #pause
@@ -591,49 +470,37 @@
   + some specifics in the elastic wave propagation
 ]
 
-// #slide[
-//   === Computing Analytically Other Inversions
-
-//   - *elastic wave propagation*: compliance tensor in Voigt notation #only("1")[@Voigt] is #only("1")[@HDGStabilize] $S = V^(-1) C^(-1) V^(-1)$ #pause
-
-//   #let zeros = $0$
-
-//   #only(2)[
-//     $
-//       V_"3D" = mat(
-//         1, zeros, zeros, zeros, zeros, zeros;
-//         zeros, 1, zeros, zeros, zeros, zeros;
-//         zeros, zeros, 1, zeros, zeros, zeros;
-//         zeros, zeros, zeros, 2, zeros, zeros;
-//         zeros, zeros, zeros, zeros, 2, zeros;
-//         zeros, zeros, zeros, zeros, zeros, 2
-//       ), C_"3D" & = mat(
-//                     lambda + 2 mu, lambda, lambda, zeros, zeros, zeros;
-//                     lambda, lambda + 2 mu, lambda, zeros, zeros, zeros;
-//                     lambda, lambda, lambda + 2 mu, zeros, zeros, zeros;
-//                     zeros, zeros, zeros, mu, zeros, zeros;
-//                     zeros, zeros, zeros, zeros, mu, zeros;
-//                     zeros, zeros, zeros, zeros, zeros, mu
-//                   )
-//     $] #pause
-
-//   #only(3)[
-//     $
-//       S = mat(
-//         (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
-//         -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
-//         -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), zeros, zeros, zeros;
-//         zeros, zeros, zeros, 1 / (4 mu), zeros, zeros;
-//         zeros, zeros, zeros, zeros, 1 / (4 mu), zeros;
-//         zeros, zeros, zeros, zeros, zeros, 1 / (4 mu)
-//       )
-//     $
-//   ]
-// ] TODO: this goes at theend
-
+#slide(repeat: 2, self => [
+  #alternatives[
+    #if hide-appendinx {
+      place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+    }
+    #grid(columns: 2, align: horizon, column-gutter: -4em)[#figure(
+        image(width: 110%, "resources/imgs/paraview_summary.svg"),
+      )][
+      - Profiled using the TAU Performance System@TAU
+      - Visualization with ParaProf
+    ]][
+    #if hide-appendinx {
+      place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+    }
+    #figure(
+      image(width: 100%, "resources/imgs/paraview_summary_cropped.png"),
+    )
+    For the bottom 5 bars we have, in order, from left to right:
+    + `hdg_build_quadrature_int_2D`
+    + `hdg_build_quadrature_int_2D`
+    + Overhead of TAU instrumentation
+    + LAPACK's `*GETRI` (matrix inverse)
+    + `hdg_build_Ainv_2D`
+  ]
+])
 
 #slide[
   #grid(columns: 2, column-gutter: 1em)[
+    #if hide-appendinx {
+      place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+    }
     #grid(columns: 1, row-gutter: .1em)[#figure(
         image(width: 99%, "resources/imgs/model_plot.svg"),
       )][#figure(
@@ -653,29 +520,30 @@
 ]
 
 #slide[
-  #anotinv_diagrams(width: 24cm, height: 10.2cm)
-]
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
 
-#slide[
-  #anotinv_diagrams(width: 24cm, height: 10.2cm)
-  #place(
-    top + left,
-    dx: -5pt,
-    dy: -5pt,
-    rect(width: 75%, height: 103%, fill: white.transparentize(30%)),
-  )
-  #place(
-    top + right,
-    dx: -5pt,
-    dy: -5pt,
-    rect(width: 15%, height: 103%, fill: white.transparentize(30%)),
-  )
-  #place(
-    top,
-    dy: -10pt,
-    dx: 567pt,
-    rect(width: 10%, height: 10%, fill: white.transparentize(30%)),
-  )
+  #set text(size: .8em)
+  #anotinv_diagrams(width: 24cm, height: 11.8cm)
+  #uncover("2")[#place(
+      top + left,
+      dx: -5pt,
+      dy: -5pt,
+      rect(width: 73%, height: 103%, fill: white.transparentize(30%)),
+    )
+    #place(
+      top + right,
+      dx: -5pt,
+      dy: -5pt,
+      rect(width: 16%, height: 103%, fill: white.transparentize(30%)),
+    )
+    #place(
+      top,
+      dy: -10pt,
+      dx: 567pt,
+      rect(width: 10%, height: 10%, fill: white.transparentize(30%)),
+    )]
 ]
 
 #let horizontal-anotinv-loop(config) = {
@@ -686,8 +554,7 @@
   show lq.selector(lq.label): set align(top + right)
   lq.diagram(
     width: 25.5cm,
-    xlabel: [Time in seconds],
-    height: 9cm,
+    height: 11.6cm,
     yaxis: (ticks: ((0.5, [#config]),), subticks: 0),
     ..for (branch_idx, branch_name) in branches.enumerate() {
       (
@@ -712,22 +579,31 @@
 }
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #horizontal-anotinv-loop("p9")
 ]
 
 #slide[
-  #anotinv_diagrams(width: 24cm, height: 10.2cm)
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
+  #set text(size: .8em)
+  #anotinv_diagrams(width: 24cm, height: 11.8cm)
   #place(
     top + left,
     dx: -5pt,
     dy: -5pt,
-    rect(width: 85%, height: 103%, fill: white.transparentize(30%)),
+    rect(width: 83%, height: 103%, fill: white.transparentize(30%)),
   )
   #place(
     top + right,
     dx: -5pt,
     dy: -5pt,
-    rect(width: 5%, height: 103%, fill: white.transparentize(30%)),
+    rect(width: 6%, height: 103%, fill: white.transparentize(30%)),
   )
   #place(
     top,
@@ -737,16 +613,26 @@
   )]
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #horizontal-anotinv-loop("p2-9")
 ]
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #set table(inset: .6em)
 
   Looking at the generated assembly code
   - $approx 30%$ reduction in instruction count with `MOV` and `ADD` type instructions decreasing in equal measure: *less data movement* #pause
   - dot product for face integrals accounting for $approx$ *80%* of the *total program runtime* #pause
-  - no improvements with BLAS1 or GEMM operations: a higher level of parallelism is necessary #pause
+
+  - no improvements with *BLAS1* or *GEMM* operations
+    - a higher level of parallelism is necessary #pause
   #figure(cache-branch-misses-table-figure())
 ]
 
@@ -757,6 +643,8 @@
 )
 
 #slide[
+  #place(dx: 730pt, dy: -72pt, box(width: 40pt, height: 15pt, fill: white))
+
   Explore using the *NVHPC Toolkit* which provides #pause
   - Fortran, C, and C++ compilers #pause
   - General CUDA and math libraries #pause
@@ -771,6 +659,10 @@
 ]
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   === Challenges
 
   Uncovered 3 compiler bugs in NVFortran + 1 in LLVM: #pause
@@ -780,14 +672,11 @@
   - \#148884#only("5-")[@148884] #sym.arrow.l runtime failure of OpenMP code in MUMPS
 ]
 
-// #slide[
-//   === Localizing Loops
-
-//   #set text(.65em)
-//   #build-volume-integrals(presentation: true)
-// ]
-
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   === Evaluation
 
   Tested the acoustic case on Suroit #sym.arrow.l *A100 40GB* (*9.7* TFLOPs FP64, *19.5* TFLOPs FP32)
@@ -811,6 +700,10 @@
 )
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #grid(
     columns: 2,
     column-gutter: 1em,
@@ -827,6 +720,10 @@
 ]
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   === Implementation
 
   - Interface between Fortran and C++ through ISO C bindings #pause
@@ -841,6 +738,10 @@
 ]
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #grid(columns: 2, column-gutter: 1em)[#move(dx: -30pt, dy: 20pt, scale(
       120%,
       figure(image("resources/imgs/3dparaprof.png")),
@@ -857,6 +758,10 @@
 ]
 
 #slide(repeat: 5, self => [
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #align(bottom)[
     - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster #pause
     - 1 combination of MPI/OpenMP for cuDSS, several for MUMPS #pause
@@ -872,6 +777,10 @@
 ])
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   #align(bottom)[
     #figure(speedup-cudss-table(presentation: true))
 
@@ -892,6 +801,10 @@
 )
 
 #slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
   === Conclusions
   - We improved the HAWEN software for forward wave problems #pause
   - We started to take advantage of heterogenous systems in HAWEN #pause
@@ -906,4 +819,125 @@
 
 #focus-slide[
   Thank you for your attention
+]
+
+#show: appendix
+
+// = Appendix <touying:unoutlined>
+#heading(level: 1, depth: 1, outlined: false, bookmarked: false, [Appendix])
+
+#slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+  === Clusters
+  We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
+
+  #set text(size: .78em)
+  #figure(
+    clusters(presentation: true),
+  )
+]
+
+#slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
+  === Localizing Loops
+
+  #set text(.76em)
+  #build-volume-integrals(presentation: true)
+]
+
+#slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+  === What is LU?
+
+  - Decomposition of a square matrix in a lower and upper triangular matrices
+
+  $
+    A = mat(a_11, a_12, a_13; a_21, a_22, a_23; a_31, a_32, a_33) = L U = mat(1, 0, 0; l_21, 1, 0; l_31, l_32, 1) mat(u_11, u_12, u_13; 0, u_22, u_23; 0, 0, u_33)
+  $
+]
+
+#slide[
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
+  === Computing Analytically Other Inversions
+
+  - *elastic wave propagation*: compliance tensor in Voigt notation #only("1")[@Voigt] is #only("1")[@HDGStabilize] $S = V^(-1) C^(-1) V^(-1)$ #pause
+
+  #let zeros = $0$
+
+  #only(2)[
+    $
+      V_"3D" = mat(
+        1, zeros, zeros, zeros, zeros, zeros;
+        zeros, 1, zeros, zeros, zeros, zeros;
+        zeros, zeros, 1, zeros, zeros, zeros;
+        zeros, zeros, zeros, 2, zeros, zeros;
+        zeros, zeros, zeros, zeros, 2, zeros;
+        zeros, zeros, zeros, zeros, zeros, 2
+      ), C_"3D" & = mat(
+                    lambda + 2 mu, lambda, lambda, zeros, zeros, zeros;
+                    lambda, lambda + 2 mu, lambda, zeros, zeros, zeros;
+                    lambda, lambda, lambda + 2 mu, zeros, zeros, zeros;
+                    zeros, zeros, zeros, mu, zeros, zeros;
+                    zeros, zeros, zeros, zeros, mu, zeros;
+                    zeros, zeros, zeros, zeros, zeros, mu
+                  )
+    $] #pause
+
+  #only(3)[
+    $
+      S = mat(
+        (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+        -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), zeros, zeros, zeros;
+        -lambda/(2 mu (2 mu + 3 lambda)), -lambda/(2 mu (2 mu + 3 lambda)), (lambda + mu)/(mu(2 mu + 3 lambda)), zeros, zeros, zeros;
+        zeros, zeros, zeros, 1 / (4 mu), zeros, zeros;
+        zeros, zeros, zeros, zeros, 1 / (4 mu), zeros;
+        zeros, zeros, zeros, zeros, zeros, 1 / (4 mu)
+      )
+    $
+  ]
+]
+
+#slide[
+  === Acoustic Wave Equation
+
+  $
+    - nabla dot 1/(#pin(1)rho(bold(x))#pin(2)) nabla #pin(9)p(bold(x))#pin(10) - (#pin(5)omega^2#pin(6)) / (#pin(3)kappa(bold(x))#pin(4)) #pin(11)p(bold(x))#pin(12) = #pin(7)g(bold(x))#pin(8)
+  $
+
+  === First-order Formulation
+
+  #grid(columns: 2, column-gutter: 1em, align: bottom)[
+    Necessary for HDG@AdjointHDG
+    - domain $Omega in RR^2$ with boundary $Gamma$
+
+    - scalar pressure field as $p : Omega -> CC$
+    - vectorial velocity $bold(v) : Omega -> CC^"dim"$
+  ][
+    $
+      cases(
+        - i omega rho(bold(x)) bold(v)(bold(x)) + gradient p(bold(x)) & = 0 & "in" &Omega,
+        - i omega p (bold(x)) kappa(bold(x))^(-1) + gradient dot bold(v)(bold(x)) &= g(bold(x)) &"in" &Omega,
+        - (rho(bold(x)) sqrt(kappa(bold(x)) rho(bold(x))^(-1)))^(-1) p(bold(x)) + bold(v)(bold(x)) dot bold(nu) &= 0 &"on" &Gamma,
+      )
+    $ <first-order-system>]
+]
+
+#slide[
+  === Finite Difference Methods vs Galerkin Methods
+
+  To solve numerically the wave equation we need to discretize the equation and solve the Partial Differential Equation (PDE).
+
+  / Finite Difference Methods (FDMs): approximate differential equations through finite differences, for example $f'(x)$ can be approximated as $ f'(x) approx (f(x + Delta x) - f(x - Delta x)) / (2 Delta x). $
+
+  / Galerkin Methods: approximate the solution itself by expressing it as a combination of basis functions and ensuring that the equation holds on average across the whole domain.
 ]
