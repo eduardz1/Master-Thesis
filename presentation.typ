@@ -251,6 +251,12 @@
       fem-dg-hdg-graph(len: 4.5cm, stroke-width: 2pt, presentation: true),
     )
   ]
+
+  #speaker-note[
+    / Galerkin methods: used to solve Partial Differential Equations, differ from Finite Difference Methods approximate the solution itself by expressing it as a combination of basis functions
+
+    - HDG introduces ADDITIONAL DOFs at the faces. These allow to rewrite the system only in respect to these DOFs
+  ]
 ]
 
 #slide(repeat: 2, self => [
@@ -276,61 +282,67 @@
 
 = Tools for Parallelism
 
-== MPI
+== MPI & OpenMP
 
-#slide[
+#slide(repeat: 2, self => [
   #if hide-appendinx {
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
 
   #set align(horizon)
-  #grid(columns: 2, column-gutter: 3em)[
-    // #set text(size: 1.3em)
-    #figure(
-      distributed-memory(presentation: true),
-      caption: [Distributed memory paradigm],
-    )][
-    - *Message Passing Interface* #pause
-
-    - Spawns *processes* #pause
-    - Aimed (but not restricted) to the use in *distributed memory* systems #pause
-    - It's a specification, it can be used as a *library*
-  ]
-]
-
-== OpenMP
-
-#slide[
-  #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  #{
+    set align(bottom)
+    set text(1em)
+    grid(columns: 2, column-gutter: 5em, inset: 1em)[
+      #figure(
+        distributed-memory(presentation: true),
+        caption: [Distributed memory paradigm],
+      )][#uncover("2")[#figure(
+          shared-memory(presentation: true),
+          caption: [Shared-memory paradigm],
+        )]]
   }
 
-  #set align(horizon)
-  #grid(columns: 2, column-gutter: 3em)[
-    // #set text(size: 1.3em)
-    #figure(
-      shared-memory(presentation: true),
-      caption: [Shared-memory paradigm],
-    )][
-    - Spawns *OS threads* #pause
-
-    - Restricted to *shared-memory* environments #pause
-    - Requires support at the compiler level, used with *compiler directives* #pause
-    - Currently supports both *CPU* and *GPU* targets
+  #grid(columns: 2, column-gutter: 6.3em, inset: (bottom: 2em))[
+    - *MPI* (#underline[Message Passing Interface])
+      - Spawns *processes*
+      - *Aimed* at distributed memory
+      - Used as a *library*
+  ][#uncover("2")[
+      - *OpenMP*
+        - Spawns *OS threads*
+        - *Restricted* to shared-memory
+        - Used with *compiler directives*
+    ]
   ]
-]
+
+  #speaker-note[
+    - MPI
+      - Can also shared memory
+      - We can use any version
+
+    - OpenMP
+      - We have to be aware of the implementations
+  ]
+])
 
 == CUDA
 
 #slide[
+  #set align(horizon)
   #if hide-appendinx {
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
 
   #set text(size: .6em)
   #figure(
-    cpu-v-gpu-arch(scale-axis: 170%),
+    cpu-v-gpu-arch(presentation: true, scale-axis: 170%),
   )
+
+  #speaker-note[
+    - DG highly parallel by nature
+    - GPU arch. highly parallel by design
+  ]
 ]
 
 == Fortran's `do concurrent`
@@ -414,6 +426,11 @@
       - *Eliminating string operations* (`trim`, `adjustl`, `select("...")`, ...) in potential GPU code
     ],
   )
+
+  #speaker-note[
+    - Ninja/Ccache
+    - String operations incompatible with GPU architecture due to much simpler core design
+  ]
 ]
 
 == Improving Cache Locality
@@ -447,6 +464,14 @@
       end do
       ```
     })]
+
+  #speaker-note[
+    / DOD: focus on HOW data is layed out in memory and how it flows through the system
+
+    - We want to work as much as possible with data at lower level of cache
+
+    - Common pattern in HAWEN: matrices of tensors
+  ]
 ]
 
 == Replacing Inversions of Dense Matrices
@@ -456,8 +481,7 @@
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
 
-  // move before TAU
-  When solving a system $A X = B$, $L U$ decomposition is #pause
+  When solving a linear system $A X = B$, $L U$ decomposition is #pause
   - *always faster* than the $A^(-1)$ form #only("2")[@DontInvertThatMatrix] #only("2")[@WhyNotInvertMatrix] #only("2")[@WhyLUbetterThanInverse] #pause
   - *more accurate* for ill-conditioned matrices #only("3")[@AccuracyAndStability[Section 14.1]] #pause
 
@@ -494,6 +518,10 @@
     + LAPACK's `*GETRI` (matrix inverse)
     + `hdg_build_Ainv_2D`
   ]
+
+  #speaker-note[
+    - 8 MPI #sym.times 6 OpenMP
+  ]
 ])
 
 #slide[
@@ -510,11 +538,15 @@
     === Evaluation
 
     Benchmarked with
+
     - Marmousi2 2D model @Marmousi2 #pause
 
     - 100 thousand cells #pause
+
     - 169 sources (right-hand sides $cal(B)$ of global liner system) #pause
+
     - frequency of #zi.Hz[7] #pause
+
     - 8 different configurations, polynomial in $[3, 9]$ + $frak(p)$-adaptivity in $[2, 9]$
   ]
 ]
@@ -629,6 +661,7 @@
 
   Looking at the generated assembly code
   - $approx 30%$ reduction in instruction count with `MOV` and `ADD` type instructions decreasing in equal measure: *less data movement* #pause
+
   - dot product for face integrals accounting for $approx$ *80%* of the *total program runtime* #pause
 
   - no improvements with *BLAS1* or *GEMM* operations
@@ -643,22 +676,6 @@
 )
 
 #slide[
-  #place(dx: 730pt, dy: -72pt, box(width: 40pt, height: 15pt, fill: white))
-
-  Explore using the *NVHPC Toolkit* which provides #pause
-  - Fortran, C, and C++ compilers #pause
-  - General CUDA and math libraries #pause
-  - CUDA-aware OpenMPI #only("4")[@OpenMPI] #pause
-
-  Special care is required #pause
-  // - Files with CUDA code (`.cuf`) have to be compiled separately #pause
-  - Always specify *working precision* #pause
-  - *Conditional compilation* for CPU and GPU code #pause
-  - *Reduce data movement*, correctly use *`managed`* and *`device`* attributes #pause
-  // - Offloaded routines have to be *`pure`*
-]
-
-#slide[
   #if hide-appendinx {
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
@@ -670,6 +687,12 @@
   - \#TPR37469#only("3-")[@TPR37469] #sym.arrow.l *memory leak* in compiler-generated kernels #pause
   - \#TPR37570#only("4-")[@TPR37570] #sym.arrow.l incorrect propagation of `managed` attribute in OpenMP #pause
   - \#148884#only("5-")[@148884] #sym.arrow.l runtime failure of OpenMP code in MUMPS
+
+  #speaker-note[
+    First two are quite severe
+
+    - deadlock for VALID Fortran code
+  ]
 ]
 
 #slide[
@@ -691,6 +714,18 @@
     speedup-nvhpc-table(presentation: true),
     caption: [Speedup for different configurations],
   ) // Here mention that the A100 should only have double the perfomance in FP32 but clearly we have way more
+
+  #speaker-note[
+    - A100 should have double performance but really it's more
+    - Validated with unit testing
+    - benchmark on the `hdg_build_quadrature` function we saw before
+
+    / N_e: number of cells in the mesh
+    / N_q: number of quadrature point to approximate the integrals
+    / N_dof: number of degrees of freedom for each cell, does not correspond exactly to the Lagrange basis function
+    / N_q_tau: again quadrature points but for other coefficients
+    / N_o: the number of different orders when using p-adaptivity
+  ]
 ]
 
 #heading(
@@ -707,15 +742,17 @@
   #grid(
     columns: 2,
     column-gutter: 1em,
+    figure(image(height: 62%, "resources/imgs/A_spy_plot.svg")),
     [
       - $cal(A) Lambda = cal(B)$ is very sparse, cannot rely on LAPACK #pause
 
-      - HAWEN uses a *direct* solver: *MUMPS* @MUMPS
-        - Currently cannot compile with NVFortran
-        - GPU version not yet public and relies on XKBlas@XKBlas, not configured for the NVHPC Toolkit #pause
-      - we explore a very recent GPU accelerated sparse solver by NVIDIA: *cuDSS*
+      / MUMPS: #only("2-")[@MUMPS] sparse #underline[direct] solver used by HAWEN
+        - NVFortran cannot currently compile it
+        - GPU version not yet public and relies on XKBlas#only("2-")[@XKBlas], not configured for the NVHPC Toolkit #pause
+
+      / cuDSS: sparse direct solver recently released by NVIDIA
+        - Natively support for GPUs
     ],
-    figure(image(height: 62%, "resources/imgs/A_spy_plot.svg")),
   )
 ]
 
@@ -727,14 +764,18 @@
   === Implementation
 
   - Interface between Fortran and C++ through ISO C bindings #pause
-  - we had to conform to cuDSS's formalisms for matrices
-  // - Communication layers built in-tree to support *multi-threading* and *MGMN* mode #pause
-  // - conversion between *COO* and *CSR* formats efficiently using algorithms from SciPy @SciPy #pause
-  // - Sparse to dense conversion for RHS using *cuSPARSE* #pause
+
+  - we had to conform to cuDSS's formalisms for matrices #pause
 
   === Limitations of our Implementation
 
   - Currently faulty at high polynomial orders
+
+  #speaker-note[
+    - COO to CSR conversion
+    - CSR to dense using cuSPARSE, cuDSS only supports dense RHS
+    - Communication layer built in-tree to support multithreading and MGMN mode
+  ]
 ]
 
 #slide[
@@ -764,6 +805,7 @@
 
   #align(bottom)[
     - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster #pause
+
     - 1 combination of MPI/OpenMP for cuDSS, several for MUMPS #pause
 
     #set text(size: .8em)
@@ -806,14 +848,21 @@
   }
 
   === Conclusions
+
   - We improved the HAWEN software for forward wave problems #pause
+
   - We started to take advantage of heterogenous systems in HAWEN #pause
 
   === Future Works
+
   - Extend the work on GPU offloading  #pause
+
   - Explore GCC's support for GPU offloading through OpenMP and OpenACC #pause
+
   - Reduce memory usage #pause
+
   - Take advantage of the asynchronicity of GPU code #pause
+
   - Explore computation in lower precisions
 ]
 
@@ -940,4 +989,24 @@
   / Finite Difference Methods (FDMs): approximate differential equations through finite differences, for example $f'(x)$ can be approximated as $ f'(x) approx (f(x + Delta x) - f(x - Delta x)) / (2 Delta x). $
 
   / Galerkin Methods: approximate the solution itself by expressing it as a combination of basis functions and ensuring that the equation holds on average across the whole domain.
+]
+
+#slide[
+  === Working with NVHPC
+
+  #if hide-appendinx {
+    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+  }
+
+  Explore using the *NVHPC Toolkit* which provides
+  - Fortran, C, and C++ compilers
+  - General CUDA and math libraries
+  - CUDA-aware OpenMPI @OpenMPI
+
+  Special care is required
+  - Files with CUDA code (`.cuf`) have to be compiled separately
+  - Always specify *working precision*
+  - *Conditional compilation* for CPU and GPU code
+  - *Reduce data movement*, correctly use *`managed`* and *`device`* attributes
+  - Offloaded routines have to be *`pure`*
 ]

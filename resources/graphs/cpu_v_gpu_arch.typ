@@ -3,7 +3,7 @@
 
 #let std-rotate = rotate
 
-#let cpu-v-gpu-arch(scale-axis: 100%) = {
+#let cpu-v-gpu-arch(presentation: false, scale-axis: 100%) = {
   set text(weight: "medium", size: .8em, font: "Fira Code")
   scale(x: scale-axis, y: scale-axis, reflow: true)[
     #cetz.canvas({
@@ -78,7 +78,9 @@
 
         cpu-core()
         cpu-core(cx: 3.5 + dx)
-        cpu-core(cx: 3.5 + dx, cy: 2 + dy, highlight: true)
+        cpu-core(cx: 3.5 + dx, cy: 2 + dy, highlight: if presentation {
+          false
+        } else { true })
         cpu-core(cy: 2 + dy)
       }
 
@@ -161,24 +163,26 @@
         content((5.5 + dx, 5.25 + dy), [#sym.dots.v])
         content((5.5 + dx, 6.75 + dy), [#sym.dots.v])
 
-        rect(
-          (1 + dx, 7 + dy),
-          (10 + dx, 8 + dy),
-          fill: none,
-          stroke: 2.5pt + colors.at(3),
-        )
-        content((5.5 + dx, 8.3 + dy), text(
-          fill: colors.at(3),
-        )[SIMT Unit (Streaming multiprocessor)])
-        rect(
-          (2 + dx, 4 + dy),
-          (3 + dx, 5 + dy),
-          fill: none,
-          stroke: 2.5pt + colors.at(3),
-        )
-        content((2.5 + dx, 5.3 + dy), text(
-          fill: colors.at(3),
-        )[SIMD Unit (Warp)])
+        if not presentation {
+          rect(
+            (1 + dx, 7 + dy),
+            (10 + dx, 8 + dy),
+            fill: none,
+            stroke: 2.5pt + colors.at(3),
+          )
+          content((5.5 + dx, 8.3 + dy), text(
+            fill: colors.at(3),
+          )[SIMT Unit (Streaming multiprocessor)])
+          rect(
+            (2 + dx, 4 + dy),
+            (3 + dx, 5 + dy),
+            fill: none,
+            stroke: 2.5pt + colors.at(3),
+          )
+          content((2.5 + dx, 5.3 + dy), text(
+            fill: colors.at(3),
+          )[SIMD Unit (Warp)])
+        }
       }
 
       gpu(dx: 7)

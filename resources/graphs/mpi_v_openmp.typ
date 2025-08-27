@@ -7,7 +7,10 @@
 #let shared-memory(presentation: false) = {
   set text(fill: white, weight: "medium", font: "Fira Code")
   diagram(
-    spacing: (3em, 1.5em),
+    spacing: (
+      if not presentation { 3em } else { 3em },
+      if not presentation { 1.5em } else { 1em },
+    ),
 
     node(
       (0, 0),
@@ -42,7 +45,10 @@
 #let distributed-memory(presentation: false) = {
   set text(fill: white, weight: "medium", font: "Fira Code")
   diagram(
-    spacing: (3em, 1.5em),
+    spacing: (
+      if not presentation { 3em } else { 2em },
+      if not presentation { 1.5em } else { .6em },
+    ),
 
     node(
       (-.2, -4),

@@ -3,24 +3,30 @@
 #import "@preview/lilaq:0.4.0" as lq
 #import "@preview/physica:0.9.5": *
 
-#let hl-1(
-  fill: lq.color.map.okabe-ito.at(0).transparentize(70%),
-  content,
-) = box(
-  content,
-  inset: 0.2em,
-  fill: fill,
-)
-
-#let hl-2 = hl-1.with(fill: lq.color.map.okabe-ito.at(1).transparentize(70%))
-#let hl-3 = hl-1.with(fill: lq.color.map.okabe-ito.at(2).transparentize(70%))
-
 #let forward-acoustic-problem-alg(
   presentation: false,
   highlight-tensors: false,
 ) = [
 
-  #let ainv = if highlight-tensors { hl-1[$AA_e^(-1)$] } else { $AA_e^(-1)$ }
+  #let transparency = if highlight-tensors { 70% } else { 100% }
+
+  #let hl-1(
+    fill: lq.color.map.okabe-ito.at(0).transparentize(transparency),
+    content,
+  ) = box(
+    content,
+    inset: 0.2em,
+    fill: fill,
+  )
+
+  #let hl-2 = hl-1.with(
+    fill: lq.color.map.okabe-ito.at(1).transparentize(transparency),
+  )
+  #let hl-3 = hl-1.with(
+    fill: lq.color.map.okabe-ito.at(2).transparentize(transparency),
+  )
+
+  #let ainv = if presentation { hl-1[$AA_e^(-1)$] } else { $AA_e^(-1)$ }
 
   #algorithm-figure(
     if not presentation { "Forward Acoustic Problem" } else { none },
@@ -35,7 +41,7 @@
           For($K_e in cal(T)$, {
             Assign(
               [$#ainv, LL_e, BB_e, CC_e$],
-              CallInline[#if highlight-tensors {
+              CallInline[#if presentation {
                   hl-2[BuildTensors]
                 } else [BuildTensors]][$K_e$, $omega$, $rho$, $bold(v)$, $f$],
             )
@@ -52,7 +58,7 @@
             [Compute the forward right hand side],
           )
           LineComment(
-            Assign([$Lambda$], CallInline[#if highlight-tensors {
+            Assign([$Lambda$], CallInline[#if presentation {
                 hl-3[Solve]
               } else [Solve]][$cal(A) Lambda = cal(B)$]),
             [Use a sparse solver for the global system],
