@@ -182,18 +182,8 @@
 #heading(
   level: 1,
   depth: 1,
-  context if in-outline.get() [Wave Simulations] else [HAWEN],
+  context if in-outline.get() [HAWEN] else [HAWEN],
 )
-
-== Inverse Wave Problem
-
-#slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
-
-  #align(center + horizon, hawen-schema(presentation: true))
-]
 
 == The Software
 
@@ -701,6 +691,7 @@
 
   acoustic case on Sirocco #sym.arrow.l *A100 40GB* (*9.7* TFLOPs FP64, *19.5* TFLOPs FP32)
 
+  #set align(horizon)
   #set table(inset: .5em)
   #figure(
     synthetic-data-table(presentation: true),
@@ -864,9 +855,6 @@
 )
 
 #slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
   === Clusters
   We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
 
@@ -877,10 +865,6 @@
 ]
 
 #slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
-
   === Localizing Loops
 
   #set text(.79em)
@@ -888,9 +872,6 @@
 ]
 
 #slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
   === What is LU?
 
   - Decomposition of a square matrix in a lower and upper triangular matrices
@@ -901,10 +882,6 @@
 ]
 
 #slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
-
   === Computing Analytically Other Inversions
 
   - *elastic wave propagation*: compliance tensor in Voigt notation #only("1")[@Voigt] is #only("1")[@HDGStabilize] $S = V^(-1) C^(-1) V^(-1)$ #pause
@@ -982,10 +959,6 @@
 #slide[
   === Working with NVHPC
 
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
-
   Explore using the *NVHPC Toolkit* which provides
   - Fortran, C, and C++ compilers
   - General CUDA and math libraries
@@ -1000,9 +973,6 @@
 ]
 
 #slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
 
   === Implementation of cuDSS
 
@@ -1019,4 +989,11 @@
     - CSR to dense using cuSPARSE, cuDSS only supports dense RHS
     - Communication layer built in-tree to support multithreading and MGMN mode
   ]
+]
+
+
+#slide[
+  === Inverse Wave Problem
+
+  #align(center + horizon, hawen-schema(presentation: true))
 ]
