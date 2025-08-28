@@ -207,15 +207,13 @@
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
-  Open source software developed by Florian Faucher@HAWEN@FloPhD.
+  Open source software, written in modern Fortran, developed by Florian Faucher@HAWEN@FloPhD.
 
   - Used to solve both the _forward_ and _inverse_ problem in the frequency domain #pause
 
   - Uses the Hybridizable Discontinuous Galerkin (HDG) method #pause
 
-  - Designed for large scale problems, parallelized with MPI + OpenMP #pause
-
-  - Written in modern Fortran
+  - Designed for large scale problems, parallelized with MPI + OpenMP
 
   #speaker-note[
     / FORWARD PROBLEM: simulation of the propagation of waves through a medium
@@ -224,7 +222,7 @@
   ]
 ]
 
-== The HDG Method
+== Galerkin Methods
 
 #slide[
   #if hide-appendinx {
@@ -243,6 +241,8 @@
     - HDG introduces ADDITIONAL DOFs at the faces. These allow to rewrite the system only in respect to these DOFs
   ]
 ]
+
+== HDG for Acoustic Waves
 
 #slide(repeat: 2, self => [
   #if hide-appendinx {
@@ -286,10 +286,14 @@
     grid(columns: 2, column-gutter: 5em, inset: 1em)[
       #figure(
         distributed-memory(presentation: true),
-        caption: [Distributed memory paradigm],
+        caption: [
+          #set text(fill: gray)
+          Distributed memory paradigm],
       )][#uncover("2")[#figure(
           shared-memory(presentation: true),
-          caption: [Shared-memory paradigm],
+          caption: [
+            #set text(fill: gray)
+            Shared-memory paradigm],
         )]]
   }
 
@@ -332,50 +336,6 @@
   #speaker-note[
     - DG highly parallel by nature
     - GPU arch. highly parallel by design
-  ]
-]
-
-== Fortran's `do concurrent`
-
-#slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
-
-  #grid(columns: (1.6fr, 1fr), column-gutter: 1em)[
-    #figure(
-      kind: raw,
-      {
-        set text(size: .78em)
-        grid(
-          columns: 1,
-          column-gutter: 1em,
-          row-gutter: 1em,
-          align: center + horizon,
-          ```f
-          do concurrent (i=1:n, j=1:m)
-            a(i, j) = w * b(i, j)
-          end do
-          ```,
-          ```f90
-          !$omp parallel do collapse(2) default(shared)
-          !$acc parallel loop collapse(2) default(present)
-          do i=1, n
-            do j=1, m
-              a(i, j) = w * b(i, j)
-            end do
-          end do
-          !$acc end parallel loop
-          !$omp end parallel do
-          ```,
-        )
-      },
-    )][
-    - Enables to run each iteration independently #pause
-
-    - *Can* be parallelized with OpenMP or *OpenACC* #pause
-
-    - Default for GPU offloading in *NVHPC* due to better performance/implementation
   ]
 ]
 
@@ -761,7 +721,7 @@
     === Evaluation
 
     - #box(block(breakable: false)[$2 times 2 times 2$]) meters cube #pause
-    - Homogeneous plane waves
+    - Homogeneous plane waves #pause
     - 100K cells, polynomial order 3
       - $cal(A) in RR^(#num(2206490) times #num(2206490))$#pause
     - 4 sources
@@ -991,6 +951,47 @@
     - COO to CSR conversion
     - CSR to dense using cuSPARSE, cuDSS only supports dense RHS
     - Communication layer built in-tree to support multithreading and MGMN mode
+  ]
+]
+
+
+== Fortran's `do concurrent`
+
+#slide[
+  #grid(columns: (1.6fr, 1fr), column-gutter: 1em)[
+    #figure(
+      kind: raw,
+      {
+        set text(size: .78em)
+        grid(
+          columns: 1,
+          column-gutter: 1em,
+          row-gutter: 1em,
+          align: center + horizon,
+          ```f
+          do concurrent (i=1:n, j=1:m)
+            a(i, j) = w * b(i, j)
+          end do
+          ```,
+          ```f90
+          !$omp parallel do collapse(2) default(shared)
+          !$acc parallel loop collapse(2) default(present)
+          do i=1, n
+            do j=1, m
+              a(i, j) = w * b(i, j)
+            end do
+          end do
+          !$acc end parallel loop
+          !$omp end parallel do
+          ```,
+        )
+      },
+    )][
+    - Enables to run each iteration independently #pause
+
+    - *Can* be parallelized with OpenMP or *OpenACC* #pause
+
+    - Default for GPU offloading in *NVHPC* due to better performance/implementation
   ]
 ]
 
