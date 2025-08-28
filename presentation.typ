@@ -138,7 +138,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
   - Internship conducted at *MAKUTU* team
     - INRIA Centre at the University of Bordeaux #pause
@@ -189,7 +189,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(center + horizon, hawen-schema(presentation: true))
@@ -201,7 +201,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #figure(
@@ -214,7 +214,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   Open source software developed by Florian Faucher@HAWEN@FloPhD.
@@ -238,7 +238,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(center + horizon)[
@@ -256,7 +256,7 @@
 
 #slide(repeat: 2, self => [
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #{
@@ -286,7 +286,7 @@
 
 #slide(repeat: 2, self => [
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set align(horizon)
@@ -331,7 +331,7 @@
 #slide[
   #set align(horizon)
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set text(size: .6em)
@@ -349,7 +349,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(columns: (1.6fr, 1fr), column-gutter: 1em)[
@@ -395,7 +395,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(
@@ -437,7 +437,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(columns: 2, column-gutter: 0.1em)[#figure(
@@ -478,7 +478,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   When solving a linear system $A X = B$, $L U$ decomposition is
@@ -494,7 +494,7 @@
 #slide(repeat: 2, self => [
   #alternatives[
     #if hide-appendinx {
-          place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+      place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
     }
     #grid(columns: 2, align: horizon, column-gutter: -4em)[#figure(
         image(width: 110%, "resources/imgs/paraview_summary.svg"),
@@ -503,7 +503,7 @@
       - Visualization with ParaProf
     ]][
     #if hide-appendinx {
-          place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+      place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
     }
     #figure(
       image(width: 100%, "resources/imgs/paraview_summary_cropped.png"),
@@ -524,33 +524,31 @@
 #slide[
   #grid(columns: 2, column-gutter: 1em)[
     #if hide-appendinx {
-          place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+      place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
     }
     #grid(columns: 1, row-gutter: .1em)[#figure(
-        image(width: 99%, "resources/imgs/model_plot.svg"),
+        image(width: 96%, "resources/imgs/model_plot.svg"),
       )][#figure(
-        image(width: 99%, "resources/imgs/real_part_plot.svg"),
+        image(width: 96%, "resources/imgs/real_part_plot.svg"),
       )]
   ][
+    #set align(horizon)
     === Evaluation
 
-    Benchmarked with
-
-    - Marmousi2 2D model @Marmousi2 #pause
-
-    - 100 thousand cells #pause
-
-    - 169 sources (right-hand sides $cal(B)$ of global liner system) #pause
-
+    - Marmousi2 2D elastic model@Marmousi2 #pause
+    - 100K cells
+      - $cal(A) in RR^(n times n), n in [#num(1223240), #num(3058100)]$#pause
+    - 169 sources
+      - $cal(B) in RR^(169 times n)$#pause
     - frequency of #zi.Hz[7] #pause
-
-    - 8 different configurations, polynomial in $[3, 9]$ + $frak(p)$-adaptivity in $[2, 9]$
+    - 8 diff. configurations
+      - polynomial in $[3, 9]$ + $frak(p)$-adaptivity
   ]
 ]
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set text(size: .8em)
@@ -609,7 +607,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #horizontal-anotinv-loop("p9")
@@ -617,7 +615,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set text(size: .8em)
@@ -643,7 +641,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #horizontal-anotinv-loop("p2-9")
@@ -651,7 +649,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set table(inset: .6em)
@@ -676,7 +674,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Challenges
@@ -696,12 +694,12 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Evaluation for `hdg_build_quadrature_int_2D`
 
-  Tested the acoustic case on Suroit #sym.arrow.l *A100 40GB* (*9.7* TFLOPs FP64, *19.5* TFLOPs FP32)
+  acoustic case on Sirocco #sym.arrow.l *A100 40GB* (*9.7* TFLOPs FP64, *19.5* TFLOPs FP32)
 
   #set table(inset: .5em)
   #figure(
@@ -735,7 +733,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(
@@ -750,59 +748,41 @@
         - GPU version not yet public and relies on XKBlas#only("2-")[@XKBlas], not configured for the NVHPC Toolkit #pause
 
       / cuDSS: sparse direct solver recently released by NVIDIA
-        - Natively support for GPUs
+        - Natively supports GPUs
     ],
   )
 ]
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
-
-  === Implementation
-
-  - Interface between Fortran and C++ through ISO C bindings #pause
-
-  - we had to conform to cuDSS's formalisms for matrices #pause
-
-  === Limitations of our Implementation
-
-  - Currently faulty at high polynomial orders
-
-  #speaker-note[
-    - COO to CSR conversion
-    - CSR to dense using cuSPARSE, cuDSS only supports dense RHS
-    - Communication layer built in-tree to support multithreading and MGMN mode
-  ]
-]
-
-#slide[
-  #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(columns: 2, column-gutter: 1em)[#move(dx: -30pt, dy: 20pt, scale(
       120%,
       figure(image("resources/imgs/3dparaprof.png")),
     ))][
+
+    #set align(bottom)
     === Evaluation
 
-    Benchmarked with
-
-    - Homogeneous plane waves in a #box(block(breakable: false)[$2 times 2 times 2$]) meters cube #pause
-
-    - 100 thousand cells, polynomial order 3 (matrix of size 2206490#super[2]) #pause
-
-    - 4 sources (right-hand sides $cal(B)$ of the global linear system) #pause
-
+    - #box(block(breakable: false)[$2 times 2 times 2$]) meters cube #pause
+    - Homogeneous plane waves
+    - 100K cells, polynomial order 3
+      - $cal(A) in RR^(#num(2206490) times #num(2206490))$#pause
+    - 4 sources
+      - $cal(B) in RR^(4 times #num(2206490))$#pause
     - frequency of #mHz[2] #pause
+
+    === Limitations
+
+    cuDSS implementation currently faulty at high ($> 7$) polynomial orders
   ]
 ]
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(bottom)[
@@ -822,7 +802,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(bottom)[
@@ -846,7 +826,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Conclusions
@@ -885,7 +865,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
   === Clusters
   We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
@@ -898,7 +878,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Localizing Loops
@@ -909,7 +889,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
   === What is LU?
 
@@ -922,7 +902,7 @@
 
 #slide[
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Computing Analytically Other Inversions
@@ -1003,7 +983,7 @@
   === Working with NVHPC
 
   #if hide-appendinx {
-        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   Explore using the *NVHPC Toolkit* which provides
@@ -1017,4 +997,26 @@
   - *Conditional compilation* for CPU and GPU code
   - *Reduce data movement*, correctly use *`managed`* and *`device`* attributes
   - Offloaded routines have to be *`pure`*
+]
+
+#slide[
+  #if hide-appendinx {
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+  }
+
+  === Implementation of cuDSS
+
+  - Interface between Fortran and C++ through ISO C bindings
+
+  - we had to conform to cuDSS's formalisms for matrices
+
+  === Limitations of our Implementation
+
+  - Currently faulty at high polynomial orders
+
+  #speaker-note[
+    - COO to CSR conversion
+    - CSR to dense using cuSPARSE, cuDSS only supports dense RHS
+    - Communication layer built in-tree to support multithreading and MGMN mode
+  ]
 ]
