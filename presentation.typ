@@ -522,7 +522,6 @@
         image(width: 365pt, "resources/imgs/real_part_plot.svg"),
       )]
   ][
-    #set align(horizon)
     === Evaluation
 
     - Marmousi2 2D elastic model@Marmousi2 #pause
