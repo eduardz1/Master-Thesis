@@ -138,7 +138,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
   - Internship conducted at *MAKUTU* team
     - INRIA Centre at the University of Bordeaux #pause
@@ -189,7 +189,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(center + horizon, hawen-schema(presentation: true))
@@ -201,7 +201,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #figure(
@@ -214,7 +214,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   Open source software developed by Florian Faucher@HAWEN@FloPhD.
@@ -238,7 +238,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(center + horizon)[
@@ -256,12 +256,13 @@
 
 #slide(repeat: 2, self => [
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #{
-    show "Uₑ": set text(fill: lq.color.map.okabe-ito.at(0))
-    show "Λ": set text(fill: lq.color.map.okabe-ito.at(4))
+    show "U": set text(fill: lq.color.map.okabe-ito.at(0))
+    show "ₑ": set text(fill: lq.color.map.okabe-ito.at(0))
+    show "Λ": set text(fill: lq.color.map.okabe-ito.at(5))
     $
       cases(
         AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
@@ -285,7 +286,7 @@
 
 #slide(repeat: 2, self => [
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set align(horizon)
@@ -330,7 +331,7 @@
 #slide[
   #set align(horizon)
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set text(size: .6em)
@@ -348,7 +349,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(columns: (1.6fr, 1fr), column-gutter: 1em)[
@@ -394,7 +395,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(
@@ -436,7 +437,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(columns: 2, column-gutter: 0.1em)[#figure(
@@ -477,7 +478,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   When solving a linear system $A X = B$, $L U$ decomposition is
@@ -493,7 +494,7 @@
 #slide(repeat: 2, self => [
   #alternatives[
     #if hide-appendinx {
-      place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+          place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
     }
     #grid(columns: 2, align: horizon, column-gutter: -4em)[#figure(
         image(width: 110%, "resources/imgs/paraview_summary.svg"),
@@ -502,7 +503,7 @@
       - Visualization with ParaProf
     ]][
     #if hide-appendinx {
-      place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+          place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
     }
     #figure(
       image(width: 100%, "resources/imgs/paraview_summary_cropped.png"),
@@ -523,7 +524,7 @@
 #slide[
   #grid(columns: 2, column-gutter: 1em)[
     #if hide-appendinx {
-      place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+          place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
     }
     #grid(columns: 1, row-gutter: .1em)[#figure(
         image(width: 99%, "resources/imgs/model_plot.svg"),
@@ -549,7 +550,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set text(size: .8em)
@@ -608,7 +609,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #horizontal-anotinv-loop("p9")
@@ -616,7 +617,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set text(size: .8em)
@@ -642,7 +643,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #horizontal-anotinv-loop("p2-9")
@@ -650,7 +651,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #set table(inset: .6em)
@@ -675,7 +676,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Challenges
@@ -695,7 +696,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Evaluation for `hdg_build_quadrature_int_2D`
@@ -734,7 +735,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(
@@ -742,7 +743,7 @@
     column-gutter: 1em,
     figure(image(height: 62%, "resources/imgs/A_spy_plot.svg")),
     [
-      - $cal(A) Lambda = cal(B)$ is very sparse, cannot rely on LAPACK #pause
+      $cal(A) Lambda = cal(B)$ is very sparse, cannot rely on LAPACK #pause
 
       / MUMPS: #only("2-")[@MUMPS] sparse #underline[direct] solver used by HAWEN
         - NVFortran cannot currently compile it
@@ -756,7 +757,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Implementation
@@ -778,7 +779,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #grid(columns: 2, column-gutter: 1em)[#move(dx: -30pt, dy: 20pt, scale(
@@ -801,7 +802,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(bottom)[
@@ -821,7 +822,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   #align(bottom)[
@@ -845,7 +846,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Conclusions
@@ -884,7 +885,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
   === Clusters
   We used both the *DOREMI CALI v3* @CALI and *PlaFRIM* @PlaFRIM clusters, *SLURM* as scheduler
@@ -897,7 +898,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Localizing Loops
@@ -908,7 +909,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
   === What is LU?
 
@@ -921,7 +922,7 @@
 
 #slide[
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   === Computing Analytically Other Inversions
@@ -1002,7 +1003,7 @@
   === Working with NVHPC
 
   #if hide-appendinx {
-    place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
+        place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
   Explore using the *NVHPC Toolkit* which provides
