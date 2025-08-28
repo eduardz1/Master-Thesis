@@ -260,7 +260,8 @@
   }
 
   #{
-    show "U": set text(fill: lq.color.map.okabe-ito.at(0))
+    show "Uₑ": set text(fill: lq.color.map.okabe-ito.at(0))
+    show "Λ": set text(fill: lq.color.map.okabe-ito.at(4))
     $
       cases(
         AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
