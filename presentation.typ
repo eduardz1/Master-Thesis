@@ -177,11 +177,6 @@
     )
 
   // Makutu builds advanced mathematical models and computational frameworks for the reconstruction of complex media that are crossed by mechanical or electromagnetic waves. The team is particularly interested in discontinuous finite element methods, spectral elements and high-order time schemes, each of which is relevant to solving wave equations. These numerical methods are eventually hybridized with machine learning techniques. Reconstruction is via inverse problem solving, and Makutu is heavily invested in full waveform inversion, which is a high-definition imaging method widely used in geophysics.
-
-  #speaker-note[
-    - LARGE SCALE LINEAR SYSTEMS
-    - EMBARASSINGLY PARALLEL ALGORITHM USED TO SOLVE IT IN HAWEN, SCALABLE, GREAT FOR GPU
-  ]
 ]
 
 #heading(
@@ -264,12 +259,15 @@
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
 
-  $
-    cases(
-      AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
-      sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
-    )
-  $
+  #{
+    show "U": set text(fill: lq.color.map.okabe-ito.at(0))
+    $
+      cases(
+        AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
+        sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
+      )
+    $
+  }
   #set text(size: .8em)
   #alternatives[#forward-acoustic-problem-alg(
       presentation: true,
@@ -481,14 +479,11 @@
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
 
-  When solving a linear system $A X = B$, $L U$ decomposition is #pause
-  - *always faster* than the $A^(-1)$ form #only("2")[@DontInvertThatMatrix] #only("2")[@WhyNotInvertMatrix] #only("2")[@WhyLUbetterThanInverse] #pause
-  - *more accurate* for ill-conditioned matrices #only("3")[@AccuracyAndStability[Section 14.1]] #pause
+  When solving a linear system $A X = B$, $L U$ decomposition is
+  - *always faster* than the $A^(-1)$ form@DontInvertThatMatrix@WhyNotInvertMatrix@WhyLUbetterThanInverse #pause
+  - *more accurate* for ill-conditioned matrices #only("2-")[@AccuracyAndStability[Section 14.1]] #pause
 
-  We rewrite the previous equation to avoid computing the inverse
-  - LAPACK's `*GETRF` and `*GETRS` #pause
-
-  We replace the matrix inversion in
+  Solve with *LAPACK*'s `*GETRF`/`*GETRS`, replace:
   + the $cal(A)$ matrix assembly
   + the computation of the HDG solution
   + some specifics in the elastic wave propagation
@@ -660,12 +655,14 @@
   #set table(inset: .6em)
 
   Looking at the generated assembly code
+
   - $approx 30%$ reduction in instruction count with `MOV` and `ADD` type instructions decreasing in equal measure: *less data movement* #pause
 
-  - dot product for face integrals accounting for $approx$ *80%* of the *total program runtime* #pause
+  // - dot product for face integrals accounting for $approx$ *80%* of the *total program runtime* #pause
 
   - no improvements with *BLAS1* or *GEMM* operations
     - a higher level of parallelism is necessary #pause
+
   #figure(cache-branch-misses-table-figure())
 ]
 
@@ -700,7 +697,7 @@
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
 
-  === Evaluation
+  === Evaluation for `hdg_build_quadrature_int_2D`
 
   Tested the acoustic case on Suroit #sym.arrow.l *A100 40GB* (*9.7* TFLOPs FP64, *19.5* TFLOPs FP32)
 
@@ -790,21 +787,24 @@
     === Evaluation
 
     Benchmarked with
+
     - Homogeneous plane waves in a #box(block(breakable: false)[$2 times 2 times 2$]) meters cube #pause
 
     - 100 thousand cells, polynomial order 3 (matrix of size 2206490#super[2]) #pause
+
     - 4 sources (right-hand sides $cal(B)$ of the global linear system) #pause
+
     - frequency of #mHz[2] #pause
   ]
 ]
 
-#slide(repeat: 5, self => [
+#slide[
   #if hide-appendinx {
     place(dx: 690pt, dy: -80pt, box(width: 80pt, height: 30pt, fill: white))
   }
 
   #align(bottom)[
-    - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Suroit cluster #pause
+    - compared cuDSS `0.6.0` against MUMPS `5.8.0` on the Sirocco cluster #pause
 
     - 1 combination of MPI/OpenMP for cuDSS, several for MUMPS #pause
 
@@ -816,7 +816,7 @@
       presentation: true,
     )
   ]
-])
+]
 
 #slide[
   #if hide-appendinx {
@@ -873,7 +873,13 @@
 #show: appendix
 
 // = Appendix <touying:unoutlined>
-#heading(level: 1, depth: 1, outlined: false, bookmarked: false, [Appendix])
+#heading(
+  level: 1,
+  depth: 1,
+  outlined: false,
+  bookmarked: false,
+  [Bonus Slides!],
+)
 
 #slide[
   #if hide-appendinx {

@@ -85,7 +85,7 @@
       l(dx: cx, dy: cy + -.1)
       u(dx: cx + .2, dy: cy + .1)
 
-      if presentation { (pause,) }
+      // if presentation { (pause,) }
 
       let face(fx: 0, fy: 0, diagonal: false) = if not diagonal {
         line((2 + fx, fy), (3 + fx, fy), stroke: stroke-red)
