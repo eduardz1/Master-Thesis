@@ -473,7 +473,7 @@
 
   When solving a linear system $A X = B$, $L U$ decomposition is
   - *always faster* than the $A^(-1)$ form@DontInvertThatMatrix@WhyNotInvertMatrix@WhyLUbetterThanInverse #pause
-  - *more accurate* for ill-conditioned matrices #only("2-")[@AccuracyAndStability[Section 14.1]] #pause
+  - *more accurate* for ill-conditioned matrices#only("2-")[@AccuracyAndStability[Section 14.1]] #pause
 
   Solve with *LAPACK*'s `*GETRF`/`*GETRS`, replace:
   + the $cal(A)$ matrix assembly
@@ -521,7 +521,7 @@
       )][#figure(
         image(width: 365pt, "resources/imgs/real_part_plot.svg"),
       )]
-  ][
+  ][\
     === Evaluation
 
     - Marmousi2 2D elastic model@Marmousi2 #pause
@@ -694,12 +694,15 @@
   #set table(inset: .5em)
   #figure(
     synthetic-data-table(presentation: true),
-    caption: [Synthetic data similar to real benchmarks],
+    caption: [#set text(fill: gray)
+      Synthetic data similar to real benchmarks],
   )
 
   #figure(
     speedup-nvhpc-table(presentation: true),
-    caption: [Speedup for different configurations],
+    caption: [
+      #set text(fill: gray)
+      Speedup for different configurations],
   ) // Here mention that the A100 should only have double the perfomance in FP32 but clearly we have way more
 
   #speaker-note[
@@ -731,6 +734,7 @@
     column-gutter: 1em,
     figure(image(height: 62%, "resources/imgs/A_spy_plot.svg")),
     [
+      \
       $cal(A) Lambda = cal(B)$ is very sparse, cannot rely on LAPACK #pause
 
       / MUMPS: #only("2-")[@MUMPS] sparse #underline[direct] solver used by HAWEN
@@ -829,7 +833,7 @@
 
   - Extend the work on GPU offloading  #pause
 
-  - Explore GCC's support for GPU offloading through OpenMP and OpenACC #pause
+  - GCC's & LLVM Flangs's support for GPU offloading through OpenMP and OpenACC #pause
 
   - Reduce memory usage #pause
 
