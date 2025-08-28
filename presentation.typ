@@ -517,9 +517,9 @@
       place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
     }
     #grid(columns: 1, row-gutter: .1em)[#figure(
-        image(width: 96%, "resources/imgs/model_plot.svg"),
+        image(width: 365pt, "resources/imgs/model_plot.svg"),
       )][#figure(
-        image(width: 96%, "resources/imgs/real_part_plot.svg"),
+        image(width: 365pt, "resources/imgs/real_part_plot.svg"),
       )]
   ][
     #set align(horizon)
