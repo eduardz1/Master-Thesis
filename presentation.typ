@@ -141,15 +141,14 @@
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
   - Internship conducted at *MAKUTU* team
-    - INRIA Centre at the University of Bordeaux #pause
+    - INRIA Centre at the University of Bordeaux, located at the University of Pau #pause
 
-  - Specialized in mathematical model and computational framework for wave modeling
-    - heavily invested in *full waveform inversion* #pause
+  - Mathematical models & computational frameworks for *wave modeling* and *inversion* #pause
 
     #set text(.8em)
     #figure(
       grid(
-        columns: 4,
+        columns: 3,
         align: bottom,
         column-gutter: 0em,
         row-gutter: 1em,
@@ -158,13 +157,8 @@
           caption: [Solar Imaging],
         ),
         figure(
-          image(width: 80%, "resources/imgs/bateauv4-300x165.png"),
+          image(width: 100%, "resources/imgs/bateauv4-300x165.png"),
           caption: [Electromagnetism],
-        ),
-
-        figure(
-          image(width: 80%, "resources/imgs/vents-300x297.jpg"),
-          caption: [Musical Acoustics],
         ),
         figure(
           image(width: 80%, "resources/imgs/3layers_grad1.png"),
@@ -179,28 +173,11 @@
   // Makutu builds advanced mathematical models and computational frameworks for the reconstruction of complex media that are crossed by mechanical or electromagnetic waves. The team is particularly interested in discontinuous finite element methods, spectral elements and high-order time schemes, each of which is relevant to solving wave equations. These numerical methods are eventually hybridized with machine learning techniques. Reconstruction is via inverse problem solving, and Makutu is heavily invested in full waveform inversion, which is a high-definition imaging method widely used in geophysics.
 ]
 
-#heading(
-  level: 1,
-  depth: 1,
-  context if in-outline.get() [HAWEN] else [HAWEN],
-)
+= HAWEN
 
 == The Software
 
 // In this context, the HAWEN software was developed. HAWEN is a tool used to solve wave equations in the frequency domain and compute the solution of both the forward problem, meaning the simulation of the propagation of waves through a medium, and the inverse problem, meaning the reconstruction of the properties of a non-directly accessible medium.
-
-#slide[
-  #if hide-appendinx {
-    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-  }
-
-  #figure(
-    image(height: 64%, "resources/imgs/global-earth_simu.png"),
-    caption: [
-      #set text(fill: gray, size: .8em)
-      30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 OpenMP threads each) on the PREM@PREM model of the Earth.],
-  )
-]
 
 #slide[
   #if hide-appendinx {
@@ -222,6 +199,19 @@
   ]
 ]
 
+#slide[
+  #if hide-appendinx {
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+  }
+
+  #figure(
+    image(height: 64%, "resources/imgs/global-earth_simu.png"),
+    caption: [
+      #set text(fill: gray, size: .8em)
+      30 million unknowns, 2.7TB of memory for matrix factorization. Computed in 18 minutes on 1260 cores (90 MPI processes with 14 OpenMP threads each) on the PREM@PREM model of the Earth.],
+  )
+]
+
 == Galerkin Methods
 
 #slide[
@@ -229,6 +219,7 @@
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
+  // FLO: *ADD A SENTENCE TO PRESENT or DESCRIBE THE FIGURE*
   #align(center + horizon)[
     #figure(
       fem-dg-hdg-graph(len: 4.5cm, stroke-width: 2pt, presentation: true),
@@ -248,6 +239,8 @@
   #if hide-appendinx {
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
+
+  // FLO: *WHY ACOUSTIC?*
 
   #{
     show "U": set text(fill: lq.color.map.okabe-ito.at(0))
@@ -486,9 +479,9 @@
 
     - Marmousi2 2D elastic model@Marmousi2 #pause
     - 100K cells
-      - $cal(A) in RR^(n times n), n in [#num(1223240), #num(3058100)]$#pause
+      - $cal(A) in RR^(n times n), n in [#num(1223240), #num(3058100)]$ // FLO: I don't understand
     - 169 sources
-      - $cal(B) in RR^(169 times n)$#pause
+      - $cal(B) in RR^(n times 169)$
     - frequency of #zi.Hz[7] #pause
     - 8 diff. configurations
       - polynomial in $[3, 9]$ + $frak(p)$-adaptivity
@@ -717,15 +710,17 @@
       figure(image("resources/imgs/3dparaprof.png")),
     ))][
 
-    #set align(bottom)
-    === Evaluation
+    === Evaluation // FLO: *SPLIT LEFT IMAGE INT TWO WITH THE 3D ON TOP AND THE 2D YOU SHOND IN THE BEGGINING AT THE BOTTOM*
 
     - #box(block(breakable: false)[$2 times 2 times 2$]) meters cube #pause
     - Homogeneous plane waves #pause
     - 100K cells, polynomial order 3
-      - $cal(A) in RR^(#num(2206490) times #num(2206490))$#pause
+      - $cal(A) in RR^(#num(2206490) times #num(2206490))$
+      - Global matrix $cal(A)$ size:
+        $#num(2206490)^2$
+      #pause
     - 4 sources
-      - $cal(B) in RR^(4 times #num(2206490))$#pause
+      - $cal(B) in RR^(#num(2206490) times 4)$#pause
     - frequency of #mHz[2] #pause
 
     === Limitations
