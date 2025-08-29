@@ -233,7 +233,7 @@
   ]
 ]
 
-== HDG for Acoustic Waves
+== HDG for Wave Modelling
 
 #slide(repeat: 2, self => [
   #if hide-appendinx {
@@ -705,10 +705,16 @@
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
-  #grid(columns: 2, column-gutter: 1em)[#move(dx: -30pt, dy: 20pt, scale(
-      120%,
-      figure(image("resources/imgs/3dparaprof.png")),
-    ))][
+  #grid(columns: 2, column-gutter: 1em)[
+    #only("1-2")[#move(dx: -0pt, dy: 20pt, scale(
+      100%,
+      figure(image("resources/imgs/3dview.png")),
+    ))]
+    #only("3-")[#move(dx: -0pt, dy: 20pt, scale(
+      100%,
+      figure(image("resources/imgs/3dskeleton.png")),
+    ))]
+  ][
 
     === Evaluation // FLO: *SPLIT LEFT IMAGE INT TWO WITH THE 3D ON TOP AND THE 2D YOU SHOND IN THE BEGGINING AT THE BOTTOM*
 
