@@ -72,13 +72,13 @@
     let fem(cx: 0, cy: 0) = {
       l(dx: cx, dy: cy)
       u(dx: cx, dy: cy)
-      content((2.5 + cx, -0.5 + cy), [FEM])
+      content((2.5 + cx, -0.5 + cy), if presentation [Finite Element Method] else [FEM])
     }
 
     let dg(cx: 0, cy: 0) = {
       l(dx: cx, dy: -.05 + cy)
       u(dx: .1 + cx, dy: .05 + cy)
-      content((2.5 + cx, -0.5 + cy), [DG])
+      content((2.5 + cx, -0.5 + cy), if presentation [Discontinuous Galerkin] else [DG])
     }
 
     let hdg(cx: 0, cy: 0) = {
@@ -134,7 +134,7 @@
       rotate(z: -90deg)
 
       face(fx: cx + .1, fy: cy, diagonal: true)
-      content((2.5 + cx, -0.5 + cy), [HDG])
+      content((2.5 + cx, -0.5 + cy), if presentation [Hybridizable Discontinuous Galerkin] else [HDG])
     }
 
     fem(cx: -2)

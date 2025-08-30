@@ -119,6 +119,13 @@
   ),
 )
 
+// #show outline.entry: it => link(
+//   it.element.location(),
+//   // Keep just the body, dropping
+//   // the fill and the page.
+//   it.indented(it.prefix(), it.body()),
+// )
+
 // #set heading(numbering: numbly("{1}.", default: "1.1"))
 
 #show footnote.entry: set text(size: .8em)
@@ -219,6 +226,8 @@
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
+  #set text(size: .8em)
+
   // FLO: *ADD A SENTENCE TO PRESENT or DESCRIBE THE FIGURE*
   #align(center + horizon)[
     #figure(
@@ -242,25 +251,31 @@
 
   // FLO: *WHY ACOUSTIC?*
 
-  #{
-    show "U": set text(fill: lq.color.map.okabe-ito.at(0))
-    show "ₑ": set text(fill: lq.color.map.okabe-ito.at(0))
-    show "Λ": set text(fill: lq.color.map.okabe-ito.at(5))
-    $
-      cases(
-        AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
-        sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
-      )
-    $
-  }
-  #set text(size: .8em)
-  #alternatives[#forward-acoustic-problem-alg(
-      presentation: true,
-      highlight-tensors: false,
-    )][#forward-acoustic-problem-alg(
-      highlight-tensors: true,
-      presentation: true,
-    )]
+  #grid(columns: 2, column-gutter: 4em)[
+    #{
+      show "U": set text(fill: lq.color.map.okabe-ito.at(0))
+      show "ₑ": set text(fill: lq.color.map.okabe-ito.at(0))
+      show "Λ": set text(fill: lq.color.map.okabe-ito.at(5))
+      set align(horizon)
+      $
+        cases(
+          AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
+          sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
+        )
+      $
+    }][
+    #set text(size: .76em)
+    #alternatives[#forward-acoustic-problem-alg(
+        presentation: true,
+        highlight-tensors: false,
+      )][#forward-acoustic-problem-alg(
+        highlight-tensors: true,
+        presentation: true,
+      )]]
+
+  #speaker-note[
+    - DISCRETE
+  ]
 ])
 
 = Tools for Parallelism
@@ -409,6 +424,8 @@
     })]
 
   #speaker-note[
+    - MENTION DO CONCURRENT
+
     / DOD: focus on HOW data is layed out in memory and how it flows through the system
 
     - We want to work as much as possible with data at lower level of cache
@@ -424,45 +441,83 @@
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
-  When solving a linear system $A X = B$, $L U$ decomposition is
-  - *always faster* than the $A^(-1)$ form@DontInvertThatMatrix@WhyNotInvertMatrix@WhyLUbetterThanInverse #pause
+  When solving #alternatives(start: 2)[a][the] linear system #alternatives(start: 2)[$A X = B$][$AA_e U_e =SS_e -CC_e cal(R)_e Lambda$], $L U$ decomposition is
+  - *always faster* than the #alternatives(start: 2)[$A^(-1)$][$AA_e^(-1)$] form@DontInvertThatMatrix@WhyNotInvertMatrix@WhyLUbetterThanInverse #pause
   - *more accurate* for ill-conditioned matrices#only("2-")[@AccuracyAndStability[Section 14.1]] #pause
 
-  Solve with *LAPACK*'s `*GETRF`/`*GETRS`, replace:
-  + the $cal(A)$ matrix assembly
-  + the computation of the HDG solution
-  + some specifics in the elastic wave propagation
+  Solve with *LAPACK*'s `*GETRF`/`*GETRS`, replace:#grid(columns: 2, column-gutter: 1fr)[
+    + the $cal(A)$ matrix assembly
+    + the computation of the HDG solution
+    + some specifics in the elastic wave propagation
+  ][
+    #set align(horizon)
+    #set text(fill: gray)
+    $ cases(
+      AA_e U_e + CC_e cal(R)_e Lambda & = SS_e,
+      sum_e cal(R)_e^TT (BB_e U_e + LL_e cal(R)_e Lambda) & = 0,
+    ) $
+  ]
 ]
 
-#slide(repeat: 2, self => [
-  #alternatives[
-    #if hide-appendinx {
-      place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-    }
-    #grid(columns: 2, align: horizon, column-gutter: -4em)[#figure(
-        image(width: 110%, "resources/imgs/paraview_summary.svg"),
-      )][
-      - Profiled using the TAU Performance System@TAU
-      - Visualization with ParaProf
-    ]][
-    #if hide-appendinx {
-      place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
-    }
-    #figure(
-      image(width: 100%, "resources/imgs/paraview_summary_cropped.png"),
-    )
-    For the bottom 5 bars we have, in order, from left to right:
-    + `hdg_build_quadrature_int_2D`
-    + `hdg_build_quadrature_int_2D`
-    + Overhead of TAU instrumentation
-    + LAPACK's `*GETRI` (matrix inverse)
-    + `hdg_build_Ainv_2D`
+#slide[
+  #if hide-appendinx {
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+  }
+  #grid(columns: 2, align: horizon, column-gutter: -4em)[#figure(
+      image(width: 110%, "resources/imgs/paraview_summary.svg"),
+    )][
+    - Profiled using the TAU Performance System@TAU
+    - Visualization with ParaProf
   ]
 
   #speaker-note[
     - 8 MPI #sym.times 6 OpenMP
   ]
-])
+]
+
+#slide[
+  #if hide-appendinx {
+    place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+  }
+  // #grid(columns: 2, align: horizon, column-gutter: -4em)[#figure(
+  //     image(width: 110%, "resources/imgs/paraview_summary.svg"),
+  //   )][
+  //   - Profiled using the TAU Performance System@TAU
+  //   - Visualization with ParaProf
+  // ]][
+  // #if hide-appendinx {
+  //   place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
+  // }
+  #figure(
+    image(width: 100%, "resources/imgs/paraview_summary_cropped.png"),
+  )
+  For the bottom 5 bars we have, in order, from left to right:
+  #alternatives[
+    + #highlight(fill: blue.lighten(80%))[`hdg_build_quadrature_int_2D`]
+  ][
+    + `hdg_build_quadrature_int_2D`
+    + #highlight(fill: red.lighten(80%))[`hdg_build_quadrature_int_2D`]
+  ][
+    + `hdg_build_quadrature_int_2D`
+    + `hdg_build_quadrature_int_2D`
+    + #highlight(fill: purple.lighten(80%))[Overhead of TAU instrumentation]
+  ][
+    + `hdg_build_quadrature_int_2D`
+    + `hdg_build_quadrature_int_2D`
+    + Overhead of TAU instrumentation
+    + #highlight(fill: orange.lighten(80%))[LAPACK's `*GETRI` (matrix inverse)]
+  ][
+    + `hdg_build_quadrature_int_2D`
+    + `hdg_build_quadrature_int_2D`
+    + Overhead of TAU instrumentation
+    + LAPACK's `*GETRI` (matrix inverse)
+    + #highlight(fill: yellow.lighten(80%))[`hdg_build_Ainv_2D`]
+  ]
+
+  #speaker-note[
+    Double due to weird behavior from TAU
+  ]
+]
 
 #slide[
   #grid(columns: 2, column-gutter: 1em)[
@@ -479,9 +534,9 @@
 
     - Marmousi2 2D elastic model@Marmousi2 #pause
     - 100K cells
-      - $cal(A) in RR^(n times n), n in [#num(1223240), #num(3058100)]$ // FLO: I don't understand
+      - $cal(A) in CC^(n times n), n in [#num(1223240), #num(3058100)]$#pause // FLO: I don't understand
     - 169 sources
-      - $cal(B) in RR^(n times 169)$
+      - $cal(B) in CC^(n times 169)$#pause
     - frequency of #zi.Hz[7] #pause
     - 8 diff. configurations
       - polynomial in $[3, 9]$ + $frak(p)$-adaptivity
@@ -641,7 +696,9 @@
 
   === Evaluation for `hdg_build_quadrature_int_2D`
 
-  acoustic case on Sirocco #sym.arrow.l *A100 40GB* (*9.7* TFLOPs FP64, *19.5* TFLOPs FP32)
+  Acoustic case on PlaFRIM supercomputer
+  - *NVIDIA A100 40GB* (9.7 TFLOPs FP64 / 19.5 TFLOPs FP32)
+  - *AMD ZEN3 32 core 7513* (1.87 TFLOPs FP64 / 3.74 TFLOPs FP32)
 
   #set align(horizon)
   #set table(inset: .5em)
@@ -659,6 +716,7 @@
   ) // Here mention that the A100 should only have double the perfomance in FP32 but clearly we have way more
 
   #speaker-note[
+    - SUPERCOMPUTER PLAFRIM
     - A100 should have double performance but really it's more
     - Validated with unit testing
     - benchmark on the `hdg_build_quadrature` function we saw before
@@ -707,13 +765,13 @@
 
   #grid(columns: 2, column-gutter: 1em)[
     #only("1-2")[#move(dx: -0pt, dy: 20pt, scale(
-      100%,
-      figure(image("resources/imgs/3dview.png")),
-    ))]
+        100%,
+        figure(image("resources/imgs/3dview.png")),
+      ))]
     #only("3-")[#move(dx: -0pt, dy: 20pt, scale(
-      100%,
-      figure(image("resources/imgs/3dskeleton.png")),
-    ))]
+        100%,
+        figure(image("resources/imgs/3dskeleton.png")),
+      ))]
   ][
 
     === Evaluation // FLO: *SPLIT LEFT IMAGE INT TWO WITH THE 3D ON TOP AND THE 2D YOU SHOND IN THE BEGGINING AT THE BOTTOM*
@@ -721,12 +779,9 @@
     - #box(block(breakable: false)[$2 times 2 times 2$]) meters cube #pause
     - Homogeneous plane waves #pause
     - 100K cells, polynomial order 3
-      - $cal(A) in RR^(#num(2206490) times #num(2206490))$
-      - Global matrix $cal(A)$ size:
-        $#num(2206490)^2$
-      #pause
+      - $cal(A) in CC^(#num(2206490) times #num(2206490))$#pause
     - 4 sources
-      - $cal(B) in RR^(#num(2206490) times 4)$#pause
+      - $cal(B) in CC^(#num(2206490) times 4)$#pause
     - frequency of #mHz[2] #pause
 
     === Limitations

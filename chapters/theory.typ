@@ -237,6 +237,9 @@ The @MUMPS is a free and open-source direct sparse solver that offers a wide ran
 Recent developments include mixed precision algorithms and a focus on @GPU acceleration. Mixed precision algorithms have been around for a long time, an example from #cite(<x-IterativeRefinement>, form: "prose") can be seen in @it-alg. Here, the _factorization_ and _solve_ operations are performed in 32 bit, by repeating the solving step multiple times, the solutions is guaranteed to converge to the original one in 64 bit precision #footnote[When talking about floating point numbers, the IEEE 754 standard is implied. The same reasoning can and is already applied by the team of @MUMPS to other floating point formats.].
 
 #block(breakable: false)[
+  #set grid(
+    align: (right, left),
+  )
   #algorithm-figure(
     "Iterative Refinement",
     vstroke: .5pt + luma(200),
@@ -341,6 +344,6 @@ The complicated configuration and the need to recompile the code each time with 
 
 Given that the target system for @HAWEN are clusters and supercomputers, executing the code in a system with comparable hardware was essential to accurately perform any analysis. Features such as multi-node compute and large memory footprint -- using several hundreds of GB of system memory -- are difficult to emulate on a personal system. Furthermore, certain optimizations such as AVX512 vectorization are usually not supported on customer-grade @CPU:short:pl and not taking them into account may give a skewed perception of the behavior of the program.
 
-/ PlaFRIM:@x-PlaFRIM is located in the city Bordeaux, France. It allows academic researchers, enterprises and students to use the platform. It is heterogenous, offering different nodes with different configuration, with nodes offering Intel @CPU:short:pl, AMD or even ARM based ones. It also offers nodes with NVIDIA, AMD and Intel @GPU:pl.
+/ PlaFRIM: @x-PlaFRIM is located in the city Bordeaux, France. It allows academic researchers, enterprises and students to use the platform. It is heterogenous, offering different nodes with different configuration, with nodes offering Intel @CPU:short:pl, AMD or even ARM based ones. It also offers nodes with NVIDIA, AMD and Intel @GPU:pl.
 
-/ DOREMI CALI v3:@x-CALI is a cluster that is oriented towards @GPU computing. It is offered to the higher education and research community of the French region of Nouvelle-Aquitaine. It is also, like PlaFRIM, heterogenous in its configuration.
+/ DOREMI CALI v3: @x-CALI is a cluster that is oriented towards @GPU computing. It is offered to the higher education and research community of the French region of Nouvelle-Aquitaine. It is also, like PlaFRIM, heterogenous in its configuration.

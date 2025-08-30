@@ -15,7 +15,7 @@
     content,
   ) = box(
     content,
-    inset: 0.2em,
+    outset: 0.25em,
     fill: fill,
   )
 
@@ -27,6 +27,10 @@
   )
 
   #let ainv = if presentation { hl-1[$AA_e^(-1)$] } else { $AA_e^(-1)$ }
+
+  #set grid(
+    align: (right, left),
+  )
 
   #algorithm-figure(
     if not presentation { "Forward Acoustic Problem" } else { none },
@@ -46,27 +50,31 @@
                 } else [BuildTensors]][$K_e$, $omega$, $rho$, $bold(v)$, $f$],
             )
           })
+          LineBreak
           LineComment(
             Assign(
               [$cal(A)$],
-              [$sum_e cal(R)_e^TT (LL_e - BB_e #ainv CC_e) RR_e$],
+              [$sum_e cal(R)_e^TT (LL_e - BB_e #ainv CC_e) cal(R)_e$],
             ),
-            [Compute the global matrix],
+            if presentation [Build global matrix] else [Compute the global matrix],
           )
           LineComment(
             Assign[$cal(B)$][$-sum_e cal(R)_e^TT BB_e #ainv SS_e$],
-            [Compute the forward right hand side],
+            if presentation [Build RHS] else [Compute the forward right hand side],
           )
           LineComment(
             Assign([$Lambda$], CallInline[#if presentation {
                 hl-3[Solve]
               } else [Solve]][$cal(A) Lambda = cal(B)$]),
-            [Use a sparse solver for the global system],
+            if presentation [Solve sparse linear system] else [Use a sparse solver for the global system],
           )
-          LineComment(
-            Assign([$U_e$], [$#ainv (-CC_e cal(R) Lambda + SS_e)$]),
-            [Solve the local systems],
-          )
+          LineBreak
+          For($K_e in cal(T)$, {
+            LineComment(
+              Assign([$U_e$], [$#ainv (SS_e - CC_e cal(R)_e Lambda)$]),
+              if presentation [Solve local systems] else [Solve the local systems],
+            )
+          })
         },
       )
     },

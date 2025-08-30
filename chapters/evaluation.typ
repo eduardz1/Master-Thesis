@@ -44,7 +44,7 @@ As previously mentioned in @computing-quad-int, the @GPU code to accelerate the 
     },
 ) <config-bench>
 
-#block(breakable: false, [#build-volume-integrals() <hdg-build-quadrature-pseudo>])
+#block(breakable: false, [#build-volume-integrals()])
 
 The numbers are computed on an average of 10 runs for each configuration and a summary of the speedup compared to the baseline can be seen in @speedup-nvhpc. The result is a #{ num(cpu_64 / gpu_64, digits: 2) }#sym.times speedup in runtime compared to the 32 core Zen 3 @CPU:short when using 64 bit floating points. Interestingly, compiling with 32 bit floats makes the time on @CPU:short decrease by #{ num(100 - (cpu_32 * 100) / cpu_64, digits: 2) }% and by #{ num(100 - (gpu_32 * 100) / gpu_64, digits: 2) }% for the @GPU FP32 version. The A100 @GPU that we are using for our benchmark has 9.7 T@FLOP:pl of peak FP64 performance and 19.5 T@FLOP:pl of FP32 yet we do not only see a #{ num(19.5 / 9.7, digits: 0) }#sym.times improvement but a #{ num(gpu_64 / gpu_32, digits: 1) }#sym.times one. This further proves how important choosing the correct precision is when writing @GPU code and suggests that approaches similar to the ones used @it-alg could be used in @HAWEN.
 
