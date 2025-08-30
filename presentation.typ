@@ -441,7 +441,7 @@
     place(dx: 660pt, dy: -80pt, box(width: 120pt, height: 30pt, fill: white))
   }
 
-  When solving #alternatives(start: 2)[a][the] linear system #alternatives(start: 2)[$A X = B$][$AA_e U_e =SS_e -CC_e cal(R)_e Lambda$], $L U$ decomposition is
+  When solving #alternatives(start: 1)[a][the] linear system #alternatives(start: 1)[$A X = B$][$AA_e U_e =SS_e -CC_e cal(R)_e Lambda$], $L U$ decomposition is
   - *always faster* than the #alternatives(start: 2)[$A^(-1)$][$AA_e^(-1)$] form@DontInvertThatMatrix@WhyNotInvertMatrix@WhyLUbetterThanInverse #pause
   - *more accurate* for ill-conditioned matrices#only("2-")[@AccuracyAndStability[Section 14.1]] #pause
 
